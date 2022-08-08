@@ -67,7 +67,7 @@ defineProps({
                     <div class="rounded-md shadow">
                       <Link
                         :href="route('dashboard')"
-                        class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white hover:text-indigo-600 bg-indigo-600 hover:bg-white md:py-4 md:text-lg md:px-10"
+                        class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-semibold rounded-md text-white hover:text-light-green-900 hover:font-extrabold bg-light-green-900 hover:bg-white md:py-4 md:text-lg md:px-10"
                       >
                         Dashboard
                       </Link>

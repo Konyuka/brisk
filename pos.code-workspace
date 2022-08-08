@@ -2,9 +2,13 @@
     "folders": [
         {
             "path": "."
+        },
+        {
+            "path": "..\\softUI"
         }
     ],
     "settings": {
-        "vue3snippets.enable-compile-vue-file-on-did-save-code": true
+        "vue3snippets.enable-compile-vue-file-on-did-save-code": false,
+        "liveServer.settings.multiRootWorkspaceName": "softUI"
     }
 }
