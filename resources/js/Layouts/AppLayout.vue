@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import { Head, Link } from "@inertiajs/inertia-vue3";
+import ResponsiveNavLink from "../../../vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/ResponsiveNavLink.vue";
 
 defineProps({
   title: String,
@@ -242,7 +243,7 @@ const logout = () => {
                 >
                   <div class="py-1" role="none">
                     <!-- Active: "bg-gray-100", Not Active: "" -->
-                    <a
+                    <Link
                       :href="route('profile.show')"
                       class="block px-4 py-2 text-sm text-gray-700"
                       role="menuitem"
@@ -250,8 +251,8 @@ const logout = () => {
                       id="menu-0-item-0"
                     >
                       Your Profile
-                    </a>
-                    <a
+                    </Link>
+                    <Link
                       @click.prevent="logout"
                       href="#"
                       class="block px-4 py-2 text-sm text-gray-700"
@@ -260,7 +261,7 @@ const logout = () => {
                       id="menu-0-item-1"
                     >
                       Sign Out
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
