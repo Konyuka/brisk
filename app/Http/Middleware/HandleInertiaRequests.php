@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
+use Auth;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -40,6 +41,7 @@ class HandleInertiaRequests extends Middleware
                     'location' => $request->url(),
                 ]);
             },
+            // 'auth' => Auth::user(),
         ]);
     }
 }

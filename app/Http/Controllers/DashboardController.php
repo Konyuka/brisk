@@ -2,83 +2,57 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Product;
 
 class DashboardController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
+    public function addProduct(Request $request)
+    {
+        // return dd($request);
+        // return dd(json_decode($request));
+        $product = new Product();
+        $product->product_name = $request->product_name;
+        $product->product_quantity = $request->product_quantity;
+        $product->stock_quantity = $request->stock_quantity;
+        $product->production_price = $request->production_price;
+        $product->sales_price = $request->sales_price;
+        $product->product_description = $request->product_description;
+        $product->added_by = $request->added_by;
+        $product->save();
+        return redirect()->back();
+
+        // return Inertia::render('Inventory');
+    }
+    
+    
     public function inventory()
     {
-        //
-        return Inertia::render('Inventory');
+        $products = Product::latest()->get();
+        return Inertia::render('Inventory', [
+            'products' => $products
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    
     public function edit($id)
     {
         //
     }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+   
     public function update(Request $request, $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         //

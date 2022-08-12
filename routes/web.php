@@ -22,10 +22,10 @@ Route::middleware([
     'verified',
 ])->group(function () {
     // Route::get('/dashboard', function () {
-    //     return Inertia::render('Dashboard');
+    //     return Inertia::render('Inventory');
     // })->name('dashboard');
     Route::get('/dashboard', [DashboardController::class, 'inventory'])
     ->name('dashboard');
-    // Route::post('/stock', [DashboardController::class, 'stock'])
-    // ->name('stock');
+    Route::post('/add_product', [DashboardController::class, 'addProduct'])
+    ->name('add_product');
 });

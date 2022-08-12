@@ -490,7 +490,7 @@ const logout = () => {
 
             <a
               href="#"
-              class="text-gray-400 hover:bg-gray-700 flex-shrink-0 inline-flex items-center justify-center h-14 w-14 rounded-lg"
+              class="text-gray-400 hover:bg-white hover:text-black flex-shrink-0 inline-flex items-center justify-center h-14 w-14 rounded-lg"
             >
               <span class="sr-only">Archive</span>
               <!-- Heroicon name: outline/archive -->
@@ -513,7 +513,7 @@ const logout = () => {
 
             <a
               href="#"
-              class="text-gray-400 hover:bg-gray-700 flex-shrink-0 inline-flex items-center justify-center h-14 w-14 rounded-lg"
+              class="text-gray-400 hover:bg-white hover:text-black flex-shrink-0 inline-flex items-center justify-center h-14 w-14 rounded-lg"
             >
               <span class="sr-only">Customers</span>
               <!-- Heroicon name: outline/user-circle -->
@@ -536,7 +536,7 @@ const logout = () => {
 
             <a
               href="#"
-              class="text-gray-400 hover:bg-gray-700 flex-shrink-0 inline-flex items-center justify-center h-14 w-14 rounded-lg"
+              class="text-gray-400 hover:bg-white hover:text-black flex-shrink-0 inline-flex items-center justify-center h-14 w-14 rounded-lg"
             >
               <span class="sr-only">Flagged</span>
               <!-- Heroicon name: outline/flag -->
@@ -559,7 +559,7 @@ const logout = () => {
 
             <a
               href="#"
-              class="text-gray-400 hover:bg-gray-700 flex-shrink-0 inline-flex items-center justify-center h-14 w-14 rounded-lg"
+              class="text-gray-400 hover:bg-white hover:text-black flex-shrink-0 inline-flex items-center justify-center h-14 w-14 rounded-lg"
             >
               <span class="sr-only">Spam</span>
               <!-- Heroicon name: outline/ban -->
@@ -582,7 +582,7 @@ const logout = () => {
 
             <a
               href="#"
-              class="text-gray-400 hover:bg-gray-700 flex-shrink-0 inline-flex items-center justify-center h-14 w-14 rounded-lg"
+              class="text-gray-400 hover:bg-white hover:text-black flex-shrink-0 inline-flex items-center justify-center h-14 w-14 rounded-lg"
             >
               <span class="sr-only">Drafts</span>
               <!-- Heroicon name: outline/pencil-alt -->
