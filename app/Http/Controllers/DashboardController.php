@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Product;
+use App\Models\Client;
 
 class DashboardController extends Controller
 {
@@ -34,6 +35,14 @@ class DashboardController extends Controller
         $products = Product::latest()->get();
         return Inertia::render('Inventory', [
             'products' => $products
+        ]);
+    }
+
+    public function addClient()
+    {
+        $clients = Client::latest()->get();
+        return Inertia::render('AddClient', [
+            'clients' => $clients
         ]);
     }
 
