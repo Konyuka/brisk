@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Product;
 use App\Models\Client;
+use App\Models\Sale;
 
 class DashboardController extends Controller
 {
@@ -26,13 +27,11 @@ class DashboardController extends Controller
         $product->save();
         return redirect()->back();
 
-        // return Inertia::render('Inventory');
     }
 
     public function registerClient(Request $request)
     {
-        // return dd($request);
-        // return dd(json_decode($request));
+       
         $client = new Client();
         $client->added_by = $request->added_by;
         $client->client_name = $request->client_name;
@@ -45,12 +44,39 @@ class DashboardController extends Controller
         return redirect()->back();
 
     }
+
+    public function registerSale(Request $request)
+    {
+        return dd($request);
+        $sale = new Sale();
+        $sale->added_by = $request->added_by;
+        $sale->client_id = $request->client_id;
+        $sale->product_id = $request->product_id;
+        $sale->product_quantity = $request->product_quantity;
+        $sale->sale_amount = $request->sale_amount;
+        $sale->payment_status = $request->payment_status;
+        $sale->invoice_number = $request->invoice_number;
+        $sale->save();
+
+        $products = Product::latest()->get();
+        $clients = Client::latest()->get();
+        return Inertia::render('Inventory', [
+            'products' => $products,
+            'clients' => $clients
+        ]);
+
+        // $this->inventory();
+        // return;
+        // return redirect()->back();
+    }
     
     public function inventory()
     {
         $products = Product::latest()->get();
+        $clients = Client::latest()->get();
         return Inertia::render('Inventory', [
-            'products' => $products
+            'products' => $products,
+            'clients' => $clients
         ]);
     }
 

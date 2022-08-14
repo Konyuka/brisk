@@ -30,6 +30,8 @@ Route::middleware([
     ->name('add_client');
     Route::post('/dashboard/register_client', [DashboardController::class, 'registerClient'])
     ->name('register_client');
+    Route::post('/dashboard/register_sale', [DashboardController::class, 'registerSale'])
+    ->name('register_sale');
     Route::post('/add_product', [DashboardController::class, 'addProduct'])
     ->name('add_product');
 });

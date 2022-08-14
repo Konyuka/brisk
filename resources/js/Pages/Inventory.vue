@@ -1,16 +1,25 @@
 <script setup>
 import { useForm, usePage } from "@inertiajs/inertia-vue3";
 import { ref, computed } from "vue";
-// import { Inertia } from "@inertiajs/inertia";
+import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import moment from 'moment'
 
 defineProps({
     products: Array,
+    clients: Array,
 });
 
 const currentUser = computed(() => usePage().props.value.user.id);
 const currentTime = computed(() => moment().format('LLL'));
+const subTotal = computed(() =>
+{
+  return purchasingQuantity.value*purchasingPrice.value
+});
+const total = computed(() =>
+{
+  return subTotal.value*1.16
+});
 
 const form = useForm({
   product_name: "",
@@ -22,6 +31,10 @@ const form = useForm({
   added_by: currentUser,
 });
 const selectedItem = ref(null);
+const purchasingClient = ref(null);
+const purchasingQuantity = ref(null);
+const purchasingPrice = ref(null);
+
 const addModal = ref(false);
 const saleModal = ref(false);
 const showInvoice = ref(false);
@@ -33,6 +46,32 @@ const saleItem = (product) =>
   selectedItem.value=product
   
 }
+
+const addSale = () => {
+  let payload = {
+    added_by: currentUser,
+    client_id: purchasingClient.id,
+    product_id: selectedItem.id,
+    product_quantity: purchasingQuantity,
+    sale_amount: purchasingPrice,
+    payment_status: false,
+    invoice_number: 1,
+  }
+  Inertia.post('/dashboard/register_sale', payload)
+
+  // payload.post("/dashboard/register_sale", {
+  //   preserveScroll: true,
+  //   onSuccess: () =>
+  //   {
+  //     selectedItem.reset()
+  //     purchasingClient.reset()
+  //     purchasingQuantity.reset()
+  //     purchasingPrice.reset()
+  //     // addModal = false
+  //     alert('Sale Registered')
+  //    },
+  // });
+};
 
 const addProduct = () => {
   // Inertia.post('/add_product', form)
@@ -559,12 +598,12 @@ const addProduct = () => {
                 <div class="flex flex-col lg:mr-16">
                     <div class="flex justify-between">
                     <label for="email" class="text-gray-800 dark:text-gray-100 text-sm font-bold leading-tight tracking-normal mb-2">Select Purchasing Client:</label>
-                    <i class="fas fa-user-plus text-light-green-900 cursor-pointer"></i>
+                    <Link href="/dashboard/add_client" class="fas fa-user-plus text-light-green-900 cursor-pointer"></Link>
                     </div>
-                    <select id="country" name="country" autocomplete="country-name" class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 dark:focus:border-green-900 dark:border-gray-700 dark:bg-gray-800 bg-white font-normal w-64 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow">
-                      <option>Flusk Company</option>
-                      <option>Another Company</option>
-                      <option>Bing Ink</option>
+                    <select v-model="purchasingClient" id="country" name="country" autocomplete="country-name" class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 dark:focus:border-green-900 dark:border-gray-700 dark:bg-gray-800 bg-white font-normal w-64 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow">
+                      <option v-for="client in clients" :value="client">{{ client.client_name }}</option>
+                      <!-- <option>Another Company</option>
+                      <option>Bing Ink</option> -->
                     </select>
                     <!-- <input id="email" autocomplete="off" class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 dark:focus:border-indigo-700 dark:border-gray-700 dark:bg-gray-800 bg-white font-normal w-64 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow" /> -->
                 </div>
@@ -573,7 +612,7 @@ const addProduct = () => {
                 <!-- Code block starts -->
                 <div class="flex flex-col lg:mr-16">
                     <label for="email" class="text-gray-800 dark:text-gray-100 text-sm font-bold leading-tight tracking-normal mb-2">Number of items to sell:</label>
-                    <input  :placeholder="'Available: '+selectedItem.stock_quantity" type="number" id="email" autocomplete="off" class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-900 dark:focus:border-indigo-700 dark:border-gray-700 dark:bg-gray-800 bg-white font-normal w-40 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow" />
+                    <input v-model="purchasingQuantity" :placeholder="'Available: '+selectedItem.stock_quantity" type="number" id="email" autocomplete="off" class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-900 dark:focus:border-indigo-700 dark:border-gray-700 dark:bg-gray-800 bg-white font-normal w-40 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow" />
                 </div>
                 <!-- Code block ends -->
                 <!-- Code block starts -->
@@ -585,7 +624,7 @@ const addProduct = () => {
                 <!-- Code block starts -->
                 <div class="flex flex-col lg:mr-16 lg:py-0 py-4">
                     <label for="email1" class="text-gray-800 text-sm font-bold leading-tight tracking-normal mb-2">Actual Sale Price:</label>
-                    <input :placeholder="'Min Price: '+selectedItem.sales_price" type="number" id="email1" class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-900 dark:focus:border-green-900 dark:border-gray-700 dark:bg-gray-800 bg-white font-normal w-40 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow"  />
+                    <input v-model="purchasingPrice" :placeholder="'Min Price: '+selectedItem.sales_price" type="number" id="email1" class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-900 dark:focus:border-green-900 dark:border-gray-700 dark:bg-gray-800 bg-white font-normal w-40 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow"  />
                 </div>
                 <!-- Code block ends -->
             </div>
@@ -664,10 +703,10 @@ const addProduct = () => {
                           <h6 class="font-bold">Order Date : <span class="text-sm font-medium"> {{ currentTime }}</span></h6>
                           <!-- <h6 class="font-bold">Order ID : <span class="text-sm font-medium"> 12/12/2022</span></h6> -->
                       </div>
-                      <div class="w-40">
+                      <div class="w-auto">
                           <address class="text-sm">
                               <span class="font-bold"> Billed To : </span>
-                              Client Name
+                              {{  purchasingClient.client_name}}
                           </address>
                       </div>
                       <!-- <div class="w-40">
@@ -711,19 +750,19 @@ const addProduct = () => {
                                           {{ selectedItem.product_quantity }}
                                       </td>
                                       <td class="px-6 py-4">
-                                          <div class="text-sm text-gray-500">4</div>
+                                          <div class="text-sm text-gray-500">{{ purchasingQuantity }}</div>
                                       </td>
                                       <td class="px-6 py-4 text-sm text-gray-500">
-                                          KES {{ selectedItem.product_quantity }}
+                                          KES {{ purchasingPrice }}
                                       </td>
                                       <td class="px-6 py-4">
-                                          KES 30
+                                          KES {{ subTotal }}
                                       </td>
                                   </tr>
                                   <tr class="">
                                       <td colspan="3"></td>
                                       <td class="text-sm font-bold">Sub Total</td>
-                                      <td class="text-sm font-bold tracking-wider"><b>KES 950</b></td>
+                                      <td class="text-sm font-bold tracking-wider"><b>KES {{ subTotal }}</b></td>
                                   </tr>
                                   <!--end tr-->
                                   <tr>
@@ -735,7 +774,7 @@ const addProduct = () => {
                                   <tr class="text-white bg-gray-800">
                                       <th colspan="3"></th>
                                       <td class="text-sm font-bold"><b>Total</b></td>
-                                      <td class="text-sm font-bold"><b>KES 999</b></td>
+                                      <td class="text-sm font-bold"><b>KES {{ total}}</b></td>
                                   </tr>
                                   <!--end tr-->
 
@@ -752,10 +791,10 @@ const addProduct = () => {
                               <li>If account is not paid within 7 days the credits details supplied.</li>
                           </ul>
                       </div>
-                      <div class="p-4">
+                      <!-- <div class="p-4">
                           <h3>Signature</h3>
                           <div class="text-4xl italic text-indigo-500">AAA</div>
-                      </div>
+                      </div> -->
                   </div>
                   <div class="w-full h-0.5 bg-indigo-500"></div>
 
@@ -763,24 +802,24 @@ const addProduct = () => {
                       <div class="flex items-center justify-center">
                           Thank you very much for doing business with us.
                       </div>
-                      <div class="flex items-end justify-end space-x-3">
+                      <!-- <div class="flex items-end justify-end space-x-3">
                           <button class="px-4 py-2 text-sm text-green-600 bg-green-100">Print</button>
                           <button class="px-4 py-2 text-sm text-blue-600 bg-blue-100">Save</button>
                           <button class="px-4 py-2 text-sm text-red-600 bg-red-100">Cancel</button>
-                      </div>
+                      </div> -->
                   </div>
 
               </div>
           </div>
-          <div class="flex items-center justify-center min-h-screen bg-gray-100">
+          <div class="flex items-center justify-center min-h-auto bg-gray-100">
               <div class="w-6/12 mt-4 text-left bg-white shadow-lg">
                   <div class="flex justify-between px-8 py-6">
                       <div class="flex items-center">
-                          sale invoice
+                          Invoice Options
                       </div>
                       <div class="flex items-center gap-4">
-                          <button class="px-2 py-1 bg-gray-200 hover:bg-gray-400">Save</button>
-                          <button class="px-2 py-1 bg-gray-200 hover:bg-gray-400">Print</button>
+                          <button class="px-2 py-1 bg-gray-200 hover:bg-green-800 hover:text-white">Send to Client Email <i class="ml-2 fa fa-paper-plane"></i> </button>
+                          <button class="px-2 py-1 bg-gray-200 hover:bg-green-800 hover:text-white">Download <i class="ml-2 fa fa-download"></i> </button>
                       </div>
                   </div>
                   <div class="w-full h-0.5 bg-gray-800"></div>
@@ -791,15 +830,17 @@ const addProduct = () => {
           <div
             class="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-gray-200 rounded-b-md">
             <button 
-              @click="showInvoice=true"
+              @click="showInvoice=false"
               type="button"
               class="inline-block px-6 py-2.5 bg-gray-300 text-red-300 font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-900 hover:text-white hover:shadow-lg focus:bg-green-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out"
               data-bs-dismiss="modal">
               Back
             </button>
-            <button type="button"
+            <button 
+              @click="addSale"
+              type="button"
               class="inline-block px-6 py-2.5 bg-light-green-900 hover:bg-green-900 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-1">
-              Process Invoice <i class="fas fa-clipboard-check ml-2 fa-xl"></i>
+              Finish Sale <i class="fas fa-handshake-angle ml-2 fa-xl"></i>
             </button>
           </div>
         </div>
