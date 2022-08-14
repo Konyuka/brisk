@@ -12,23 +12,23 @@ const currentUser = computed(() => usePage().props.value.user.id);
 
 const form = useForm({
   client_name: "",
-  client_email: "",
-  client_contact: "",
-  client_kra: "",
-  client_address: "",
+  client_email: "michael@gmail.com",
+  client_contact: "0716202297",
+  client_kra: "A87686HDIU5Y",
+  client_address: "Ngong Road 30287",
   added_by: currentUser,
 });
 const addModal = ref(false);
 
 const addClient = () => {
   // Inertia.post('/add_product', form)
-  form.post("/add_product", {
+  form.post("/dashboard/register_client", {
     preserveScroll: true,
     onSuccess: () =>
     {
       form.reset()
       // addModal = false
-      alert('Product Added')
+      alert('Client Added')
      },
   });
 };
@@ -283,33 +283,32 @@ const addClient = () => {
                           <p
                             class="text-base font-medium leading-none text-gray-700 mr-2"
                           >
-                            {{ client.name }}
+                            {{ client.client_name }}
                           </p>
-                          <i class="fas fa-eye text-green-900"></i>
                         </div>
                       </td>
                       <td class="pl-24">
                         <div class="flex items-center">
-                          <i class="fas fa-scale-unbalanced text-green-900"></i>
-                          <p class="text-sm leading-none text-gray-600 ml-2">{{ client.email }}</p>
+                          <i class="fas fa-message text-green-900"></i>
+                          <p class="text-sm leading-none text-gray-600 ml-2">{{ client.client_email }}</p>
                         </div>
                       </td>
                       <td class="pl-5">
                         <div class="flex items-center">
-                          <i class="fas fa-boxes-packing text-green-900"></i>
-                          <p class="text-sm leading-none text-gray-600 ml-2">{{ client.contact }}</p> 
+                          <i class="fas fa-phone text-green-900"></i>
+                          <p class="text-sm leading-none text-gray-600 ml-2">{{ client.client_contact }}</p> 
                         </div>
                       </td>
                       <td class="pl-5">
                         <div class="flex items-center">
-                          <i class="fas fa-money-bill-trend-up text-green-900"></i>
-                          <p class="text-sm leading-none text-gray-600 ml-2">{{ client.kra }}</p>
+                          <i class="fas fa-file-invoice text-green-900"></i>
+                          <p class="text-sm leading-none text-gray-600 ml-2">{{ client.client_kra }}</p>
                         </div>
                       </td>
                       <td class="pl-5">
                         <div class="flex items-center">
-                          <i class="fas fa-wallet text-green-900"></i>
-                          <p class="text-sm leading-none text-gray-600 ml-2">{{ client.address }}</p>
+                          <i class="fas fa-location text-green-900"></i>
+                          <p class="text-sm leading-none text-gray-600 ml-2">{{ client.client_address }}</p>
                         </div>
                       </td>
                       <td class="pl-4">
@@ -393,7 +392,7 @@ const addClient = () => {
                         />
                       </div>
 
-                      <div class="col-span-3 sm:col-span-1">
+                      <div class="col-span-3 sm:col-span-2">
                         <label
                           for="last-name"
                           class="block text-sm font-medium text-gray-700"
@@ -488,7 +487,7 @@ const addClient = () => {
                 @click="addClient"
                 class="inline-block px-6 py-2.5 bg-light-green-900 text-white font-bold text-xs leading-tight uppercase rounded shadow-md hover:bg-green-900 hover:shadow-lg focus:bg-green-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-1"
               >
-                Add Product
+                Register Client <i class="ml-2 fa fa-person-circle-plus fa-xl"></i>
               </button>
             </div>
           </div>

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('client_contact')->default(0);
             $table->string('client_kra')->default(0);
             $table->string('client_address')->nullable();
-            $table->integer('client_balance')->default(0);
+            $table->integer('client_balance')->nullable();
             $table->timestamps();
         });
     }

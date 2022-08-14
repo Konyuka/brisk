@@ -28,7 +28,23 @@ class DashboardController extends Controller
 
         // return Inertia::render('Inventory');
     }
-    
+
+    public function registerClient(Request $request)
+    {
+        // return dd($request);
+        // return dd(json_decode($request));
+        $client = new Client();
+        $client->added_by = $request->added_by;
+        $client->client_name = $request->client_name;
+        $client->client_email = $request->client_email;
+        $client->client_contact = $request->client_contact;
+        $client->client_kra = $request->client_kra;
+        $client->client_address = $request->client_address;
+        $client->client_balance = $request->product_description;
+        $client->save();
+        return redirect()->back();
+
+    }
     
     public function inventory()
     {

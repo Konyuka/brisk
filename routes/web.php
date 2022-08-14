@@ -28,6 +28,8 @@ Route::middleware([
     ->name('dashboard');
     Route::get('/dashboard/add_client', [DashboardController::class, 'addClient'])
     ->name('add_client');
+    Route::post('/dashboard/register_client', [DashboardController::class, 'registerClient'])
+    ->name('register_client');
     Route::post('/add_product', [DashboardController::class, 'addProduct'])
     ->name('add_product');
 });
