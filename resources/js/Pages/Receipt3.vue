@@ -8,6 +8,7 @@ const printPDF = () => {
   // $btnPrint.addEventListener("click", () => {
   //   });
   window.print();
+  
 };
 
 const generatePDF = () => {
