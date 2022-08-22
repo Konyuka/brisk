@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import { Head, Link } from "@inertiajs/inertia-vue3";
 
-import ResponsiveNavLink from "../../../vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/ResponsiveNavLink.vue";
+// import ResponsiveNavLink from "../../../vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/ResponsiveNavLink.vue";
 
 defineProps({
   title: String,
