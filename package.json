@@ -9,7 +9,7 @@
         "postinstall": "npm run build",
         "heroku-postbuild": "npm run build"
     },
-    "devDependencies": {
+    "dependencies": {
         "@inertiajs/inertia": "^0.11.0",
         "@inertiajs/inertia-vue3": "^0.6.0",
         "@inertiajs/progress": "^0.2.7",
@@ -27,7 +27,7 @@
         "vite": "^3.0.0",
         "vue": "^3.2.31"
     },
-    "dependencies": {
+    "devDependencies": {
         "moment": "^2.29.4"
     }
 }
