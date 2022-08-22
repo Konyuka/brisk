@@ -12,7 +12,7 @@ export default defineConfig({
     resolve: {
         alias: {
             // 'ziggy': path.resolve('./vendor/tightenco/ziggy/dist/vue.m.js')
-            'ziggy': path.resolve(__dirname, 'vendor/tightenco/ziggy/dist/vue.m.js')
+            'ziggy': path.resolve(__dirname, 'C:/xampp7/htdocs/pos/vendor/tightenco/ziggy/dist/vue.m.js')
             // 'ziggy': path.resolve(__dirname, 'vendor/tightenco/ziggy/src/js')
         }
     },

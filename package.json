@@ -26,6 +26,7 @@
         "vue": "^3.2.31"
     },
     "devDependencies": {
-        "moment": "^2.29.4"
+        "moment": "^2.29.4",
+        "webpack": "^5.74.0"
     }
 }

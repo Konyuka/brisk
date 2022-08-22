@@ -1,6 +1,8 @@
 <script setup>
 import { Head, Link } from "@inertiajs/inertia-vue3";
 
+console.log('th')
+
 defineProps({
   canLogin: Boolean,
   canRegister: Boolean,
