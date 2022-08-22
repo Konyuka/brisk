@@ -26,12 +26,16 @@ Route::middleware([
     // })->name('dashboard');
     Route::get('/dashboard', [DashboardController::class, 'inventory'])
     ->name('dashboard');
+    Route::post('/add_product', [DashboardController::class, 'addProduct'])
+    ->name('add_product');
     Route::get('/dashboard/add_client', [DashboardController::class, 'addClient'])
     ->name('add_client');
     Route::post('/dashboard/register_client', [DashboardController::class, 'registerClient'])
     ->name('register_client');
     Route::post('/dashboard/register_sale', [DashboardController::class, 'registerSale'])
     ->name('register_sale');
-    Route::post('/add_product', [DashboardController::class, 'addProduct'])
-    ->name('add_product');
+    Route::get('/dashboard/display_receipt', [DashboardController::class, 'displayReceipt'])
+    ->name('display_receipt');
+
+    
 });

@@ -41,14 +41,16 @@ const showInvoice = ref(false);
 
 const saleItem = (product) =>
 { 
-  console.log(product)
+  // console.log(product)
   saleModal.value = true
   selectedItem.value=product
   
 }
 
 const addSale = () => {
-  let payload = {
+  // alert('hey')
+  // return
+  const payload = {
     added_by: currentUser,
     client_id: purchasingClient.id,
     product_id: selectedItem.id,
@@ -56,7 +58,7 @@ const addSale = () => {
     sale_amount: purchasingPrice,
     payment_status: false,
     invoice_number: 1,
-  }
+  };
   Inertia.post('/dashboard/register_sale', payload)
 
   // payload.post("/dashboard/register_sale", {
