@@ -5,9 +5,13 @@ import vue from '@vitejs/plugin-vue';
 export default defineConfig({
     build: {
         rollupOptions: {
-            external: [
-                /^node:.*/,
-            ]
+            external: 'ziggy'
+        }
+    },
+    resolve: {
+        alias: {
+            'ziggy': path.resolve(__dirname, 'vendor/tightenco/ziggy/dist/vue.m.js')
+            // 'ziggy': path.resolve(__dirname, 'vendor/tightenco/ziggy/src/js')
         }
     },
     plugins: [
