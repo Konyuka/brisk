@@ -1,7 +1,15 @@
 <script setup>
 import { Head, Link } from "@inertiajs/inertia-vue3";
+import path from 'path';
 
 console.log('th')
+console.log(path.resolve('/vendor/tightenco/ziggy/dist/vue.m.js'))
+
+// const templateDir = path.resolve(
+//     new URL(import.meta.url).pathname, // This is where it gives the error
+//     '../../templates',
+//     options.template
+// );
 
 defineProps({
   canLogin: Boolean,
