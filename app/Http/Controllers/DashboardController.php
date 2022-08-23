@@ -91,7 +91,7 @@ class DashboardController extends Controller
     public function displayReceipt()
     {
         // $clients = Client::latest()->get();
-        return Inertia::render('Receipt3', [
+        return Inertia::render('Receipt', [
             // 'clients' => $clients
         ]);
     }
