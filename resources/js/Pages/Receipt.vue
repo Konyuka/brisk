@@ -182,7 +182,7 @@ defineProps({
     </div>
 
     <button @click="generatePDF" clas="mt-10">Download PDF</button> <br>
-    <button @click="printPDF" clas="mt-10">Print PDF</button>
+    <!-- <button @click="printPDF" clas="mt-10">Print PDF</button> -->
   </div>
 </template>
 

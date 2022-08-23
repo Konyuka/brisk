@@ -80,7 +80,7 @@ const submit = () => {
           <Link
             v-if="canResetPassword"
             :href="route('password.request')"
-            class="underline text-sm text-gray-600 hover:text-gray-900"
+            class="underline text-xs sm:text-sm text-gray-600 hover:text-gray-900"
           >
             Forgot password?
           </Link>
@@ -95,7 +95,7 @@ const submit = () => {
         </div>
         <Link
             :href="route('register')"
-            class="mt-6 underline text-sm text-gray-600 hover:text-gray-900"
+            class="mt-5 sm:mt-6 underline text-xs sm:text-sm text-gray-600 hover:text-gray-900"
           >
             Register?
           </Link>

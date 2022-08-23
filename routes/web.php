@@ -24,7 +24,7 @@ Route::middleware([
     // Route::get('/dashboard', function () {
     //     return Inertia::render('Inventory');
     // })->name('dashboard');
-    Route::get('/dashboard', [DashboardController::class, 'inventory'])
+    Route::get('/dashboard', [DashboardController::class, 'stock'])
     ->name('dashboard');
     Route::post('/add_product', [DashboardController::class, 'addProduct'])
     ->name('add_product');

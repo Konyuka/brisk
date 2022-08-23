@@ -70,11 +70,11 @@ class DashboardController extends Controller
         // return redirect()->back();
     }
     
-    public function inventory()
+    public function stock()
     {
         $products = Product::latest()->get();
         $clients = Client::latest()->get();
-        return Inertia::render('Inventory', [
+        return Inertia::render('Stock', [
             'products' => $products,
             'clients' => $clients
         ]);
