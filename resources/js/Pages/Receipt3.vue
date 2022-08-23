@@ -208,6 +208,7 @@ th.quantity {
   word-break: break-all;
 }
 
+
 td.price,
 th.price {
   width: 50px;
