@@ -82,8 +82,8 @@ defineProps({
               font-style: normal;
               font-weight: normal;
               text-decoration: none;
-              font-size: 15.5pt;
-              margin-top: 10pt;
+              font-size: 25.5pt;
+              margin-top: 15pt;
             "
           >
             Invoice #21
@@ -94,7 +94,7 @@ defineProps({
                 font-style: normal;
                 font-weight: normal;
                 text-decoration: none;
-                font-size: 11.5pt;
+                font-size: 18.5pt;
                 margin: 0pt;
               "
             >
@@ -107,36 +107,76 @@ defineProps({
       <table class="mt-5">
         <thead>
           <tr>
-            <th class="quantity">Quantity</th>
             <th class="description">Description</th>
-            <th class="price">Price</th>
+            <th class="quantity">#.Items</th>
+            <th class="price">Pricing</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="quantity">1.00</td>
-            <td class="description">ARDUINO UNO R3</td>
-            <td class="price">$25.00</td>
+            <td style="font-size: 9.5pt;" class="description">ARDUINO UNO R3</td>
+            <td class="quantity">01</td>
+            <td class="price">KES. 25</td>
           </tr>
-          <tr>
-            <td class="quantity">2.00</td>
-            <td class="description">JAVASCRIPT BOOK</td>
-            <td class="price">$10.00</td>
-          </tr>
-          <tr>
-            <td class="quantity">1.00</td>
-            <td class="description">STICKER PACK</td>
-            <td class="price">$10.00</td>
+          <!-- <tr class="mt-5" style="padding-top: 50px;">
+            <td class="quantity"></td>
+            <td class="description">SUBTOTAL</td>
+            <td class="price">KES. 55</td>
           </tr>
           <tr>
             <td class="quantity"></td>
-            <td class="description">TOTAL</td>
-            <td class="price">$55.00</td>
+            <td class="description">TAX (16%)</td>
+            <td class="price">KES. 55</td>
           </tr>
+          <tr>
+            <td class="quantity"></td>
+            <td class="description">GRAND TOTAL</td>
+            <td class="price">KES. 55</td>
+          </tr> -->
         </tbody>
       </table>
+        <p
+            style="
+              color: black;
+              font-family: Arial, sans-serif;
+              font-style: normal;
+              font-weight: bold;
+              text-decoration: none;
+              font-size: 20.5pt;
+              margin: 0pt;
+            "
+          >
+            Subtotal: KES. 55 
+          </p>
+        <p
+            style="
+              color: black;
+              font-family: Arial, sans-serif;
+              font-style: normal;
+              font-weight: bold;
+              text-decoration: none;
+              font-size: 20.5pt;
+              margin: 0pt;
+            "
+          >
+            Tax (16%): KES. 55 
+          </p>
+        <p
+            style="
+              color: black;
+              font-family: Arial, sans-serif;
+              font-style: normal;
+              font-weight: bold;
+              text-decoration: none;
+              font-size: 20.5pt;
+              margin: 0pt;
+            "
+          >
+            Grand Total: KES. 110 
+          </p>
 
-      <div class="mt-5">
+
+      <div style="font-size: 20.5pt;" class="mt-10">
         <p>Thank you for the purchase</p>
       </div>
     </div>
