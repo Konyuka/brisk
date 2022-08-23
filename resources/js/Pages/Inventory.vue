@@ -124,7 +124,6 @@ const addProduct = () => {
               </svg>
               <span class="relative">Stock</span>
             </span>
-            Summary
           </h2>
         </div>
         <div class="grid gap-8 row-gap-5 mb-8 md:row-gap-8 lg:grid-cols-4 sm:grid-cols-2">

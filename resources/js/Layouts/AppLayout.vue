@@ -10,6 +10,7 @@ defineProps({
 });
 
 const myProfile = ref(false);
+const mobileMenu = ref(false);
 const currentRoute = computed(() => {
   return route().current();
 })
@@ -83,51 +84,11 @@ const logout = () => {
           </a>
         </div>
 
-        <!-- Picker area -->
-        <div class="mx-auto md:hidden">
-          <div class="relative">
-            <label for="inbox-select" class="sr-only">Choose inbox</label>
-            <select
-              id="inbox-select"
-              class="rounded-md border-0 bg-none pl-3 pr-8 text-base font-medium text-light-green-900 focus:ring-2 focus:ring-indigo-600"
-            >
-              <option selected>Open</option>
-
-              <option>Archive</option>
-
-              <option>Customers</option>
-
-              <option>Flagged</option>
-
-              <option>Spam</option>
-
-              <option>Drafts</option>
-            </select>
-            <div
-              class="pointer-events-none absolute inset-y-0 right-0 flex items-center justify-center pr-2"
-            >
-              <!-- Heroicon name: solid/chevron-down -->
-              <svg
-                class="h-5 w-5 text-gray-500"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-
         <!-- Menu button area -->
         <div class="absolute inset-y-0 right-0 flex items-center pr-4 sm:pr-6 md:hidden">
           <!-- Mobile menu button -->
           <button
+           @click="mobileMenu=true"
             type="button"
             class="-mr-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-600"
           >
@@ -282,7 +243,7 @@ const logout = () => {
 
         <!-- Mobile menu, show/hide this `div` based on menu open/closed state -->
 
-        <div class="relative z-40 md:hidden" role="dialog" aria-modal="true">
+        <div v-if="mobileMenu" class="relative z-40 md:hidden" role="dialog" aria-modal="true">
           <!--
         Off-canvas menu backdrop, show/hide based on off-canvas menu state.
 
@@ -321,6 +282,7 @@ const logout = () => {
                   />
                 </a>
                 <button
+                  @click="mobileMenu=false"
                   type="button"
                   class="-mr-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-600"
                 >
@@ -345,11 +307,11 @@ const logout = () => {
               </div>
               <div class="max-w-8xl mx-auto mt-2 px-4 sm:px-6">
                 <div class="relative text-gray-400 focus-within:text-gray-500">
-                  <label for="mobile-search" class="sr-only">Search all inboxes</label>
+                  <label for="mobile-search" class="sr-only">Search</label>
                   <input
                     id="mobile-search"
                     type="search"
-                    placeholder="Search all inboxes"
+                    placeholder="Search"
                     class="block w-full rounded-md border-gray-300 pl-10 placeholder-gray-500 focus:border-indigo-600 focus:ring-indigo-600"
                   />
                   <div
@@ -373,82 +335,31 @@ const logout = () => {
                 </div>
               </div>
               <div class="max-w-8xl mx-auto py-3 px-2 sm:px-4">
-                <a
-                  href="#"
-                  class="block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-100"
-                  >Inboxes</a
+                <Link
+                  href="/dashboard"
+                  :class="
+                    currentRoute == 'dashboard'
+                    ? 'text-black'
+                    : 'text-gray-500 pl-5'
+                  "
+                  class="block rounded-md py-2 px-3 text-lg font-bold hover:bg-gray-100"
+                  >Stock</Link
                 >
 
-                <a
-                  href="#"
-                  class="block rounded-md py-2 pl-5 pr-3 text-base font-medium text-gray-500 hover:bg-gray-100"
-                  >Technical Support</a
+                <Link
+                  href="/dashboard/add_client"
+                  :class="
+                    currentRoute == 'add_client'
+                    ? 'text-black'
+                    : 'text-gray-500 pl-5'
+                  "
+                  class="block rounded-md py-2 pr-3 text-lg font-bold  hover:bg-gray-100"
+                  >Clients</Link
                 >
 
-                <a
-                  href="#"
-                  class="block rounded-md py-2 pl-5 pr-3 text-base font-medium text-gray-500 hover:bg-gray-100"
-                  >Sales</a
-                >
-
-                <a
-                  href="#"
-                  class="block rounded-md py-2 pl-5 pr-3 text-base font-medium text-gray-500 hover:bg-gray-100"
-                  >General</a
-                >
-
-                <a
-                  href="#"
-                  class="block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-100"
-                  >Reporting</a
-                >
-
-                <a
-                  href="#"
-                  class="block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-100"
-                  >Settings</a
-                >
               </div>
+              <hr>
               <div class="border-t border-gray-200 pt-4 pb-3">
-                <div class="max-w-8xl mx-auto flex items-center px-4 sm:px-6">
-                  <div class="flex-shrink-0">
-                    <img
-                      class="h-10 w-10 rounded-full"
-                      src="https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
-                    />
-                  </div>
-                  <div class="ml-3 min-w-0 flex-1">
-                    <div class="truncate text-base font-medium text-gray-800">
-                      Whitney Francis
-                    </div>
-                    <div class="truncate text-sm font-medium text-gray-500">
-                      whitney.francis@example.com
-                    </div>
-                  </div>
-                  <a
-                    href="#"
-                    class="ml-auto flex-shrink-0 bg-white p-2 text-gray-400 hover:text-gray-500"
-                  >
-                    <span class="sr-only">View notifications</span>
-                    <!-- Heroicon name: outline/bell -->
-                    <svg
-                      class="h-6 w-6"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="2"
-                      stroke="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                      />
-                    </svg>
-                  </a>
-                </div>
                 <div class="max-w-8xl mx-auto mt-3 space-y-1 px-2 sm:px-4">
                   <a
                     href="#"
@@ -459,7 +370,7 @@ const logout = () => {
                   <a
                     href="#"
                     class="block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-50"
-                    >Sign out</a
+                    >Logout</a
                   >
                 </div>
               </div>
