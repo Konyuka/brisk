@@ -60,9 +60,9 @@ const saleItem = (product) => {
   selectedItem.value = product;
 };
 
-const addSale = () => {
+const processSale = () => {
   // alert('hey')
-  // return
+  // returns
   const payload = {
     added_by: currentUser,
     client_id: purchasingClient.id,
@@ -949,14 +949,14 @@ const addProduct = () => {
               <div>
                 <label for="region" class="block text-sm font-medium text-gray-700">Sale Price Per Unit</label>
                 <div class="mt-1">
-                  <input v-model="purchasingPrice" :placeholder="'Min Price: ' + selectedItem.sales_price" type="number" id="region" name="region" autocomplete="address-level1" class="border-2 border-solid block w-full rounded-md shadow-sm ring-light-green-900 focus:border-green-900 border-light-green-900 sm:text-sm">
+                  <input v-model="purchasingPrice" :placeholder="'Min Price: ' + selectedItem.sales_price" type="number" id="region" name="region" class="border-2 border-solid block w-full rounded-md shadow-sm ring-light-green-900 focus:border-green-900 border-light-green-900 sm:text-sm">
                 </div>
               </div>
 
               <div>
                 <label for="postal-code" class="block text-sm font-medium text-gray-700">Number of Units</label>
                 <div class="mt-1">
-                  <input v-model="purchasingQuantity" :placeholder="'Available Units: ' + selectedItem.stock_quantity" type="number" id="postal-code" name="postal-code" autocomplete="postal-code" class="border-2 border-solid block w-full rounded-md shadow-sm ring-light-green-900 focus:border-green-900 border-light-green-900 sm:text-sm">
+                  <input v-model="purchasingQuantity" :placeholder="'Available Units: ' + selectedItem.stock_quantity" type="number" id="postal-code" name="postal-code" class="border-2 border-solid block w-full rounded-md shadow-sm ring-light-green-900 focus:border-green-900 border-light-green-900 sm:text-sm">
                 </div>
               </div>
             </div>
@@ -1019,7 +1019,7 @@ const addProduct = () => {
               class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense"
             >
               <button
-                @click="processButtons('selectedClient')"
+                @click="processSale()"
                 type="button"
                 class="group mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-2 sm:text-sm"
               >
