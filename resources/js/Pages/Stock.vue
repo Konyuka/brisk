@@ -129,49 +129,49 @@ const addProduct = () => {
             </span>
           </h2>
         </div>
-        <div class="grid gap-8 row-gap-5 mb-8 md:row-gap-8 lg:grid-cols-4 sm:grid-cols-2">
+        <div class="grid gap-2 sm:gap-8 row-gap-5 mb-8 md:row-gap-8 lg:grid-cols-4 grid-cols-2">
           <div
             class="duration-300 transform bg-white border-l-4 border-light-green-900 hover:-translate-y-2"
           >
-            <div class="h-full p-5 border border-l-0 rounded-r shadow-sm">
-              <h6 class="mb-2 font-semibold leading-5 flex pr-2 justify-between">
-                Available Stock
-                <i class="fas fa-battery-full fa-2x text-gray-400"></i>
+            <div class="h-full p-3 sm:p-5 border border-l-0 rounded-r shadow-sm">
+              <h6 class="sm:mb-2 text-xs sm:text-xl font-semibold leading-5 flex pr-2 justify-between">
+                Available
+                <i class="fas fa-battery-full sm:fa-2x fa-lg  text-gray-400"></i>
               </h6>
-              <p class="text-2xl text-green-900 font-extrabold">30</p>
+              <p class="text-lg sm:text-2xl text-green-900 font-extrabold">30</p>
             </div>
           </div>
           <div
             class="duration-300 transform bg-white border-l-4 border-light-green-900 hover:-translate-y-2"
           >
-            <div class="h-full p-5 border border-l-0 rounded-r shadow-sm">
-              <h6 class="mb-2 font-semibold leading-5 flex pr-2 justify-between">
-                Delivered Stock
-                <i class="fas fa-truck fa-2x text-gray-400"></i>
+            <div class="h-full p-3 sm:p-5 border border-l-0 rounded-r shadow-sm">
+              <h6 class="sm:mb-2 text-xs sm:text-xl font-semibold leading-5 flex pr-2 justify-between">
+                Delivered
+                <i class="fas fa-truck sm:fa-2x fa-lg text-gray-400"></i>
               </h6>
-              <p class="text-2xl text-green-900 font-extrabold">30</p>
+              <p class="text-lg sm:text-2xl text-green-900 font-extrabold">30</p>
             </div>
           </div>
           <div
             class="duration-300 transform bg-white border-l-4 border-light-green-900 hover:-translate-y-2"
           >
-            <div class="h-full p-5 border border-l-0 rounded-r shadow-sm">
-              <h6 class="mb-2 font-semibold leading-5 flex pr-2 justify-between">
-                Low Stock
-                <i class="fas fa-battery-quarter fa-2x text-gray-400"></i>
+            <div class="h-full p-3 sm:p-5 border border-l-0 rounded-r shadow-sm">
+              <h6 class="sm:mb-2 text-xs sm:text-xl font-semibold leading-5 flex pr-2 justify-between">
+                Low
+                <i class="fas fa-battery-quarter sm:fa-2x fa-lg text-gray-400"></i>
               </h6>
-              <p class="text-2xl text-green-900 font-extrabold">30</p>
+              <p class="text-lg sm:text-2xl text-green-900 font-extrabold">30</p>
             </div>
           </div>
           <div
             class="duration-300 transform bg-white border-l-4 border-light-green-900 hover:-translate-y-2"
           >
-            <div class="h-full p-5 border border-l-0 rounded-r shadow-sm">
-              <h6 class="mb-2 font-semibold leading-5 flex pr-2 justify-between">
-                Out Of Stock
-                <i class="fas fa-battery-empty fa-2x text-gray-400"></i>
+            <div class="h-full p-3 sm:p-5 border border-l-0 rounded-r shadow-sm">
+              <h6 class="sm:mb-2 text-xs sm:text-xl font-semibold leading-5 flex pr-2 justify-between">
+                Finished
+                <i class="fas fa-battery-empty sm:fa-2x fa-lg text-gray-400"></i>
               </h6>
-              <p class="text-2xl text-green-900 font-extrabold">30</p>
+              <p class="text-lg sm:text-2xl text-green-900 font-extrabold">30</p>
             </div>
           </div>
         </div>
