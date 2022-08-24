@@ -1,6 +1,6 @@
 <script setup>
 import { useForm, usePage, Link } from "@inertiajs/inertia-vue3";
-import { ref, computed, reactive  } from "vue";
+import { ref, computed, reactive, watch  } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import moment from "moment";
@@ -28,10 +28,19 @@ const form = useForm({
   product_description: "SoftSol Shampoo",
   added_by: currentUser,
 });
+
 const selectedItem = ref({});
-const selectedItemObj = reactive(selectedItem)
+watch(selectedItem, (newX) =>
+{
+  payload.product_id = newX.id
+});
+
 const purchasingClient = ref({});
-const purchasingClientObj = reactive(purchasingClient)
+watch(purchasingClient, (newX) =>
+{
+  payload.client_id = newX.id
+})
+
 const purchasingQuantity = ref();
 const purchasingPrice = ref();
 
@@ -45,10 +54,8 @@ const saleDetails = ref(false);
 
 const payload = reactive ({
     added_by: currentUser,
-    client_id: purchasingClientObj.id,
-    client_id2: purchasingClient.id,
-    product_id: selectedItemObj.id,
-    // product_id: selectedItem.value.id,
+    client_id: null,
+    product_id: null,
     product_quantity: purchasingQuantity,
     sale_amount: purchasingPrice,
     payment_status: false,
@@ -69,52 +76,17 @@ const processButtons = (value) => {
 };
 
 const saleItem = (product) => {
-  // console.log(product)
   clientTypeModal.value = true;
   selectedItem.value = product;
 };
 
 const processSale = () => {
-  // let payload = {
-  //   added_by: currentUser,
-  //   client_id: purchasingClient.id,
-  //   product_id: selectedItem.id,
-  //   product_quantity: purchasingQuantity,
-  //   sale_amount: purchasingPrice,
-  //   payment_status: false,
-  //   invoice_number: 1,
-  // };
-
-  // const payload = reactive ({
-  //   added_by: currentUser,
-  //   client_id: purchasingClient.id,
-  //   product_id: selectedItem.id,
-  //   product_quantity: purchasingQuantity,
-  //   sale_amount: purchasingPrice,
-  //   payment_status: false,
-  //   invoice_number: 1,
-  // });
-
-  console.log(payload)
   
   Inertia.post("/dashboard/register_sale", payload);
 
-  // payload.post("/dashboard/register_sale", {
-  //   preserveScroll: true,
-  //   onSuccess: () =>
-  //   {
-  //     selectedItem.reset()
-  //     purchasingClient.reset()
-  //     purchasingQuantity.reset()
-  //     purchasingPrice.reset()
-  //     // addModal = false
-  //     alert('Sale Registered')
-  //    },
-  // });
 };
 
 const addProduct = () => {
-  // Inertia.post('/add_product', form)
   form.post("/add_product", {
     preserveScroll: true,
     onSuccess: () => {
