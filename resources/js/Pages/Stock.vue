@@ -38,21 +38,25 @@ const saleModal = ref(false);
 const showInvoice = ref(false);
 const defaultClientButtons = ref(true);
 const selectClientButtons = ref(false);
+const clientTypeModal = ref(false);
+const saleDetails = ref(false);
 
-const processButtons = (value) =>
-{ 
-  if (value == 'existing') {
-    defaultClientButtons.value = false
-    selectClientButtons.value = true
-  } else { 
-    selectClientButtons.value=false
-    defaultClientButtons.value=true
+const processButtons = (value) => {
+  if (value == "existing") {
+    defaultClientButtons.value = false;
+    selectClientButtons.value = true;
+  } else if (value == "previous") {
+    selectClientButtons.value = false;
+    defaultClientButtons.value = true;
+  } else if (value == "selectedClient") { 
+    selectClientButtons.value = false;
+    saleDetails.value = true;
   }
-}
+};
 
 const saleItem = (product) => {
   // console.log(product)
-  saleModal.value = true;
+  clientTypeModal.value = true;
   selectedItem.value = product;
 };
 
@@ -853,6 +857,7 @@ const addProduct = () => {
     </div>
 
     <div
+      v-if="clientTypeModal"
       class="relative z-10"
       aria-labelledby="modal-title"
       role="dialog"
@@ -887,6 +892,9 @@ const addProduct = () => {
           <div
             class="relative bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full sm:p-6"
           >
+            <div @click="clientTypeModal=false" class="text-gray-500 hover:text-gray-900">
+              <i class="flex justify-end fas fa-xmark"></i>
+            </div>
             <div>
               <div
                 class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100"
@@ -900,6 +908,60 @@ const addProduct = () => {
               </div>
             </div>
 
+            <div v-if="!defaultClientButtons">
+              <div class="mt-2 col-span-3 sm:col-span-4">
+                <div class="mt-1">
+                  <select
+                    v-model="purchasingClient"
+                    id="country"
+                    name="country"
+                    autocomplete="country-name"
+                    class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-light-green-900 focus:border-light-green-900 sm:text-sm"
+                  >
+                    <option v-for="client in clients" :value="client">
+                      {{ client.client_name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div 
+            v-if="saleDetails"
+            class="mt-10">
+            <h3 id="shipping-heading" class="text-lg font-medium text-gray-900">Sale Details</h3>
+
+            <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
+              <div class="sm:col-span-3">
+                <label for="address" class="block text-sm font-medium text-gray-700">Product name</label>
+                <div class="mt-1">
+                  <input :placeholder="selectedItem.product_name" disabled type="text" id="address" name="address" autocomplete="street-address" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+              </div>
+
+              <div>
+                <label for="city" class="block text-sm font-medium text-gray-700">SKU in MG</label>
+                <div class="mt-1">
+                  <input :placeholder="selectedItem.stock_quantity" disabled type="text" id="city" name="city" autocomplete="address-level2" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+              </div>
+
+              <div>
+                <label for="region" class="block text-sm font-medium text-gray-700">Sale Price Per Unit</label>
+                <div class="mt-1">
+                  <input v-model="purchasingPrice" :placeholder="'Min Price: ' + selectedItem.sales_price" type="number" id="region" name="region" autocomplete="address-level1" class="border-2 border-solid block w-full rounded-md shadow-sm ring-light-green-900 focus:border-green-900 border-light-green-900 sm:text-sm">
+                </div>
+              </div>
+
+              <div>
+                <label for="postal-code" class="block text-sm font-medium text-gray-700">Number of Units</label>
+                <div class="mt-1">
+                  <input v-model="purchasingQuantity" :placeholder="'Available Units: ' + selectedItem.stock_quantity" type="number" id="postal-code" name="postal-code" autocomplete="postal-code" class="border-2 border-solid block w-full rounded-md shadow-sm ring-light-green-900 focus:border-green-900 border-light-green-900 sm:text-sm">
+                </div>
+              </div>
+            </div>
+          </div>
+
             <div
               v-if="defaultClientButtons"
               class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense"
@@ -909,14 +971,20 @@ const addProduct = () => {
                 type="button"
                 class="group mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm"
               >
-                 New Client <i class="ml-2 mt-1 fas fa-user-plus text-green-900 group-hover:text-white"></i>
+                New Client
+                <i
+                  class="ml-2 mt-1 fas fa-user-plus text-green-900 group-hover:text-white"
+                ></i>
               </Link>
               <button
                 @click="processButtons('existing')"
                 type="button"
                 class="group mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-2 sm:text-sm"
               >
-                Existing Client <i class="ml-2 mt-1 fas fa-user-check text-green-900 group-hover:text-white"></i>
+                Existing Client
+                <i
+                  class="ml-2 mt-1 fas fa-user-check text-green-900 group-hover:text-white"
+                ></i>
               </button>
             </div>
 
@@ -927,15 +995,38 @@ const addProduct = () => {
               <button
                 @click="processButtons('previous')"
                 type="button"
-                class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm"
+                class="group mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm"
               >
-                <i class="mr-2 mt-1 fas fa-caret-left text-green-900 group-hover:text-white"></i> Previous Menu
+                <i
+                  class="mr-2 mt-1 fas fa-caret-left text-green-900 group-hover:text-white"
+                ></i>
+                Previous Menu
               </button>
               <button
+                @click="processButtons('selectedClient')"
                 type="button"
-                class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-2 sm:text-sm"
+                class="group mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-2 sm:text-sm"
               >
-                Select Client <i class="ml-2 mt-1 fas fa-caret-right text-green-900 group-hover:text-white"></i>
+                Select Client
+                <i
+                  class="ml-2 mt-1 fas fa-caret-right text-green-900 group-hover:text-white"
+                ></i>
+              </button>
+            </div>
+
+            <div
+              v-if="saleDetails"
+              class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense"
+            >
+              <button
+                @click="processButtons('selectedClient')"
+                type="button"
+                class="group mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-2 sm:text-sm"
+              >
+                Process Invoice
+                <i
+                  class="ml-2 mt-1 fas fa-caret-right text-green-900 group-hover:text-white"
+                ></i>
               </button>
             </div>
 
