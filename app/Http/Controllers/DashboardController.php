@@ -49,9 +49,16 @@ class DashboardController extends Controller
     {
         $productID = $request->product_id;
         $productToUpdate = Product::where('id', $productID)->first();
-        $itemsToDeduct = $request->product_quantity;
+        
+        // $itemsToDeduct = $request->product_quantity;
+        // $initialStock = $productToUpdate->stock_quantity;
+        // $finalStock = $initialStock - $itemsToDeduct; 
 
-        return dd($productID);
+        // $productToUpdate->update(
+        //     [
+        //         'stock_quantity' => $finalStock
+        //     ]
+        // );;
 
         $sale = new Sale();
         $sale->added_by = $request->added_by;
@@ -63,11 +70,16 @@ class DashboardController extends Controller
         $sale->invoice_number = $request->invoice_number;
         $sale->save();
 
-        $products = Product::latest()->get();
-        $clients = Client::latest()->get();
-        return Inertia::render('Stock', [
-            'products' => $products,
-            'clients' => $clients
+        $product = Product::where(['id'=>$productID])->first();
+        $client = Client::where(['id'=>$request->client_id])->first();
+
+        // return dd($product, $client);
+
+        return Inertia::render('Order', [
+            'product' => $product,
+            'client' => $client,
+            'sale' => $sale,
+
         ]);
 
         // $this->inventory();

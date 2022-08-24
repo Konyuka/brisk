@@ -1,13 +1,31 @@
 <script setup>
 // import { Head, Link } from "@inertiajs/inertia-vue3";
-// import { ref } from "vue";
+import { computed } from "vue";
 // import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
+import moment from 'moment'
 
 
-defineProps({
-//   canLogin: Boolean,
+const props = defineProps({
+  product: Object,
+  client: Object,
+  sale: Object,
 });
+
+const invoiceTime = computed(() => {
+    return moment(props.sale.created_at).format('MMMM Do YYYY, h:mm:ss a');
+});
+const subTotal = computed(() => {
+  return props.sale.sale_amount * props.sale.product_quantity
+});
+const grandTotal = computed(() => {
+  return Math.ceil(subTotal.value * 1.16)
+});
+const tax = computed(() => {
+  return grandTotal.value - subTotal.value;
+});
+
+
 
 </script>
 
@@ -20,11 +38,11 @@ defineProps({
   <main class="max-w-2xl mx-auto pt-8 pb-24 sm:pt-16 sm:px-6 lg:max-w-7xl lg:px-8">
     <div class="px-4 space-y-2 sm:px-0 sm:flex sm:items-baseline sm:justify-between sm:space-y-0">
       <div class="flex sm:items-baseline sm:space-x-4">
-        <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:tracking-tight sm:text-3xl">Order #54879</h1>
-        <a href="#" class="hidden text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:block">View invoice<span aria-hidden="true"> &rarr;</span></a>
+        <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:tracking-tight sm:text-3xl">Invoice #{{ sale.invoice_number}}</h1>
+        <a href="#" class="hidden text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:block">Print invoice<span aria-hidden="true"> &rarr;</span></a>
       </div>
-      <p class="text-sm text-gray-600">Order placed <time datetime="2021-03-22" class="font-medium text-gray-900">March 22, 2021</time></p>
-      <a href="#" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:hidden">View invoice<span aria-hidden="true"> &rarr;</span></a>
+      <!-- <p class="text-sm text-gray-600">Invoice Generated on  <span class="font-medium text-gray-900">{{ invoiceTime }}</span> </p> -->
+      <a href="#" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:hidden">Print invoice<span aria-hidden="true"> &rarr;</span></a>
     </div>
 
     <!-- Products -->
@@ -36,34 +54,41 @@ defineProps({
           <div class="py-6 px-4 sm:px-6 lg:grid lg:grid-cols-12 lg:gap-x-8 lg:p-8">
             <div class="sm:flex lg:col-span-7">
               <div class="flex-shrink-0 w-full aspect-w-1 aspect-h-1 rounded-lg overflow-hidden sm:aspect-none sm:w-40 sm:h-40">
-                <img src="https://tailwindui.com/img/ecommerce-images/confirmation-page-03-product-01.jpg" alt="Insulated bottle with white base and black snap lid." class="w-full h-full object-center object-cover sm:w-full sm:h-full">
+                <img src="/img/receipt.jpg" alt="Insulated bottle with white base and black snap lid." class="w-full h-full object-center object-cover sm:w-full sm:h-full">
               </div>
 
               <div class="mt-6 sm:mt-0 sm:ml-6">
                 <h3 class="text-base font-medium text-gray-900">
-                  <a href="#">Nomad Tumbler</a>
+                  <a href="#">{{ product.product_name }}</a>
                 </h3>
-                <p class="mt-2 text-sm font-medium text-gray-900">$35.00</p>
-                <p class="mt-3 text-sm text-gray-500">This durable and portable insulated tumbler will keep your beverage at the perfect temperature during your next adventure.</p>
+                <p class="mt-3 text-sm text-gray-500">{{ product.product_description }}</p>
+                <p class="mt-2 text-sm text-gray-500">{{ product.product_quantity }} MG</p>
+                <p class="mt-2 text-sm text-gray-500">KES {{ sale.sale_amount }}</p>
+                <p class="mt-2 text-sm text-gray-500">{{ sale.product_quantity }} Item(s)</p>
               </div>
             </div>
 
             <div class="mt-6 lg:mt-0 lg:col-span-5">
               <dl class="grid grid-cols-2 gap-x-6 text-sm">
                 <div>
-                  <dt class="font-medium text-gray-900">Delivery address</dt>
+                  <dt class="font-medium text-gray-900">Client Details</dt>
                   <dd class="mt-3 text-gray-500">
-                    <span class="block">Floyd Miles</span>
-                    <span class="block">7363 Cynthia Pass</span>
-                    <span class="block">Toronto, ON N3Y 4H8</span>
+                    <span class="block">{{ client.client_email }}</span>
+                    <span class="block">{{ client.client_name }}</span>
+                    <span class="block">{{ client.client_kra }}</span>
+                    <span class="block">{{ client.client_contact }}</span>
                   </dd>
+
+                <button type="button" class="mt-3 font-medium text-green-900 hover:text-gray-300"><i class="fas fa-pencil mr-2"></i> Edit Details
+                </button>
+
                 </div>
                 <div>
-                  <dt class="font-medium text-gray-900">Shipping updates</dt>
+                  <dt class="font-medium text-gray-900">Shipping Address</dt>
                   <dd class="mt-3 text-gray-500 space-y-3">
-                    <p>f•••@example.com</p>
-                    <p>1•••••••••40</p>
-                    <button type="button" class="font-medium text-indigo-600 hover:text-indigo-500">Edit</button>
+                    <p>{{ client.client_address }}</p>
+                    <button type="button" class="font-medium text-green-900 hover:text-gray-300"><i class="fas fa-pencil mr-2"></i> Edit Address
+                    </button>
                   </dd>
                 </div>
               </dl>
@@ -80,14 +105,7 @@ defineProps({
 
       <div class="bg-gray-100 py-6 px-4 sm:px-6 sm:rounded-lg lg:px-8 lg:py-8 lg:grid lg:grid-cols-12 lg:gap-x-8">
         <dl class="grid grid-cols-2 gap-6 text-sm sm:grid-cols-2 md:gap-x-8 lg:col-span-7">
-          <div>
-            <dt class="font-medium text-gray-900">Billing address</dt>
-            <dd class="mt-3 text-gray-500">
-              <span class="block">Floyd Miles</span>
-              <span class="block">7363 Cynthia Pass</span>
-              <span class="block">Toronto, ON N3Y 4H8</span>
-            </dd>
-          </div>
+          
           <div>
             <dt class="font-medium text-gray-900">Payment information</dt>
             <dd class="-ml-4 -mt-1 flex flex-wrap">
@@ -109,34 +127,32 @@ defineProps({
         <dl class="mt-8 divide-y divide-gray-200 text-sm lg:mt-0 lg:col-span-5">
           <div class="pb-4 flex items-center justify-between">
             <dt class="text-gray-600">Subtotal</dt>
-            <dd class="font-medium text-gray-900">$72</dd>
+            <dd class="font-medium text-gray-900">KES {{ subTotal }}</dd>
           </div>
           <div class="py-4 flex items-center justify-between">
-            <dt class="text-gray-600">Shipping</dt>
-            <dd class="font-medium text-gray-900">$5</dd>
-          </div>
-          <div class="py-4 flex items-center justify-between">
-            <dt class="text-gray-600">Tax</dt>
-            <dd class="font-medium text-gray-900">$6.16</dd>
+            <dt class="text-gray-600">Tax(16%)</dt>
+            <dd class="font-medium text-gray-900">KES {{ tax }}</dd>
           </div>
           <div class="pt-4 flex items-center justify-between">
-            <dt class="font-medium text-gray-900">Order total</dt>
-            <dd class="font-medium text-indigo-600">$83.16</dd>
+            <dt class="font-medium text-gray-900">Grand total</dt>
+            <dd class="font-extrabold text-green-900">KES {{ grandTotal }}</dd>
           </div>
         </dl>
       </div>
       <div class="border-t border-gray-200 py-6 px-4 sm:px-6 lg:p-8">
             <h4 class="sr-only">Status</h4>
-            <p class="text-sm font-medium text-gray-900">Sale Timestamp at <time datetime="2021-03-24">March 24, 2021</time></p>
+            <p class="text-sm font-medium text-gray-900">Sale Timestamp at <span class="font-bold">{{ invoiceTime }}</span> </p>
             <div class="mt-6" aria-hidden="true">
               <div class="bg-gray-200 rounded-full overflow-hidden">
-                <div class="h-2 bg-green-900 rounded-full" style="width: calc((1 * 2 + 1) / 8 * 100%)"></div>
+                <div class="h-2 bg-green-900 rounded-full" style="width: calc((1 * 6 + 1) / 8 * 100%)"></div>
               </div>
               <div class="hidden sm:grid grid-cols-4 text-sm font-medium text-gray-600 mt-6">
                 <div class="text-light-green-900">Order placed</div>
-                <div class="text-center text-light-green-900">Processing</div>
-                <div class="text-center">Shipped</div>
-                <div class="text-right">Delivered</div>
+                <div class="text-center text-light-green-900">Check Stock</div>
+                <div class="text-center">Invoice Processing</div>
+                <div class="text-right mt-4">
+                    <button class="font-extrabold text-green-900 text-2xl underline">Finish Sale <i class="ml-2 fas fa-clipboard-check"></i> </button>
+                </div>
               </div>
             </div>
           </div>

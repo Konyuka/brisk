@@ -12,12 +12,6 @@ defineProps({
 
 const currentUser = computed(() => usePage().props.value.user.id);
 const currentTime = computed(() => moment().format("LLL"));
-const subTotal = computed(() => {
-  return purchasingQuantity.value * purchasingPrice.value;
-});
-const total = computed(() => {
-  return subTotal.value * 1.16;
-});
 
 const form = useForm({
   product_name: "",
@@ -41,8 +35,8 @@ watch(purchasingClient, (newX) =>
   payload.client_id = newX.id
 })
 
-const purchasingQuantity = ref();
-const purchasingPrice = ref();
+const purchasingQuantity = ref(1);
+const purchasingPrice = ref(200);
 
 const addModal = ref(false);
 const saleModal = ref(false);
