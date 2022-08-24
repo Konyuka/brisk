@@ -3,6 +3,7 @@
 import { computed } from "vue";
 // import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
+import Receipt from "./Receipt.vue";
 import moment from 'moment'
 
 
@@ -37,12 +38,13 @@ const tax = computed(() => {
 
   <main class="max-w-2xl mx-auto pt-8 pb-24 sm:pt-16 sm:px-6 lg:max-w-7xl lg:px-8">
     <div class="px-4 space-y-2 sm:px-0 sm:flex sm:items-baseline sm:justify-between sm:space-y-0">
-      <div class="flex sm:items-baseline sm:space-x-4">
+      <div class="flex sm:items-baseline sm:space-x-4 flex-row justify-between">
         <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:tracking-tight sm:text-3xl">Invoice #{{ sale.invoice_number}}</h1>
-        <a href="#" class="hidden text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:block">Print invoice<span aria-hidden="true"> &rarr;</span></a>
+        <a href="#" class="hidden text-md font-bold text-green-900 hover:text-green-900 sm:block">Print invoice<span aria-hidden="true"> &rarr; <i class="fas fa-print ml-1"></i></span></a>
       </div>
       <!-- <p class="text-sm text-gray-600">Invoice Generated on  <span class="font-medium text-gray-900">{{ invoiceTime }}</span> </p> -->
-      <a href="#" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:hidden">Print invoice<span aria-hidden="true"> &rarr;</span></a>
+      <a href="#" class="text-sm font-bold text-green-600 hover:text-green-500 sm:hidden">Print invoice<span aria-hidden="true"> &rarr; <i class="fas fa-print ml-1"></i></span></a>
+      <!-- <a href="#" class="text-sm font-bold text-green-600 hover:text-green-500 sm:hidden">Print invoice<span aria-hidden="true"> &rarr;</span></a> -->
     </div>
 
     <!-- Products -->
@@ -151,7 +153,7 @@ const tax = computed(() => {
             <h4 class="sr-only">Status</h4>
             <p class="text-sm font-medium text-gray-900">Sale Timestamp at <span class="font-bold">{{ invoiceTime }}</span> </p>
             <div class="mt-6" aria-hidden="true">
-              <div class="bg-gray-200 rounded-full overflow-hidden">
+              <div class="bg-light-green-400 rounded-full overflow-hidden">
                 <div class="h-2 bg-green-900 rounded-full" style="width: calc((1 * 6 + 1) / 8 * 100%)"></div>
               </div>
               <div class="hidden sm:grid grid-cols-4 text-sm font-medium text-gray-600 mt-6">
@@ -162,13 +164,15 @@ const tax = computed(() => {
                     <button class="font-extrabold text-green-900 text-2xl underline">Finish Sale <i class="ml-2 fas fa-clipboard-check"></i> </button>
                 </div>
               </div>
-              <div class="mt-7 flex justify-center">
+              <div class="sm:hidden mt-7 flex justify-center">
                 <button class="font-extrabold text-green-900 text-2xl underline">Finish Sale <i class="ml-2 fas fa-clipboard-check"></i> </button>
               </div>
             </div>
           </div>
     </section>
   </main>
+
+  <Receipt class="hidden"/>  
   
 </div>
 </AppLayout>   
