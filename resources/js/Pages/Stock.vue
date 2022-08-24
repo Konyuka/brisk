@@ -1,6 +1,6 @@
 <script setup>
 import { useForm, usePage, Link } from "@inertiajs/inertia-vue3";
-import { ref, computed } from "vue";
+import { ref, computed, reactive  } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import moment from "moment";
@@ -28,10 +28,12 @@ const form = useForm({
   product_description: "SoftSol Shampoo",
   added_by: currentUser,
 });
-const selectedItem = ref(null);
-const purchasingClient = ref(null);
-const purchasingQuantity = ref(null);
-const purchasingPrice = ref(null);
+const selectedItem = ref({});
+const selectedItemObj = reactive(selectedItem)
+const purchasingClient = ref({});
+const purchasingClientObj = reactive(purchasingClient)
+const purchasingQuantity = ref();
+const purchasingPrice = ref();
 
 const addModal = ref(false);
 const saleModal = ref(false);
@@ -40,6 +42,18 @@ const defaultClientButtons = ref(true);
 const selectClientButtons = ref(false);
 const clientTypeModal = ref(false);
 const saleDetails = ref(false);
+
+const payload = reactive ({
+    added_by: currentUser,
+    client_id: purchasingClientObj.id,
+    client_id2: purchasingClient.id,
+    product_id: selectedItemObj.id,
+    // product_id: selectedItem.value.id,
+    product_quantity: purchasingQuantity,
+    sale_amount: purchasingPrice,
+    payment_status: false,
+    invoice_number: 1,
+  });
 
 const processButtons = (value) => {
   if (value == "existing") {
@@ -61,17 +75,28 @@ const saleItem = (product) => {
 };
 
 const processSale = () => {
-  // alert('hey')
-  // returns
-  const payload = {
-    added_by: currentUser,
-    client_id: purchasingClient.id,
-    product_id: selectedItem.id,
-    product_quantity: purchasingQuantity,
-    sale_amount: purchasingPrice,
-    payment_status: false,
-    invoice_number: 1,
-  };
+  // let payload = {
+  //   added_by: currentUser,
+  //   client_id: purchasingClient.id,
+  //   product_id: selectedItem.id,
+  //   product_quantity: purchasingQuantity,
+  //   sale_amount: purchasingPrice,
+  //   payment_status: false,
+  //   invoice_number: 1,
+  // };
+
+  // const payload = reactive ({
+  //   added_by: currentUser,
+  //   client_id: purchasingClient.id,
+  //   product_id: selectedItem.id,
+  //   product_quantity: purchasingQuantity,
+  //   sale_amount: purchasingPrice,
+  //   payment_status: false,
+  //   invoice_number: 1,
+  // });
+
+  console.log(payload)
+  
   Inertia.post("/dashboard/register_sale", payload);
 
   // payload.post("/dashboard/register_sale", {

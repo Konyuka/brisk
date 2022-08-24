@@ -47,7 +47,12 @@ class DashboardController extends Controller
 
     public function registerSale(Request $request)
     {
-        return dd($request);
+        $productID = $request->product_id;
+        $productToUpdate = Product::where('id', $productID)->first();
+        $itemsToDeduct = $request->product_quantity;
+
+        return dd($productID);
+
         $sale = new Sale();
         $sale->added_by = $request->added_by;
         $sale->client_id = $request->client_id;
