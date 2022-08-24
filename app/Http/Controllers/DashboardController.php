@@ -88,6 +88,13 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function processOrder()
+    {
+        return Inertia::render('Order', [
+            // 'clients' => $clients
+        ]);
+    }
+
     public function displayReceipt()
     {
         // $clients = Client::latest()->get();

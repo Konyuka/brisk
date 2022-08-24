@@ -1,24 +1,22 @@
 <script setup>
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
+import { useForm, usePage, Link } from "@inertiajs/inertia-vue3";
 import { ref, computed } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import moment from 'moment'
+import moment from "moment";
 
 defineProps({
-    products: Array,
-    clients: Array,
+  products: Array,
+  clients: Array,
 });
 
 const currentUser = computed(() => usePage().props.value.user.id);
-const currentTime = computed(() => moment().format('LLL'));
-const subTotal = computed(() =>
-{
-  return purchasingQuantity.value*purchasingPrice.value
+const currentTime = computed(() => moment().format("LLL"));
+const subTotal = computed(() => {
+  return purchasingQuantity.value * purchasingPrice.value;
 });
-const total = computed(() =>
-{
-  return subTotal.value*1.16
+const total = computed(() => {
+  return subTotal.value * 1.16;
 });
 
 const form = useForm({
@@ -38,14 +36,25 @@ const purchasingPrice = ref(null);
 const addModal = ref(false);
 const saleModal = ref(false);
 const showInvoice = ref(false);
+const defaultClientButtons = ref(true);
+const selectClientButtons = ref(false);
 
-const saleItem = (product) =>
+const processButtons = (value) =>
 { 
-  // console.log(product)
-  saleModal.value = true
-  selectedItem.value=product
-  
+  if (value == 'existing') {
+    defaultClientButtons.value = false
+    selectClientButtons.value = true
+  } else { 
+    selectClientButtons.value=false
+    defaultClientButtons.value=true
+  }
 }
+
+const saleItem = (product) => {
+  // console.log(product)
+  saleModal.value = true;
+  selectedItem.value = product;
+};
 
 const addSale = () => {
   // alert('hey')
@@ -59,7 +68,7 @@ const addSale = () => {
     payment_status: false,
     invoice_number: 1,
   };
-  Inertia.post('/dashboard/register_sale', payload)
+  Inertia.post("/dashboard/register_sale", payload);
 
   // payload.post("/dashboard/register_sale", {
   //   preserveScroll: true,
@@ -79,12 +88,11 @@ const addProduct = () => {
   // Inertia.post('/add_product', form)
   form.post("/add_product", {
     preserveScroll: true,
-    onSuccess: () =>
-    {
-      form.reset()
+    onSuccess: () => {
+      form.reset();
       // addModal = false
-      alert('Product Added')
-     },
+      alert("Product Added");
+    },
   });
 };
 </script>
@@ -135,9 +143,7 @@ const addProduct = () => {
                 Available Stock
                 <i class="fas fa-battery-full fa-2x text-gray-400"></i>
               </h6>
-              <p class="text-2xl text-green-900 font-extrabold">
-                30
-              </p>
+              <p class="text-2xl text-green-900 font-extrabold">30</p>
             </div>
           </div>
           <div
@@ -148,9 +154,7 @@ const addProduct = () => {
                 Delivered Stock
                 <i class="fas fa-truck fa-2x text-gray-400"></i>
               </h6>
-              <p class="text-2xl text-green-900 font-extrabold">
-                30
-              </p>
+              <p class="text-2xl text-green-900 font-extrabold">30</p>
             </div>
           </div>
           <div
@@ -161,9 +165,7 @@ const addProduct = () => {
                 Low Stock
                 <i class="fas fa-battery-quarter fa-2x text-gray-400"></i>
               </h6>
-              <p class="text-2xl text-green-900 font-extrabold">
-                30
-              </p>
+              <p class="text-2xl text-green-900 font-extrabold">30</p>
             </div>
           </div>
           <div
@@ -174,9 +176,7 @@ const addProduct = () => {
                 Out Of Stock
                 <i class="fas fa-battery-empty fa-2x text-gray-400"></i>
               </h6>
-              <p class="text-2xl text-green-900 font-extrabold">
-                30
-              </p>
+              <p class="text-2xl text-green-900 font-extrabold">30</p>
             </div>
           </div>
         </div>
@@ -221,7 +221,7 @@ const addProduct = () => {
                 <table class="w-full whitespace-nowrap">
                   <tbody>
                     <tr
-                      v-for="(product, index) in products" 
+                      v-for="(product, index) in products"
                       :key="index"
                       tabindex="0"
                       class="focus:outline-none h-16 border border-gray-100 rounded"
@@ -231,7 +231,7 @@ const addProduct = () => {
                           <div
                             class="bg-light-green-100 focus:bg-green-300 font-extrabold rounded-sm w-5 h-5 flex flex-shrink-0 justify-center items-center relative"
                           >
-                            {{ index+1 }}
+                            {{ index + 1 }}
                           </div>
                         </div>
                       </td>
@@ -247,19 +247,31 @@ const addProduct = () => {
                       <td class="pl-2">
                         <div class="flex items-center">
                           <i class="fas fa-scale-unbalanced text-green-900"></i>
-                          <p class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2">{{ product.product_quantity }} Grams</p>
+                          <p
+                            class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
+                          >
+                            {{ product.product_quantity }} Grams
+                          </p>
                         </div>
                       </td>
                       <td class="pl-2">
                         <div class="flex items-center">
                           <i class="fas fa-boxes-packing text-green-900"></i>
-                          <p class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2">{{ product.stock_quantity }} items</p> 
+                          <p
+                            class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
+                          >
+                            {{ product.stock_quantity }} items
+                          </p>
                         </div>
                       </td>
                       <td class="pl-2">
                         <div class="flex items-center">
                           <i class="fas fa-money-bill-trend-up text-green-900"></i>
-                          <p class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2">{{ product.sales_price }} KES</p>
+                          <p
+                            class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
+                          >
+                            {{ product.sales_price }} KES
+                          </p>
                         </div>
                       </td>
                       <td>
@@ -268,7 +280,7 @@ const addProduct = () => {
                             @click="saleItem(product)"
                             class="font-bold py-2 px-2 text-sm focus:outline-none leading-none text-white bg-light-green-900 hover:bg-green-900 rounded"
                           >
-                             Sell <i class="ml-1 sm:ml-2 fas fa-handshake"></i>
+                            Sell <i class="ml-1 sm:ml-2 fas fa-handshake"></i>
                           </button>
                         </div>
                       </td>
@@ -457,278 +469,478 @@ const addProduct = () => {
       </div>
     </div>
 
-    <div v-if="saleModal" class="modal fade fixed p-40 w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog">
+    <div
+      v-if="saleModal"
+      class="modal fade fixed p-40 w-full h-full outline-none overflow-x-hidden overflow-y-auto"
+      id="exampleModalCenter"
+      tabindex="-1"
+      aria-labelledby="exampleModalCenterTitle"
+      aria-modal="true"
+      role="dialog"
+    >
       <div class="modal-dialog modal-dialog-centered relative w-auto pointer-events-none">
-
-        <div v-if="!showInvoice" class="modal-content border-none shadow-2xl relative flex flex-col w-full pointer-events-auto bg-gray-50 bg-clip-padding rounded-md outline-none text-current">
-          <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
-            <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalScrollableLabel">
+        <div
+          v-if="!showInvoice"
+          class="modal-content border-none shadow-2xl relative flex flex-col w-full pointer-events-auto bg-gray-50 bg-clip-padding rounded-md outline-none text-current"
+        >
+          <div
+            class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md"
+          >
+            <h5
+              class="text-xl font-medium leading-normal text-gray-800"
+              id="exampleModalScrollableLabel"
+            >
               <!-- Kindly process your sale -->
             </h5>
-            <button type="button"
+            <button
+              type="button"
               class="btn-close box-content w-4 h-4 p-1 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline"
-              data-bs-dismiss="modal" aria-label="Close"></button>
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
           </div>
           <div class="modal-body relative p-4">
-            <p class="font-bold mt-2 text-gray-700 text-sm">Product Name: <span class="text-gray-600 font-medium text-md"> {{ selectedItem.product_name }} </span> </p>
-            <p class="font-bold mt-2 text-gray-700 text-sm">Product Size: <span class="text-gray-600 font-medium text-md"> {{ selectedItem.product_quantity }} Grams </span></p>
+            <p class="font-bold mt-2 text-gray-700 text-sm">
+              Product Name:
+              <span class="text-gray-600 font-medium text-md">
+                {{ selectedItem.product_name }}
+              </span>
+            </p>
+            <p class="font-bold mt-2 text-gray-700 text-sm">
+              Product Size:
+              <span class="text-gray-600 font-medium text-md">
+                {{ selectedItem.product_quantity }} Grams
+              </span>
+            </p>
             <!-- <p class="font-bold mt-2">Minimum Sale Price:  <span class=""> <i class="ml-4 fas fa-eye cursor-pointer text-light-green-900 hover:text-green-900"></i> </span> </p>  -->
-            <p class="font-bold mt-2 text-gray-700 text-sm">Delivery Batch: <span class="text-gray-600 font-medium text-md"> Batch 2</span></p>
+            <p class="font-bold mt-2 text-gray-700 text-sm">
+              Delivery Batch:
+              <span class="text-gray-600 font-medium text-md"> Batch 2</span>
+            </p>
             <!-- <p class="font-bold mt-2 text-gray-700 text-sm">Remaining Stock Number: <span class="text-black font-medium text-lg"> {{ }} </span></p> -->
             <!-- <p class="font-bold mt-2 text-gray-700 text-sm">Sales Profit: <span class="text-black font-medium text-lg"> {{ }} </span></p> -->
-            
+
             <div class="flex flex-row items-center py-8 px-4 mt-5">
-                <!-- Code block starts -->
-                <div class="flex flex-col lg:mr-16">
-                    <div class="flex justify-between">
-                    <label for="email" class="text-gray-800 dark:text-gray-100 text-sm font-bold leading-tight tracking-normal mb-2">Select Purchasing Client:</label>
-                    <Link href="/dashboard/add_client" class="fas fa-user-plus text-light-green-900 cursor-pointer"></Link>
-                    </div>
-                    <select v-model="purchasingClient" id="country" name="country" autocomplete="country-name" class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 dark:focus:border-green-900 dark:border-gray-700 dark:bg-gray-800 bg-white font-normal w-64 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow">
-                      <option v-for="client in clients" :value="client">{{ client.client_name }}</option>
-                      <!-- <option>Another Company</option>
+              <!-- Code block starts -->
+              <div class="flex flex-col lg:mr-16">
+                <div class="flex justify-between">
+                  <label
+                    for="email"
+                    class="text-gray-800 dark:text-gray-100 text-sm font-bold leading-tight tracking-normal mb-2"
+                    >Select Purchasing Client:</label
+                  >
+                  <Link
+                    href="/dashboard/add_client"
+                    class="fas fa-user-plus text-light-green-900 cursor-pointer"
+                  ></Link>
+                </div>
+                <select
+                  v-model="purchasingClient"
+                  id="country"
+                  name="country"
+                  autocomplete="country-name"
+                  class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-800 dark:focus:border-green-900 dark:border-gray-700 dark:bg-gray-800 bg-white font-normal w-64 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow"
+                >
+                  <option v-for="client in clients" :value="client">
+                    {{ client.client_name }}
+                  </option>
+                  <!-- <option>Another Company</option>
                       <option>Bing Ink</option> -->
-                    </select>
-                    <!-- <input id="email" autocomplete="off" class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 dark:focus:border-indigo-700 dark:border-gray-700 dark:bg-gray-800 bg-white font-normal w-64 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow" /> -->
-                </div>
-                <!-- Code block ends -->
-                
-                <!-- Code block starts -->
-                <div class="flex flex-col lg:mr-16">
-                    <label for="email" class="text-gray-800 dark:text-gray-100 text-sm font-bold leading-tight tracking-normal mb-2">Number of items to sell:</label>
-                    <input v-model="purchasingQuantity" :placeholder="'Available: '+selectedItem.stock_quantity" type="number" id="email" autocomplete="off" class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-900 dark:focus:border-indigo-700 dark:border-gray-700 dark:bg-gray-800 bg-white font-normal w-40 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow" />
-                </div>
-                <!-- Code block ends -->
-                <!-- Code block starts -->
-                <!-- <div class="flex flex-col lg:mr-16 lg:py-0 py-4">
+                </select>
+                <!-- <input id="email" autocomplete="off" class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 dark:focus:border-indigo-700 dark:border-gray-700 dark:bg-gray-800 bg-white font-normal w-64 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow" /> -->
+              </div>
+              <!-- Code block ends -->
+
+              <!-- Code block starts -->
+              <div class="flex flex-col lg:mr-16">
+                <label
+                  for="email"
+                  class="text-gray-800 dark:text-gray-100 text-sm font-bold leading-tight tracking-normal mb-2"
+                  >Number of items to sell:</label
+                >
+                <input
+                  v-model="purchasingQuantity"
+                  :placeholder="'Available: ' + selectedItem.stock_quantity"
+                  type="number"
+                  id="email"
+                  autocomplete="off"
+                  class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-900 dark:focus:border-indigo-700 dark:border-gray-700 dark:bg-gray-800 bg-white font-normal w-40 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow"
+                />
+              </div>
+              <!-- Code block ends -->
+              <!-- Code block starts -->
+              <!-- <div class="flex flex-col lg:mr-16 lg:py-0 py-4">
                     <label for="last_email" class="text-gray-400 text-sm font-bold leading-tight tracking-normal mb-2">Minumum Sale Price</label>
                     <input disabled id="last_email" class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 dark:focus:border-green-900 dark:border-gray-700 dark:bg-gray-700 font-normal w-40 h-10 flex items-center pl-3 text-sm border-gray-300 bg-gray-200 rounded border shadow" placeholder="120" />
                 </div> -->
-                <!-- Code block ends -->
-                <!-- Code block starts -->
-                <div class="flex flex-col lg:mr-16 lg:py-0 py-4">
-                    <label for="email1" class="text-gray-800 text-sm font-bold leading-tight tracking-normal mb-2">Actual Sale Price:</label>
-                    <input v-model="purchasingPrice" :placeholder="'Min Price: '+selectedItem.sales_price" type="number" id="email1" class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-900 dark:focus:border-green-900 dark:border-gray-700 dark:bg-gray-800 bg-white font-normal w-40 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow"  />
-                </div>
-                <!-- Code block ends -->
+              <!-- Code block ends -->
+              <!-- Code block starts -->
+              <div class="flex flex-col lg:mr-16 lg:py-0 py-4">
+                <label
+                  for="email1"
+                  class="text-gray-800 text-sm font-bold leading-tight tracking-normal mb-2"
+                  >Actual Sale Price:</label
+                >
+                <input
+                  v-model="purchasingPrice"
+                  :placeholder="'Min Price: ' + selectedItem.sales_price"
+                  type="number"
+                  id="email1"
+                  class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-900 dark:focus:border-green-900 dark:border-gray-700 dark:bg-gray-800 bg-white font-normal w-40 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow"
+                />
+              </div>
+              <!-- Code block ends -->
             </div>
-    
           </div>
           <div
-            class="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-gray-200 rounded-b-md">
-            <button 
-              @click="saleModal=false"
+            class="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-gray-200 rounded-b-md"
+          >
+            <button
+              @click="saleModal = false"
               type="button"
               class="inline-block px-6 py-2.5 bg-gray-300 text-red-300 font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-900 hover:text-white hover:shadow-lg focus:bg-red-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-900 active:shadow-lg transition duration-150 ease-in-out"
-              data-bs-dismiss="modal">
+              data-bs-dismiss="modal"
+            >
               Close
             </button>
-            <button 
-              @click="showInvoice=true"
+            <button
+              @click="showInvoice = true"
               type="button"
-              class="inline-block px-6 py-2.5 bg-light-green-900 hover:bg-green-900 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-1">
+              class="inline-block px-6 py-2.5 bg-light-green-900 hover:bg-green-900 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-1"
+            >
               Process Invoice <i class="fas fa-clipboard-check ml-2 fa-xl"></i>
             </button>
           </div>
         </div>
 
-        <div v-if="showInvoice" class="modal-content border-none shadow-2xl relative flex flex-col w-full pointer-events-auto bg-gray-50 bg-clip-padding rounded-md outline-none text-current">
-          <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
-            <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalScrollableLabel">
+        <div
+          v-if="showInvoice"
+          class="modal-content border-none shadow-2xl relative flex flex-col w-full pointer-events-auto bg-gray-50 bg-clip-padding rounded-md outline-none text-current"
+        >
+          <div
+            class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md"
+          >
+            <h5
+              class="text-xl font-medium leading-normal text-gray-800"
+              id="exampleModalScrollableLabel"
+            >
               <!-- Kindly process your sale -->
             </h5>
-            <button type="button"
+            <button
+              type="button"
               class="btn-close box-content w-4 h-4 p-1 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline"
-              data-bs-dismiss="modal" aria-label="Close"></button>
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
           </div>
           <div>
             <div class="flex items-center justify-center min-h-screen bg-gray-100">
               <div class="w-3/5 bg-white shadow-lg">
-                  <div class="flex justify-between p-4">
-                      <div>
-                          <h1 class="text-3xl font-extrabold tracking-widest text-green-900">Brisk Invoice</h1>
-                      </div>
-                      <div class="p-2">
-                          <ul class="flex">
-                              <li class="flex flex-col items-center p-2 border-l-2 border-light-green-900">
-                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-900" fill="none"
-                                      viewBox="0 0 24 24" stroke="currentColor">
-                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                                  </svg>
-                                  <span class="text-sm">
-                                      www.brisk.co.ke
-                                  </span>
-                                  <span class="text-sm">
-                                      www.biddersportal.com
-                                  </span>
-                              </li>
-                              <li class="flex flex-col items-center p-2 border-l-2 border-light-green-900">
-                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-900" fill="none"
-                                      viewBox="0 0 24 24" stroke="currentColor">
-                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                  </svg>
-                                  <span class="text-sm">
-                                      Syokimau, Nairobi Kenya
-                                  </span>
-                                  <span class="text-sm">
-                                      Community road Narnawarayan Go down
-                                  </span>
-                              </li>
-                          </ul>
-                      </div>
+                <div class="flex justify-between p-4">
+                  <div>
+                    <h1 class="text-3xl font-extrabold tracking-widest text-green-900">
+                      Brisk Invoice
+                    </h1>
                   </div>
-                  <div class="w-full h-0.5 bg-indigo-500"></div>
-                  <div class="flex justify-between p-4">
-                      <div>
-                          <h6 class="font-bold">Order Date : <span class="text-sm font-medium"> {{ currentTime }}</span></h6>
-                          <!-- <h6 class="font-bold">Order ID : <span class="text-sm font-medium"> 12/12/2022</span></h6> -->
-                      </div>
-                      <div class="w-auto">
-                          <address class="text-sm">
-                              <span class="font-bold"> Billed To : </span>
-                              {{  purchasingClient.client_name}}
-                          </address>
-                      </div>
-                      <!-- <div class="w-40">
+                  <div class="p-2">
+                    <ul class="flex">
+                      <li
+                        class="flex flex-col items-center p-2 border-l-2 border-light-green-900"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="w-6 h-6 text-green-900"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+                          />
+                        </svg>
+                        <span class="text-sm"> www.brisk.co.ke </span>
+                        <span class="text-sm"> www.biddersportal.com </span>
+                      </li>
+                      <li
+                        class="flex flex-col items-center p-2 border-l-2 border-light-green-900"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="w-6 h-6 text-green-900"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                          />
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                        </svg>
+                        <span class="text-sm"> Syokimau, Nairobi Kenya </span>
+                        <span class="text-sm"> Community road Narnawarayan Go down </span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="w-full h-0.5 bg-indigo-500"></div>
+                <div class="flex justify-between p-4">
+                  <div>
+                    <h6 class="font-bold">
+                      Order Date :
+                      <span class="text-sm font-medium"> {{ currentTime }}</span>
+                    </h6>
+                    <!-- <h6 class="font-bold">Order ID : <span class="text-sm font-medium"> 12/12/2022</span></h6> -->
+                  </div>
+                  <div class="w-auto">
+                    <address class="text-sm">
+                      <span class="font-bold"> Billed To : </span>
+                      {{ purchasingClient.client_name }}
+                    </address>
+                  </div>
+                  <!-- <div class="w-40">
                           <address class="text-sm">
                               <span class="font-bold">Ship To :</span>
                               Client Name
                           </address>
                       </div> -->
-                      <div></div>
+                  <div></div>
+                </div>
+                <div class="flex justify-center p-4">
+                  <div class="border-b border-gray-200 shadow">
+                    <table class="">
+                      <thead class="bg-gray-50">
+                        <tr>
+                          <th class="px-4 py-2 text-xs text-gray-500">Product Name</th>
+                          <th class="px-4 py-2 text-xs text-gray-500">Product Size</th>
+                          <th class="px-4 py-2 text-xs text-gray-500">Quantity Sold</th>
+                          <th class="px-4 py-2 text-xs text-gray-500">Rate</th>
+                          <th class="px-4 py-2 text-xs text-gray-500">Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white">
+                        <tr class="whitespace-nowrap">
+                          <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900">
+                              {{ selectedItem.product_name }}
+                            </div>
+                          </td>
+                          <td class="px-6 py-4 text-sm text-gray-500">
+                            {{ selectedItem.product_quantity }}
+                          </td>
+                          <td class="px-6 py-4">
+                            <div class="text-sm text-gray-500">
+                              {{ purchasingQuantity }}
+                            </div>
+                          </td>
+                          <td class="px-6 py-4 text-sm text-gray-500">
+                            KES {{ purchasingPrice }}
+                          </td>
+                          <td class="px-6 py-4">KES {{ subTotal }}</td>
+                        </tr>
+                        <tr class="">
+                          <td colspan="3"></td>
+                          <td class="text-sm font-bold">Sub Total</td>
+                          <td class="text-sm font-bold tracking-wider">
+                            <b>KES {{ subTotal }}</b>
+                          </td>
+                        </tr>
+                        <!--end tr-->
+                        <tr>
+                          <th colspan="3"></th>
+                          <td class="text-sm font-bold"><b>Tax Rate</b></td>
+                          <td class="text-sm font-bold"><b>KES 16%</b></td>
+                        </tr>
+                        <!--end tr-->
+                        <tr class="text-white bg-gray-800">
+                          <th colspan="3"></th>
+                          <td class="text-sm font-bold"><b>Total</b></td>
+                          <td class="text-sm font-bold">
+                            <b>KES {{ total }}</b>
+                          </td>
+                        </tr>
+                        <!--end tr-->
+                      </tbody>
+                    </table>
                   </div>
-                  <div class="flex justify-center p-4">
-                      <div class="border-b border-gray-200 shadow">
-                          <table class="">
-                              <thead class="bg-gray-50">
-                                  <tr>
-                                      <th class="px-4 py-2 text-xs text-gray-500 ">
-                                          Product Name
-                                      </th>
-                                      <th class="px-4 py-2 text-xs text-gray-500 ">
-                                          Product Size
-                                      </th>
-                                      <th class="px-4 py-2 text-xs text-gray-500 ">
-                                          Quantity Sold
-                                      </th>
-                                      <th class="px-4 py-2 text-xs text-gray-500 ">
-                                          Rate
-                                      </th>
-                                      <th class="px-4 py-2 text-xs text-gray-500 ">
-                                          Subtotal
-                                      </th>
-                                  </tr>
-                              </thead>
-                              <tbody class="bg-white">
-                                  <tr class="whitespace-nowrap">
-                                      <td class="px-6 py-4">
-                                          <div class="text-sm text-gray-900">
-                                              {{ selectedItem.product_name }}
-                                          </div>
-                                      </td>
-                                      <td class="px-6 py-4 text-sm text-gray-500">
-                                          {{ selectedItem.product_quantity }}
-                                      </td>
-                                      <td class="px-6 py-4">
-                                          <div class="text-sm text-gray-500">{{ purchasingQuantity }}</div>
-                                      </td>
-                                      <td class="px-6 py-4 text-sm text-gray-500">
-                                          KES {{ purchasingPrice }}
-                                      </td>
-                                      <td class="px-6 py-4">
-                                          KES {{ subTotal }}
-                                      </td>
-                                  </tr>
-                                  <tr class="">
-                                      <td colspan="3"></td>
-                                      <td class="text-sm font-bold">Sub Total</td>
-                                      <td class="text-sm font-bold tracking-wider"><b>KES {{ subTotal }}</b></td>
-                                  </tr>
-                                  <!--end tr-->
-                                  <tr>
-                                      <th colspan="3"></th>
-                                      <td class="text-sm font-bold"><b>Tax Rate</b></td>
-                                      <td class="text-sm font-bold"><b>KES 16%</b></td>
-                                  </tr>
-                                  <!--end tr-->
-                                  <tr class="text-white bg-gray-800">
-                                      <th colspan="3"></th>
-                                      <td class="text-sm font-bold"><b>Total</b></td>
-                                      <td class="text-sm font-bold"><b>KES {{ total}}</b></td>
-                                  </tr>
-                                  <!--end tr-->
-
-                              </tbody>
-                          </table>
-                      </div>
+                </div>
+                <div class="flex justify-between p-4">
+                  <div>
+                    <h3 class="text-xl">Terms And Condition :</h3>
+                    <ul class="text-xs list-disc list-inside">
+                      <li>
+                        All accounts are to be paid within 7 days from receipt of invoice.
+                      </li>
+                      <li>
+                        To be paid by cheque or credit card or direct payment online.
+                      </li>
+                      <li>
+                        If account is not paid within 7 days the credits details supplied.
+                      </li>
+                    </ul>
                   </div>
-                  <div class="flex justify-between p-4">
-                      <div>
-                          <h3 class="text-xl">Terms And Condition :</h3>
-                          <ul class="text-xs list-disc list-inside">
-                              <li>All accounts are to be paid within 7 days from receipt of invoice.</li>
-                              <li>To be paid by cheque or credit card or direct payment online.</li>
-                              <li>If account is not paid within 7 days the credits details supplied.</li>
-                          </ul>
-                      </div>
-                      <!-- <div class="p-4">
+                  <!-- <div class="p-4">
                           <h3>Signature</h3>
                           <div class="text-4xl italic text-indigo-500">AAA</div>
                       </div> -->
-                  </div>
-                  <div class="w-full h-0.5 bg-indigo-500"></div>
+                </div>
+                <div class="w-full h-0.5 bg-indigo-500"></div>
 
-                  <div class="p-4">
-                      <div class="flex items-center justify-center">
-                          Thank you very much for doing business with us.
-                      </div>
-                      <!-- <div class="flex items-end justify-end space-x-3">
+                <div class="p-4">
+                  <div class="flex items-center justify-center">
+                    Thank you very much for doing business with us.
+                  </div>
+                  <!-- <div class="flex items-end justify-end space-x-3">
                           <button class="px-4 py-2 text-sm text-green-600 bg-green-100">Print</button>
                           <button class="px-4 py-2 text-sm text-blue-600 bg-blue-100">Save</button>
                           <button class="px-4 py-2 text-sm text-red-600 bg-red-100">Cancel</button>
                       </div> -->
-                  </div>
-
+                </div>
               </div>
-          </div>
-          <div class="flex items-center justify-center min-h-auto bg-gray-100">
+            </div>
+            <div class="flex items-center justify-center min-h-auto bg-gray-100">
               <div class="w-6/12 mt-4 text-left bg-white shadow-lg">
-                  <div class="flex justify-between px-8 py-6">
-                      <div class="flex items-center">
-                          Invoice Options
-                      </div>
-                      <div class="flex items-center gap-4">
-                          <button class="px-2 py-1 bg-gray-200 hover:bg-green-800 hover:text-white">Send to Client Email <i class="ml-2 fa fa-paper-plane"></i> </button>
-                          <button class="px-2 py-1 bg-gray-200 hover:bg-green-800 hover:text-white">Download <i class="ml-2 fa fa-download"></i> </button>
-                      </div>
+                <div class="flex justify-between px-8 py-6">
+                  <div class="flex items-center">Invoice Options</div>
+                  <div class="flex items-center gap-4">
+                    <button
+                      class="px-2 py-1 bg-gray-200 hover:bg-green-800 hover:text-white"
+                    >
+                      Send to Client Email <i class="ml-2 fa fa-paper-plane"></i>
+                    </button>
+                    <button
+                      class="px-2 py-1 bg-gray-200 hover:bg-green-800 hover:text-white"
+                    >
+                      Download <i class="ml-2 fa fa-download"></i>
+                    </button>
                   </div>
-                  <div class="w-full h-0.5 bg-gray-800"></div>
-
+                </div>
+                <div class="w-full h-0.5 bg-gray-800"></div>
               </div>
-          </div>
+            </div>
           </div>
           <div
-            class="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-gray-200 rounded-b-md">
-            <button 
-              @click="showInvoice=false"
+            class="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-gray-200 rounded-b-md"
+          >
+            <button
+              @click="showInvoice = false"
               type="button"
               class="inline-block px-6 py-2.5 bg-gray-300 text-red-300 font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-900 hover:text-white hover:shadow-lg focus:bg-green-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out"
-              data-bs-dismiss="modal">
+              data-bs-dismiss="modal"
+            >
               Back
             </button>
-            <button 
+            <button
               @click="addSale"
               type="button"
-              class="inline-block px-6 py-2.5 bg-light-green-900 hover:bg-green-900 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-1">
+              class="inline-block px-6 py-2.5 bg-light-green-900 hover:bg-green-900 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-1"
+            >
               Finish Sale <i class="fas fa-handshake-angle ml-2 fa-xl"></i>
             </button>
           </div>
         </div>
+      </div>
+    </div>
 
+    <div
+      class="relative z-10"
+      aria-labelledby="modal-title"
+      role="dialog"
+      aria-modal="true"
+    >
+      <!--
+    Background backdrop, show/hide based on modal state.
+
+    Entering: "ease-out duration-300"
+      From: "opacity-0"
+      To: "opacity-100"
+    Leaving: "ease-in duration-200"
+      From: "opacity-100"
+      To: "opacity-0"
+  -->
+      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+      <div class="fixed z-10 inset-0 overflow-y-auto">
+        <div
+          class="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0"
+        >
+          <!--
+        Modal panel, show/hide based on modal state.
+
+        Entering: "ease-out duration-300"
+          From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+          To: "opacity-100 translate-y-0 sm:scale-100"
+        Leaving: "ease-in duration-200"
+          From: "opacity-100 translate-y-0 sm:scale-100"
+          To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+      -->
+          <div
+            class="relative bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full sm:p-6"
+          >
+            <div>
+              <div
+                class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100"
+              >
+                <i class="fas fa-users"></i>
+              </div>
+              <div class="mt-3 text-center sm:mt-5">
+                <h3 class="text-lg leading-6 font-bold text-gray-900" id="modal-title">
+                  Choose Client Type
+                </h3>
+              </div>
+            </div>
+
+            <div
+              v-if="defaultClientButtons"
+              class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense"
+            >
+              <Link
+                href="/dashboard/add_client"
+                type="button"
+                class="group mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm"
+              >
+                 New Client <i class="ml-2 mt-1 fas fa-user-plus text-green-900 group-hover:text-white"></i>
+              </Link>
+              <button
+                @click="processButtons('existing')"
+                type="button"
+                class="group mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-2 sm:text-sm"
+              >
+                Existing Client <i class="ml-2 mt-1 fas fa-user-check text-green-900 group-hover:text-white"></i>
+              </button>
+            </div>
+
+            <div
+              v-if="selectClientButtons"
+              class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense"
+            >
+              <button
+                @click="processButtons('previous')"
+                type="button"
+                class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm"
+              >
+                <i class="mr-2 mt-1 fas fa-caret-left text-green-900 group-hover:text-white"></i> Previous Menu
+              </button>
+              <button
+                type="button"
+                class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-2 sm:text-sm"
+              >
+                Select Client <i class="ml-2 mt-1 fas fa-caret-right text-green-900 group-hover:text-white"></i>
+              </button>
+            </div>
+
+          </div>
+        </div>
       </div>
     </div>
   </AppLayout>
