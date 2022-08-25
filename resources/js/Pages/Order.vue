@@ -17,6 +17,13 @@ const trigger = ref(false);
 
 const actionTrigger = () =>
 { 
+    localStorage.setItem("invoiceNumber", JSON.stringify(props.sale.invoice_number));
+    localStorage.setItem("productName", JSON.stringify(props.product.product_name));
+    localStorage.setItem("saleQuantity", JSON.stringify(props.sale.product_quantity));
+    localStorage.setItem("salePrice", JSON.stringify(props.sale.sale_amount));
+    localStorage.setItem("subTotal", JSON.stringify(subTotal.value));
+    localStorage.setItem("tax", JSON.stringify(tax.value));
+    localStorage.setItem("grandTotal", JSON.stringify(grandTotal.value));
     trigger.value=!trigger.value
 }
 
@@ -180,9 +187,7 @@ const tax = computed(() => {
     </section>
   </main>
 
-  <Receipt :testProp="trigger" class="hidden"/>  
-  <!-- <Receipt  ref="myChild" class="hidden"/>   -->
-  
+  <Receipt :testProp="trigger"  class="hidden"/>  
 </div>
 </AppLayout>   
 </template>

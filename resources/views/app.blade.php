@@ -12,8 +12,8 @@
         <!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" /> -->
         <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
         <!-- Nucleo Icons -->
-        <link href="css/nucleo-icons.css" rel="stylesheet" />
-        <link href="css/nucleo-svg.css" rel="stylesheet" />
+        <!-- <link href="css/nucleo-icons.css" rel="stylesheet" /> -->
+        <!-- <link href="css/nucleo-svg.css" rel="stylesheet" /> -->
         <!-- Popper -->
         <script src="https://unpkg.com/@popperjs/core@2"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

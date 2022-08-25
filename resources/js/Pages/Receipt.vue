@@ -1,14 +1,21 @@
 <script setup>
 // import { Head, Link } from "@inertiajs/inertia-vue3";
-import { watch, toRefs, computed } from "vue";
+import { watch, toRefs, computed, ref } from "vue";
 import moment from 'moment'
 
 const props = defineProps({
     testProp: Boolean,
-  
 });
 
 const { testProp } = toRefs(props)
+
+const invoiceNumber = ref(JSON.parse(localStorage.getItem('invoiceNumber')))
+const productName = ref(JSON.parse(localStorage.getItem('productName')))
+const saleQuantity = ref(JSON.parse(localStorage.getItem('saleQuantity')))
+const salePrice = ref(JSON.parse(localStorage.getItem('salePrice')))
+const subTotal = ref(JSON.parse(localStorage.getItem('subTotal')))
+const tax = ref(JSON.parse(localStorage.getItem('tax')))
+const grandTotal = ref(JSON.parse(localStorage.getItem('grandTotal')))
 
 const invoiceTime = computed(() => {
     return moment().format('MMMM Do YYYY, h:mm:ss a');
@@ -16,14 +23,15 @@ const invoiceTime = computed(() => {
 
 watch(testProp, (value) => {
   generatePDF();
-  // generatePDF
+  // console.log(value)
 })
 
 // const printPDF = () => {
 //   window.print();
 // };
 
-const generatePDF = () => {
+const generatePDF = () =>
+{
   var doc = new jsPDF();
   var specialElementHandlers = {
     "#editor": function (element, renderer) {
@@ -37,7 +45,7 @@ const generatePDF = () => {
     // 'height': "44mm",
     elementHandlers: specialElementHandlers,
   });
-  doc.save("sample_file.pdf");
+  doc.save(invoiceNumber.value+".pdf");
 };
 
 </script>
@@ -95,7 +103,7 @@ const generatePDF = () => {
               margin-top: 15pt;
             "
           >
-            Invoice #21
+            Invoice #{{ invoiceNumber }}
             <p
               style="
                 color: black;
@@ -116,32 +124,17 @@ const generatePDF = () => {
       <table class="mt-5">
         <thead>
           <tr>
-            <th class="description">Description</th>
-            <th class="quantity">#.Items</th>
-            <th class="price">Pricing</th>
+            <th class="description">Name</th>
+            <th class="quantity">Items</th>
+            <th class="price">Price</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td style="font-size: 9.5pt;" class="description">ARDUINO UNO R3</td>
-            <td class="quantity">01</td>
-            <td class="price">KES. 25</td>
+            <td style="font-size: 9.5pt;" class="description">{{ productName}}</td>
+            <td class="quantity">{{ saleQuantity}} Item(s)</td>
+            <td class="price">KES. {{ salePrice }}</td>
           </tr>
-          <!-- <tr class="mt-5" style="padding-top: 50px;">
-            <td class="quantity"></td>
-            <td class="description">SUBTOTAL</td>
-            <td class="price">KES. 55</td>
-          </tr>
-          <tr>
-            <td class="quantity"></td>
-            <td class="description">TAX (16%)</td>
-            <td class="price">KES. 55</td>
-          </tr>
-          <tr>
-            <td class="quantity"></td>
-            <td class="description">GRAND TOTAL</td>
-            <td class="price">KES. 55</td>
-          </tr> -->
         </tbody>
       </table>
         <p
@@ -155,7 +148,7 @@ const generatePDF = () => {
               margin: 0pt;
             "
           >
-            Subtotal: KES. 55 
+            Subtotal: KES. {{ subTotal }} 
           </p>
         <p
             style="
@@ -168,7 +161,7 @@ const generatePDF = () => {
               margin: 0pt;
             "
           >
-            Tax (16%): KES. 55 
+            Tax (16%): KES. {{ tax}} 
           </p>
         <p
             style="
@@ -181,7 +174,7 @@ const generatePDF = () => {
               margin: 0pt;
             "
           >
-            Grand Total: KES. 110 
+            Grand Total: KES. {{ grandTotal }} 
           </p>
 
 
