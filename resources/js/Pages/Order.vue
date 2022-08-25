@@ -23,6 +23,7 @@ const actionTrigger = () =>
 const invoiceTime = computed(() => {
     return moment(props.sale.created_at).format('MMMM Do YYYY, h:mm:ss a');
 });
+
 const subTotal = computed(() => {
   return props.sale.sale_amount * props.sale.product_quantity
 });
@@ -171,7 +172,7 @@ const tax = computed(() => {
                     <button class="font-extrabold text-green-900 text-2xl underline">Finish Sale <i class="ml-2 fas fa-clipboard-check"></i> </button>
                 </div>
               </div>
-              <div class="sm:hidden mt-7 flex justify-center">
+              <div class="sm:hidden mt-14 flex justify-center">
                 <button class="font-extrabold text-green-900 text-2xl underline">Finish Sale <i class="ml-2 fas fa-clipboard-check"></i> </button>
               </div>
             </div>

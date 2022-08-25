@@ -1,7 +1,7 @@
 <script setup>
 // import { Head, Link } from "@inertiajs/inertia-vue3";
-import { watch, toRefs } from "vue";
-// import { Inertia } from "@inertiajs/inertia";
+import { watch, toRefs, computed } from "vue";
+import moment from 'moment'
 
 const props = defineProps({
     testProp: Boolean,
@@ -10,10 +10,13 @@ const props = defineProps({
 
 const { testProp } = toRefs(props)
 
+const invoiceTime = computed(() => {
+    return moment().format('MMMM Do YYYY, h:mm:ss a');
+});
+
 watch(testProp, (value) => {
-  console.log(value);
   generatePDF();
-  generatePDF
+  // generatePDF
 })
 
 // const printPDF = () => {
@@ -104,7 +107,7 @@ const generatePDF = () => {
                 margin: 0pt;
               "
             >
-              19/08/22 at 20:41AM
+              {{ invoiceTime }}
             </p>
           </p>
         </h1>
