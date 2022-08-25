@@ -1,15 +1,24 @@
 <script setup>
 // import { Head, Link } from "@inertiajs/inertia-vue3";
-// import { ref } from "vue";
+import { watch, toRefs } from "vue";
 // import { Inertia } from "@inertiajs/inertia";
 
-const printPDF = () => {
-  // const $btnPrint = document.querySelector("#btnPrint");
-  // $btnPrint.addEventListener("click", () => {
-  //   });
-  window.print();
+const props = defineProps({
+    testProp: Boolean,
   
-};
+});
+
+const { testProp } = toRefs(props)
+
+watch(testProp, (value) => {
+  console.log(value);
+  generatePDF();
+  generatePDF
+})
+
+// const printPDF = () => {
+//   window.print();
+// };
 
 const generatePDF = () => {
   var doc = new jsPDF();
@@ -28,9 +37,6 @@ const generatePDF = () => {
   doc.save("sample_file.pdf");
 };
 
-defineProps({
-  //   canLogin: Boolean,
-});
 </script>
 
 <template>

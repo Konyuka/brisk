@@ -1,6 +1,6 @@
 <script setup>
 // import { Head, Link } from "@inertiajs/inertia-vue3";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 // import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Receipt from "./Receipt.vue";
@@ -12,6 +12,13 @@ const props = defineProps({
   client: Object,
   sale: Object,
 });
+
+const trigger = ref(false);
+
+const actionTrigger = () =>
+{ 
+    trigger.value=!trigger.value
+}
 
 const invoiceTime = computed(() => {
     return moment(props.sale.created_at).format('MMMM Do YYYY, h:mm:ss a');
@@ -40,10 +47,10 @@ const tax = computed(() => {
     <div class="px-4 space-y-2 sm:px-0 sm:flex sm:items-baseline sm:justify-between sm:space-y-0">
       <div class="flex sm:items-baseline sm:space-x-4 flex-row justify-between">
         <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:tracking-tight sm:text-3xl">Invoice #{{ sale.invoice_number}}</h1>
-        <a href="#" class="hidden text-md font-bold text-green-900 hover:text-green-900 sm:block">Print invoice<span aria-hidden="true"> &rarr; <i class="fas fa-print ml-1"></i></span></a>
+        <button @click="actionTrigger()" class="hidden text-md font-bold text-green-900 hover:text-green-900 sm:block">Print invoice<span aria-hidden="true"> &rarr; <i class="fas fa-print ml-1"></i></span></button>
       </div>
       <!-- <p class="text-sm text-gray-600">Invoice Generated on  <span class="font-medium text-gray-900">{{ invoiceTime }}</span> </p> -->
-      <a href="#" class="text-sm font-bold text-green-600 hover:text-green-500 sm:hidden">Print invoice<span aria-hidden="true"> &rarr; <i class="fas fa-print ml-1"></i></span></a>
+      <button @click="actionTrigger()" class="text-sm font-bold text-green-600 hover:text-green-500 sm:hidden">Print invoice<span aria-hidden="true"> &rarr; <i class="fas fa-print ml-1"></i></span></button>
       <!-- <a href="#" class="text-sm font-bold text-green-600 hover:text-green-500 sm:hidden">Print invoice<span aria-hidden="true"> &rarr;</span></a> -->
     </div>
 
@@ -172,7 +179,8 @@ const tax = computed(() => {
     </section>
   </main>
 
-  <Receipt class="hidden"/>  
+  <Receipt :testProp="trigger" class="hidden"/>  
+  <!-- <Receipt  ref="myChild" class="hidden"/>   -->
   
 </div>
 </AppLayout>   
