@@ -49,16 +49,6 @@ class DashboardController extends Controller
     {
         $productID = $request->product_id;
         $productToUpdate = Product::where('id', $productID)->first();
-        
-        // $itemsToDeduct = $request->product_quantity;
-        // $initialStock = $productToUpdate->stock_quantity;
-        // $finalStock = $initialStock - $itemsToDeduct; 
-
-        // $productToUpdate->update(
-        //     [
-        //         'stock_quantity' => $finalStock
-        //     ]
-        // );;
 
         $sale = new Sale();
         $sale->added_by = $request->added_by;
@@ -67,6 +57,7 @@ class DashboardController extends Controller
         $sale->product_quantity = $request->product_quantity;
         $sale->sale_amount = $request->sale_amount;
         $sale->payment_status = $request->payment_status;
+        $sale->payment_method = 'mpesa';
         $sale->invoice_number = $request->invoice_number;
         $sale->save();
 
@@ -85,6 +76,46 @@ class DashboardController extends Controller
         // $this->inventory();
         // return;
         // return redirect()->back();
+    }
+
+    public function finishSale(Request $request)
+    {
+        $sale = Sale::where(['id'=>$request->sale_id])->first();
+        $product = Product::where(['id'=>$request->product_id])->first();
+
+        $itemsToDeduct = $sale->product_quantity;
+        $initialStock = $product->stock_quantity;
+        $finalStock = $initialStock - $itemsToDeduct; 
+
+        // return dd($finalStock);
+
+        $product->update(
+            [
+                'stock_quantity' => $finalStock
+            ]
+        );;
+        $sale->update(
+            [
+                'amount_paid' => $request->amount_paid,
+                'payment_method' => $request->payment_method
+            ]
+        );;
+
+        // return redirect()->back()->with('message', 'Sale success!');
+        // return redirect()->back();
+
+        $products = Product::latest()->get();
+        $clients = Client::latest()->get();
+
+        return Inertia::render('Stock', [
+            'products' => $products,
+            'clients' => $clients,
+            'message' => 'Sale Made',
+        ]);
+
+        // return Inertia::render('Order', [
+        //     // 'clients' => $clients
+        // ]);
     }
     
     public function stock()
@@ -107,6 +138,7 @@ class DashboardController extends Controller
 
     public function processOrder()
     {
+
         return Inertia::render('Order', [
             // 'clients' => $clients
         ]);

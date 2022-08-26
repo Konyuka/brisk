@@ -38,6 +38,8 @@ Route::middleware([
     ->name('process_order');
     Route::get('/dashboard/display_receipt', [DashboardController::class, 'displayReceipt'])
     ->name('display_receipt');
+    Route::post('/dashboard/finish_sale', [DashboardController::class, 'finishSale'])
+    ->name('finish_sale');
 
     
 });

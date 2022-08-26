@@ -8,6 +8,7 @@ import moment from "moment";
 defineProps({
   products: Array,
   clients: Array,
+  message: String,
 });
 
 const currentUser = computed(() => usePage().props.value.user.id);

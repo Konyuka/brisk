@@ -20,7 +20,9 @@ return new class extends Migration
             $table->string('product_id');
             $table->string('product_quantity');
             $table->string('sale_amount');
+            $table->string('amount_paid')->nullable();
             $table->string('payment_status')->default(false);
+            $table->string('payment_method')->default(null);
             $table->string('invoice_number')->nullable();
             $table->timestamps();
         });
