@@ -1,8 +1,29 @@
 <script setup>
 // import { Head, Link } from "@inertiajs/inertia-vue3";
-// import { ref } from "vue";
+import { ref } from "vue";
 // import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
+
+const tableCounter = ref(1); 
+const currentrows = ref([1])
+
+const addTableRow = (value) =>
+{ 
+    if (value=='add') {
+        let newTableCounter = tableCounter.value++
+        currentrows.value.push(newTableCounter);
+        tableCounter.value = newTableCounter
+    } else if (value == 'minus') { 
+        currentrows.value.pop();
+
+        // currentrows.splice(carIndex, 1);
+        // tableCounter.value = newTableCounter
+
+        // let newTableCounter = tableCounter.value++
+        // currentrows.value.push(newTableCounter);
+    }
+}
+
 
 defineProps({
   //   canLogin: Boolean,
@@ -266,11 +287,11 @@ defineProps({
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-gray-200 bg-white">
-                    <tr>
+                    <tr v-for="(rowNumber, index) in currentrows">
                       <td
                         class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6"
                       >
-                        1
+                        {{ index+1 }}
                       </td>
                       <td
                         class="whitespace-nowrap px-2 py-2 text-sm font-medium text-gray-900"
@@ -312,7 +333,7 @@ defineProps({
                       <td
                         class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
                       >
-                        <a href="#" class="text-green-600 hover:text-green-900">
+                        <a @click.prevent="addTableRow('minus')" href="#" class="text-red-600 hover:text-red-900">
                           <i class="fas fa-trash"></i>
                           <span class="sr-only">, AAPS0L</span></a
                         >
@@ -325,6 +346,7 @@ defineProps({
                 <div class="mt-10 m-10 flex flex-row justify-between">
                   <div>
                     <button
+                      @click="addTableRow('add')"  
                       type="button"
                       class="inline-block px-2 py-2 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
                     >
@@ -360,12 +382,12 @@ defineProps({
       class="relative w-full flex flex-wrap items-center justify-between py-3 bg-light-green-100 text-gray-500 hover:text-gray-700 focus:text-gray-700 shadow-lg"
     >
       <div
-        class="container-fluid w-full flex flex-wrap items-center justify-between px-6"
+        class="mt-4 container-fluid w-full flex flex-wrap items-center justify-between px-6"
       >
-        <div class="container-fluid">
+        <div class="mb-2 container-fluid">
           <button
             type="button"
-            class="inline-block px-6 py-2.5 bg-red-300 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
+            class="inline-block px-2 py-2 sm:px-6 sm:py-2.5 bg-red-300 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
           >
             <i class="fas fa-broom mr-2"></i> Clear
           </button>
@@ -373,13 +395,13 @@ defineProps({
         <div class="container-fluid">
           <button
             type="button"
-            class="mr-2 inline-block px-6 py-2.5 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
+            class="mb-2 mr-2 inline-block px-2 py-2 sm:px-6 sm:py-2.5 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
           >
             <i class="fas fa-print mr-2"></i> Print Invoice
           </button>
           <button
             type="button"
-            class="inline-block px-6 py-2.5 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
+            class="mb-2 inline-block px-2 py-2 sm:px-6 sm:py-2.5 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
           >
             <i class="fas fa-check-double mr-2"></i> Register Sale
           </button>
