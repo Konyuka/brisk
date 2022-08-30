@@ -1,8 +1,9 @@
 <script setup>
 import { useForm, usePage, Link } from "@inertiajs/inertia-vue3";
-import { ref, computed, reactive, watch  } from "vue";
+import { ref, computed, reactive, watch } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
+import Canvas from "./Canvas.vue";
 import moment from "moment";
 
 defineProps({
@@ -25,20 +26,19 @@ const form = useForm({
 });
 
 const selectedItem = ref({});
-watch(selectedItem, (newX) =>
-{
-  payload.product_id = newX.id
+watch(selectedItem, (newX) => {
+  payload.product_id = newX.id;
 });
 
 const purchasingClient = ref({});
-watch(purchasingClient, (newX) =>
-{
-  payload.client_id = newX.id
-})
+watch(purchasingClient, (newX) => {
+  payload.client_id = newX.id;
+});
 
 const purchasingQuantity = ref(1);
 const purchasingPrice = ref(200);
 
+const bottomCanvas = ref(false);
 const addModal = ref(false);
 const saleModal = ref(false);
 const showInvoice = ref(false);
@@ -47,15 +47,15 @@ const selectClientButtons = ref(false);
 const clientTypeModal = ref(false);
 const saleDetails = ref(false);
 
-const payload = reactive ({
-    added_by: currentUser,
-    client_id: null,
-    product_id: null,
-    product_quantity: purchasingQuantity,
-    sale_amount: purchasingPrice,
-    payment_status: false,
-    invoice_number: 1,
-  });
+const payload = reactive({
+  added_by: currentUser,
+  client_id: null,
+  product_id: null,
+  product_quantity: purchasingQuantity,
+  sale_amount: purchasingPrice,
+  payment_status: false,
+  invoice_number: 1,
+});
 
 const processButtons = (value) => {
   if (value == "existing") {
@@ -64,7 +64,7 @@ const processButtons = (value) => {
   } else if (value == "previous") {
     selectClientButtons.value = false;
     defaultClientButtons.value = true;
-  } else if (value == "selectedClient") { 
+  } else if (value == "selectedClient") {
     selectClientButtons.value = false;
     saleDetails.value = true;
   }
@@ -76,9 +76,7 @@ const saleItem = (product) => {
 };
 
 const processSale = () => {
-  
   Inertia.post("/dashboard/register_sale", payload);
-
 };
 
 const addProduct = () => {
@@ -130,14 +128,18 @@ const addProduct = () => {
             </span>
           </h2>
         </div>
-        <div class="grid gap-2 sm:gap-8 row-gap-5 mb-8 md:row-gap-8 lg:grid-cols-4 grid-cols-2">
+        <div
+          class="grid gap-2 sm:gap-8 row-gap-5 mb-8 md:row-gap-8 lg:grid-cols-4 grid-cols-2"
+        >
           <div
             class="duration-300 transform bg-white border-l-4 border-light-green-900 hover:-translate-y-2"
           >
             <div class="h-full p-3 sm:p-5 border border-l-0 rounded-r shadow-sm">
-              <h6 class="sm:mb-2 text-xs sm:text-xl font-semibold leading-5 flex pr-2 justify-between">
+              <h6
+                class="sm:mb-2 text-xs sm:text-xl font-semibold leading-5 flex pr-2 justify-between"
+              >
                 Available
-                <i class="fas fa-battery-full sm:fa-2x fa-lg  text-gray-400"></i>
+                <i class="fas fa-battery-full sm:fa-2x fa-lg text-gray-400"></i>
               </h6>
               <p class="text-lg sm:text-2xl text-green-900 font-extrabold">30</p>
             </div>
@@ -146,7 +148,9 @@ const addProduct = () => {
             class="duration-300 transform bg-white border-l-4 border-light-green-900 hover:-translate-y-2"
           >
             <div class="h-full p-3 sm:p-5 border border-l-0 rounded-r shadow-sm">
-              <h6 class="sm:mb-2 text-xs sm:text-xl font-semibold leading-5 flex pr-2 justify-between">
+              <h6
+                class="sm:mb-2 text-xs sm:text-xl font-semibold leading-5 flex pr-2 justify-between"
+              >
                 Delivered
                 <i class="fas fa-truck sm:fa-2x fa-lg text-gray-400"></i>
               </h6>
@@ -157,7 +161,9 @@ const addProduct = () => {
             class="duration-300 transform bg-white border-l-4 border-light-green-900 hover:-translate-y-2"
           >
             <div class="h-full p-3 sm:p-5 border border-l-0 rounded-r shadow-sm">
-              <h6 class="sm:mb-2 text-xs sm:text-xl font-semibold leading-5 flex pr-2 justify-between">
+              <h6
+                class="sm:mb-2 text-xs sm:text-xl font-semibold leading-5 flex pr-2 justify-between"
+              >
                 Low
                 <i class="fas fa-battery-quarter sm:fa-2x fa-lg text-gray-400"></i>
               </h6>
@@ -168,7 +174,9 @@ const addProduct = () => {
             class="duration-300 transform bg-white border-l-4 border-light-green-900 hover:-translate-y-2"
           >
             <div class="h-full p-3 sm:p-5 border border-l-0 rounded-r shadow-sm">
-              <h6 class="sm:mb-2 text-xs sm:text-xl font-semibold leading-5 flex pr-2 justify-between">
+              <h6
+                class="sm:mb-2 text-xs sm:text-xl font-semibold leading-5 flex pr-2 justify-between"
+              >
                 Finished
                 <i class="fas fa-battery-empty sm:fa-2x fa-lg text-gray-400"></i>
               </h6>
@@ -177,11 +185,18 @@ const addProduct = () => {
           </div>
         </div>
         <div class="text-center">
-          <button
+          <!-- <button
             @click="addModal = true"
             class="inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md md:w-auto bg-light-green-900 hover:bg-white hover:text-light-green-900 focus:shadow-outline focus:outline-none"
           >
             Add Product
+          </button> -->
+
+          <button
+            @click="bottomCanvas = true"
+            class="inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md md:w-auto bg-light-green-900 hover:bg-white hover:text-light-green-900 focus:shadow-outline focus:outline-none"
+          >
+            Register Sale
           </button>
         </div>
       </div>
@@ -884,7 +899,10 @@ const addProduct = () => {
           <div
             class="relative bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full sm:p-6"
           >
-            <div @click="clientTypeModal=false" class="text-gray-500 hover:text-gray-900">
+            <div
+              @click="clientTypeModal = false"
+              class="text-gray-500 hover:text-gray-900"
+            >
               <i class="flex justify-end fas fa-xmark"></i>
             </div>
             <div>
@@ -918,41 +936,79 @@ const addProduct = () => {
               </div>
             </div>
 
-            <div 
-            v-if="saleDetails"
-            class="mt-10">
-            <h3 id="shipping-heading" class="text-lg font-medium text-gray-900">Sale Details</h3>
+            <div v-if="saleDetails" class="mt-10">
+              <h3 id="shipping-heading" class="text-lg font-medium text-gray-900">
+                Sale Details
+              </h3>
 
-            <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
-              <div class="sm:col-span-3">
-                <label for="address" class="block text-sm font-medium text-gray-700">Product name</label>
-                <div class="mt-1">
-                  <input :placeholder="selectedItem.product_name" disabled type="text" id="address" name="address" autocomplete="street-address" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-3">
+                <div class="sm:col-span-3">
+                  <label for="address" class="block text-sm font-medium text-gray-700"
+                    >Product name</label
+                  >
+                  <div class="mt-1">
+                    <input
+                      :placeholder="selectedItem.product_name"
+                      disabled
+                      type="text"
+                      id="address"
+                      name="address"
+                      autocomplete="street-address"
+                      class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div>
-                <label for="city" class="block text-sm font-medium text-gray-700">SKU in MG</label>
-                <div class="mt-1">
-                  <input :placeholder="selectedItem.stock_quantity" disabled type="text" id="city" name="city" autocomplete="address-level2" class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <div>
+                  <label for="city" class="block text-sm font-medium text-gray-700"
+                    >SKU in MG</label
+                  >
+                  <div class="mt-1">
+                    <input
+                      :placeholder="selectedItem.stock_quantity"
+                      disabled
+                      type="text"
+                      id="city"
+                      name="city"
+                      autocomplete="address-level2"
+                      class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div>
-                <label for="region" class="block text-sm font-medium text-gray-700">Sale Price Per Unit</label>
-                <div class="mt-1">
-                  <input v-model="purchasingPrice" :placeholder="'Min Price: ' + selectedItem.sales_price" type="number" id="region" name="region" class="border-2 border-solid block w-full rounded-md shadow-sm ring-light-green-900 focus:border-green-900 border-light-green-900 sm:text-sm">
+                <div>
+                  <label for="region" class="block text-sm font-medium text-gray-700"
+                    >Sale Price Per Unit</label
+                  >
+                  <div class="mt-1">
+                    <input
+                      v-model="purchasingPrice"
+                      :placeholder="'Min Price: ' + selectedItem.sales_price"
+                      type="number"
+                      id="region"
+                      name="region"
+                      class="border-2 border-solid block w-full rounded-md shadow-sm ring-light-green-900 focus:border-green-900 border-light-green-900 sm:text-sm"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div>
-                <label for="postal-code" class="block text-sm font-medium text-gray-700">Number of Units</label>
-                <div class="mt-1">
-                  <input v-model="purchasingQuantity" :placeholder="'Available Units: ' + selectedItem.stock_quantity" type="number" id="postal-code" name="postal-code" class="border-2 border-solid block w-full rounded-md shadow-sm ring-light-green-900 focus:border-green-900 border-light-green-900 sm:text-sm">
+                <div>
+                  <label for="postal-code" class="block text-sm font-medium text-gray-700"
+                    >Number of Units</label
+                  >
+                  <div class="mt-1">
+                    <input
+                      v-model="purchasingQuantity"
+                      :placeholder="'Available Units: ' + selectedItem.stock_quantity"
+                      type="number"
+                      id="postal-code"
+                      name="postal-code"
+                      class="border-2 border-solid block w-full rounded-md shadow-sm ring-light-green-900 focus:border-green-900 border-light-green-900 sm:text-sm"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
             <div
               v-if="defaultClientButtons"
@@ -1021,11 +1077,22 @@ const addProduct = () => {
                 ></i>
               </button>
             </div>
-
           </div>
         </div>
       </div>
     </div>
+
+    <div v-if="bottomCanvas" class="offcanvas offcanvas-bottom fixed bottom-0 flex flex-col max-w-full bg-gray-100 bg-clip-padding shadow-sm outline-none transition duration-300 ease-in-out text-gray-700 left-0 right-0 border-none h-screen max-h-full" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+      <div class="offcanvas-header flex items-center justify-between p-4">
+        <!-- <h5 class="offcanvas-title mb-0 leading-normal font-extrabold text-gray-700 text-xl" id="offcanvasBottomLabel">Process Invoice</h5> -->
+        <i @click="bottomCanvas=false" class="fas fa-xmark fa-2x hover:cursor-pointer"></i>
+        <!-- <button type="button" class="btn-close box-content w-4 h-4 p-2 -my-5 -mr-2 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline" data-bs-dismiss="offcanvas" aria-label="Close"></button> -->
+      </div>
+      <div class="h-screen offcanvas-body flex-grow p-4 overflow-y-auto small">
+        <Canvas />
+      </div>
+    </div>
+
   </AppLayout>
 </template>
 
