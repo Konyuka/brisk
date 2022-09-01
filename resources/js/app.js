@@ -7,6 +7,9 @@ import { InertiaProgress } from '@inertiajs/progress';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from './tightenco/ziggy/dist/vue.m.js';
 import store from "./store";
+import { SetupCalendar, Calendar, DatePicker } from 'v-calendar';
+// import VCalendar from 'v-calendar';
+import 'v-calendar/dist/style.css';
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
@@ -18,6 +21,9 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue, Ziggy)
             .use(store)
+            .use(SetupCalendar)
+            .component('Calendar', Calendar)
+            .component('DatePicker', DatePicker)
             .mount(el);
     },
 });

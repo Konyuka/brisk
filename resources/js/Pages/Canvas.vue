@@ -1,39 +1,97 @@
 <script setup>
 // import { Head, Link } from "@inertiajs/inertia-vue3";
-import { ref } from "vue";
+import { ref, computed, watch, toRef } from "vue";
 // import { Inertia } from "@inertiajs/inertia";
-import AppLayout from "@/Layouts/AppLayout.vue";
+// import AppLayout from "@/Layouts/AppLayout.vue";
+import { Calendar, DatePicker } from "v-calendar";
+import moment from "moment";
 
-const tableCounter = ref(1); 
-const currentrows = ref([1])
-
-const addTableRow = (value) =>
-{ 
-    if (value=='add') {
-        let newTableCounter = tableCounter.value++
-        currentrows.value.push(newTableCounter);
-        tableCounter.value = newTableCounter
-    } else if (value == 'minus') { 
-        currentrows.value.pop();
-
-        // currentrows.splice(carIndex, 1);
-        // tableCounter.value = newTableCounter
-
-        // let newTableCounter = tableCounter.value++
-        // currentrows.value.push(newTableCounter);
-    }
-}
-
-
-defineProps({
-  //   canLogin: Boolean,
+const props = defineProps({
+  clients: Array,
 });
+
+
+const clientsCollapse = computed(() =>
+{
+    if (purchasingClient.value != "") {
+        // clientsCollapseValue.value=true
+        return true
+    } else {
+        // clientsCollapseValue.value=false
+        return false
+    }
+});
+const clients = computed(() => props.clients)
+
+const clientsCollapseValue = ref("");
+const searchedClient = ref([]);
+const purchasingClient = ref("");
+const selectedClient = ref({});
+const tableCounter = ref(1);
+const currentrows = ref([1]);
+const addClientCollapse = ref(false);
+// const clientsCollapse = ref(true);
+const date = ref(moment().format("MMMM Do YYYY, h:mm:ss a"));
+
+watch(purchasingClient, (value) =>
+{ 
+    if (value=="") { 
+        searchedClient.value = []
+    }
+    clientsCollapseValue.value = clientsCollapse
+})
+watch(purchasingClient, (value) => {
+    if (value) { 
+        // alert('twende')
+        let allClients = clients.value
+        // console.log(clients.value)
+        for(var i = 0; i < allClients.length; i++)
+        {
+            // console.log(allClients[i].client_name)
+            if(allClients[i].client_name.indexOf(purchasingClient.value) != -1)
+            {
+                if (!searchedClient.value.includes(allClients[i])) {
+                //  arr.push(str);
+                searchedClient.value.push(allClients[i])
+                }
+                // console.log(allClients[i].client_name)
+                // alert(allClients.clients[i]);
+            }
+        }
+    }
+});
+
+const setClient = (client) =>
+{ 
+    // alert('yess')
+    // console.log(client)
+    clientsCollapseValue.value=false
+    purchasingClient.value = client.client_name
+    selectedClient.value = client
+}
+const addTableRow = (value) => {
+  if (value == "add") {
+    let newTableCounter = tableCounter.value++;
+    currentrows.value.push(newTableCounter);
+    tableCounter.value = newTableCounter;
+  } else if (value == "minus") {
+    if (currentrows.value.length > 1) {
+      currentrows.value.pop();
+    }
+
+    // currentrows.splice(carIndex, 1);
+    // tableCounter.value = newTableCounter
+
+    // let newTableCounter = tableCounter.value++
+    // currentrows.value.push(newTableCounter);
+  }
+};
 </script>
 
 <template>
   <div>
     <nav
-      class="relative w-full flex flex-wrap items-center justify-between py-3 bg-light-green-100 text-gray-500 hover:text-gray-700 focus:text-gray-700 shadow-lg"
+      class="relative w-full flex flex-wrap items-center justify-between py-3 bg-gray-200 text-gray-500 hover:text-gray-700 focus:text-gray-700 shadow-lg"
     >
       <div
         class="container-fluid w-full flex flex-wrap items-center justify-between px-6"
@@ -54,21 +112,117 @@ defineProps({
     <div class="mt-10 mb-20">
       <div class="grid grid-cols-1 sm:grid-cols-4 sm:gap-6 justify-around">
         <div class="mb-3 xl:w-96">
-          <label
-            for="exampleFormControlInput1"
-            class="form-label inline-block mb-2 text-gray-700"
-            >Customer Name</label
-          >
+          <div class="flex flex-row justify-between">
+            <label
+              for="exampleFormControlInput1"
+              class="form-label inline-block mb-2 text-gray-700"
+              >Customer Name</label
+            >
+            <button
+              @click="addClientCollapse = !addClientCollapse"
+              for="exampleFormControlInput1"
+              class="bg-green-600 hover:bg-green-900 form-label rounded-md text-xs px-2 py-1 inline-block mb-2 text-white"
+            >
+              <i class="fas fa-plus"></i> Add Client
+              <!-- <i v-if="addClientCollapse" class="fas fa-xmark"></i> Close Dropdown -->
+            </button>
+          </div>
+          <div v-if="addClientCollapse" class="collapse mb-2" id="collapseExample">
+            <div class="block p-6 rounded-lg shadow-lg bg-white">
+              <div class="block p-6 rounded-lg shadow-lg bg-white max-w-sm">
+                <form>
+                  <div class="form-group mb-6">
+                    <label
+                      for="exampleInputEmail2"
+                      class="font-medium form-label inline-block mb-2 text-black"
+                      >Name</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                      id="exampleInputEmail2"
+                      aria-describedby="emailHelp"
+                      placeholder=""
+                    />
+                  </div>
+                  <div class="form-group mb-6">
+                    <label
+                      for="exampleInputEmail2"
+                      class="font-medium form-label inline-block mb-2 text-black"
+                      >Email</label
+                    >
+                    <input
+                      type="email"
+                      class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                      id="exampleInputEmail2"
+                      aria-describedby="emailHelp"
+                      placeholder=""
+                    />
+                  </div>
+                  <div class="form-group mb-6">
+                    <label
+                      for="exampleInputPassword2"
+                      class="font-medium form-label inline-block mb-2 text-black"
+                      >Phone</label
+                    >
+                    <input
+                      type="number"
+                      class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                      id="exampleInputPassword2"
+                      placeholder=""
+                    />
+                  </div>
+                  <div class="form-group mb-6">
+                    <label
+                      for="exampleInputPassword2"
+                      class="font-medium form-label inline-block mb-2 text-black"
+                      >PIN</label
+                    >
+                    <input
+                      type="number"
+                      class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                      id="exampleInputPassword2"
+                      placeholder=""
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="w-full px-6 py-2.5 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
+                  >
+                    Save
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
           <div class="mb-3 xl:w-96">
-            <select
+            <!-- <select
               class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
               aria-label="Default select example"
             >
               <option selected></option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
-            </select>
+              <option v-for="client in props.clients" :value="client">
+                {{ client.client_name }}
+              </option>
+            </select> -->
+
+            <input
+                v-model="purchasingClient"
+                type="text"
+                class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                id="exampleFormControlInput1"
+                placeholder=""
+            />
+
+            <div v-if="clientsCollapseValue" class="mt-2 collapse mb-2" id="collapseExample">
+              <div class="block p-3 rounded-lg shadow-lg bg-white">
+                <div  @click="setClient(client)" v-for="client in searchedClient" class="hover:cursor-pointer hover:bg-light-green-100 border-b-2 border-light-green-900 block px-4 py-2 rounded-lg shadow-lg hover:shadow-3xl bg-white max-w-sm">
+                  {{ client.client_name }}
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
         <div class="mb-3 xl:w-96">
@@ -148,16 +302,33 @@ defineProps({
           >
           <div class="mb-3 xl:w-96">
             <select
+              disabled
               class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
               aria-label="Default select example"
             >
-              <option selected></option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+              <!-- <option selected></option> -->
+              <option selected value="1">Due on Receipt</option>
             </select>
           </div>
         </div>
+
+        <!-- <v-date-picker v-model="date" /> -->
+
+        <!-- <div class="mb-3 xl:w-96">
+          <label
+            for="exampleFormControlInput1"
+            class="form-label inline-block mb-2 text-gray-700"
+            >Invoice Date</label
+          >
+          <input
+            type="text"
+            class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+            id="exampleFormControlInput1"
+            placeholder=""
+            v-model="date"
+          />
+          <DatePicker disable v-model="date" />
+        </div> -->
         <div class="mb-3 xl:w-96">
           <label
             for="exampleFormControlInput1"
@@ -169,20 +340,10 @@ defineProps({
             class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
             id="exampleFormControlInput1"
             placeholder=""
+            v-model="date"
           />
-        </div>
-        <div class="mb-3 xl:w-96">
-          <label
-            for="exampleFormControlInput1"
-            class="form-label inline-block mb-2 text-gray-700"
-            >Due Date</label
-          >
-          <input
-            type="text"
-            class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
-            id="exampleFormControlInput1"
-            placeholder=""
-          />
+
+          <!-- <DatePicker v-model="date" /> -->
         </div>
       </div>
 
@@ -291,7 +452,7 @@ defineProps({
                       <td
                         class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6"
                       >
-                        {{ index+1 }}
+                        {{ index + 1 }}
                       </td>
                       <td
                         class="whitespace-nowrap px-2 py-2 text-sm font-medium text-gray-900"
@@ -333,7 +494,11 @@ defineProps({
                       <td
                         class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
                       >
-                        <a @click.prevent="addTableRow('minus')" href="#" class="text-red-600 hover:text-red-900">
+                        <a
+                          @click.prevent="addTableRow('minus')"
+                          href="#"
+                          class="text-red-600 hover:text-red-900"
+                        >
                           <i class="fas fa-trash"></i>
                           <span class="sr-only">, AAPS0L</span></a
                         >
@@ -346,7 +511,7 @@ defineProps({
                 <div class="mt-10 m-10 flex flex-row justify-between">
                   <div>
                     <button
-                      @click="addTableRow('add')"  
+                      @click="addTableRow('add')"
                       type="button"
                       class="inline-block px-2 py-2 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
                     >
