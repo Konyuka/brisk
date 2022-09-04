@@ -1,74 +1,151 @@
 <script setup>
-// import { Head, Link } from "@inertiajs/inertia-vue3";
+import { useForm, usePage } from "@inertiajs/inertia-vue3";
 import { ref, computed, watch, toRef } from "vue";
 // import { Inertia } from "@inertiajs/inertia";
 // import AppLayout from "@/Layouts/AppLayout.vue";
-import { Calendar, DatePicker } from "v-calendar";
+// import { Calendar, DatePicker } from "v-calendar";
 import moment from "moment";
 
 const props = defineProps({
   clients: Array,
+  products: Array,
+  currentMessage: String,
 });
 
-
-const clientsCollapse = computed(() =>
-{
-    if (purchasingClient.value != "") {
-        // clientsCollapseValue.value=true
-        return true
-    } else {
-        // clientsCollapseValue.value=false
-        return false
-    }
+const clientsCollapse = computed(() => {
+  if (purchasingClient.value != "") {
+    return true;
+  } else {
+    return false;
+  }
 });
-const clients = computed(() => props.clients)
+const productsCollapse = computed(() => {
+  if (purchasedProduct.value != "") {
+    return true;
+  } else {
+    return false;
+  }
+});
+const searchedClientsArray = computed(() => {
+  if (searchedClient.value.length != 0) {
+    return true;
+  } else {
+    return false;
+  }
+});
+const searchedProductsArray = computed(() => {
+  if (searchedProduct.value.length != 0) {
+    return true;
+  } else {
+    return false;
+  }
+});
 
+const clients = computed(() => props.clients);
+const currentUser = computed(() => usePage().props.value.user.id);
+
+const form = useForm({
+  client_name: "",
+  client_email: "michael@gmail.com",
+  client_contact: "0716202297",
+  client_kra: "A87686HDIU5Y",
+  client_address: "Ngong Road 30287",
+  added_by: currentUser,
+});
 const clientsCollapseValue = ref("");
+const productsCollapseValue = ref("");
 const searchedClient = ref([]);
+const searchedProduct = ref([]);
 const purchasingClient = ref("");
+const purchasedProduct = ref("");
 const selectedClient = ref({});
+const selectedProducts = ref([]);
 const tableCounter = ref(1);
 const currentrows = ref([1]);
 const addClientCollapse = ref(false);
 // const clientsCollapse = ref(true);
 const date = ref(moment().format("MMMM Do YYYY, h:mm:ss a"));
 
-watch(purchasingClient, (value) =>
-{ 
-    if (value=="") { 
-        searchedClient.value = []
-    }
-    clientsCollapseValue.value = clientsCollapse
-})
 watch(purchasingClient, (value) => {
-    if (value) { 
-        // alert('twende')
-        let allClients = clients.value
-        // console.log(clients.value)
-        for(var i = 0; i < allClients.length; i++)
-        {
-            // console.log(allClients[i].client_name)
-            if(allClients[i].client_name.indexOf(purchasingClient.value) != -1)
-            {
-                if (!searchedClient.value.includes(allClients[i])) {
-                //  arr.push(str);
-                searchedClient.value.push(allClients[i])
-                }
-                // console.log(allClients[i].client_name)
-                // alert(allClients.clients[i]);
-            }
+  if (value == "") {
+    searchedClient.value = [];
+    selectedClient.value = {};
+  }
+  clientsCollapseValue.value = clientsCollapse;
+});
+watch(purchasedProduct, (value) => {
+  if (value == "") {
+    searchedProduct.value = [];
+    selectedProducts.value = [];
+  }
+  productsCollapseValue.value = productsCollapse;
+});
+watch(purchasingClient, (value) => {
+  if (value) {
+    // alert('twende')
+    let allClients = clients.value;
+    // console.log(clients.value)
+    for (var i = 0; i < allClients.length; i++) {
+      // console.log(allClients[i].client_name)
+      if (allClients[i].client_name.indexOf(purchasingClient.value) != -1) {
+        if (!searchedClient.value.includes(allClients[i])) {
+          //  arr.push(str);
+          searchedClient.value.push(allClients[i]);
         }
+        // console.log(allClients[i].client_name)
+        // alert(allClients.clients[i]);
+      }
     }
+  }
+});
+watch(purchasedProduct, (value) => {
+  if (value) {
+    // alert('twende')
+    let allProducts = props.products;
+    // console.log(allProducts)
+    for (var i = 0; i < allProducts.length; i++) {
+      // console.log(allClients[i].client_name)
+      if (allProducts[i].product_name.indexOf(purchasedProduct.value) != -1) {
+        if (!searchedProduct.value.includes(allProducts[i])) {
+          //  arr.push(str);
+          searchedProduct.value.push(allProducts[i]);
+        }
+        // console.log(allClients[i].client_name)
+        // alert(allClients.clients[i]);
+      }
+    }
+  }
 });
 
-const setClient = (client) =>
-{ 
-    // alert('yess')
-    // console.log(client)
-    clientsCollapseValue.value=false
-    purchasingClient.value = client.client_name
-    selectedClient.value = client
-}
+const addClient = () => {
+  // Inertia.post('/add_product', form)
+  form.post("/dashboard/register_client", {
+    preserveScroll: true,
+    preserveState: true,
+    onSuccess: () => {
+      form.reset();
+      // addModal = false
+      alert("Client Added");
+    },
+  });
+};
+const setClient = (client) => {
+  // alert('yess')
+  // console.log(client)
+  clientsCollapseValue.value = false;
+  purchasingClient.value = client.client_name;
+  selectedClient.value = client;
+};
+const setProduct = (product) => {
+  // alert('yess')
+  // console.log(client)
+  productsCollapseValue.value = false;
+    purchasedProduct.value = product.product_name;
+  if (!selectedProducts.value.includes(product)) {
+        // searchedClient.value.push(allClients[i]);
+        selectedProducts.value.push(product)
+    }
+};
 const addTableRow = (value) => {
   if (value == "add") {
     let newTableCounter = tableCounter.value++;
@@ -90,6 +167,29 @@ const addTableRow = (value) => {
 
 <template>
   <div>
+    <div
+      v-if="props.currentMessage != null"
+      class="flex p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
+      role="alert"
+    >
+      <svg
+        aria-hidden="true"
+        class="flex-shrink-0 inline w-5 h-5 mr-3"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+          clip-rule="evenodd"
+        ></path>
+      </svg>
+      <span class="sr-only">Info</span>
+      <div>
+        <span class="font-medium">{{ props.currentMessage }}</span>
+      </div>
+    </div>
     <nav
       class="relative w-full flex flex-wrap items-center justify-between py-3 bg-gray-200 text-gray-500 hover:text-gray-700 focus:text-gray-700 shadow-lg"
     >
@@ -119,6 +219,7 @@ const addTableRow = (value) => {
               >Customer Name</label
             >
             <button
+              v-if="!addClientCollapse"
               @click="addClientCollapse = !addClientCollapse"
               for="exampleFormControlInput1"
               class="bg-green-600 hover:bg-green-900 form-label rounded-md text-xs px-2 py-1 inline-block mb-2 text-white"
@@ -126,18 +227,28 @@ const addTableRow = (value) => {
               <i class="fas fa-plus"></i> Add Client
               <!-- <i v-if="addClientCollapse" class="fas fa-xmark"></i> Close Dropdown -->
             </button>
+            <button
+              v-if="addClientCollapse"
+              @click="addClientCollapse = !addClientCollapse"
+              for="exampleFormControlInput1"
+              class="bg-red-600 hover:bg-red-900 form-label rounded-md text-xs px-2 py-1 inline-block mb-2 text-white"
+            >
+              <i class="fas fa-xmark"></i> Close Dropdown
+              <!-- <i v-if="addClientCollapse" class="fas fa-xmark"></i> Close Dropdown -->
+            </button>
           </div>
           <div v-if="addClientCollapse" class="collapse mb-2" id="collapseExample">
-            <div class="block p-6 rounded-lg shadow-lg bg-white">
-              <div class="block p-6 rounded-lg shadow-lg bg-white max-w-sm">
+            <div class="block rounded-lg shadow-lg bg-white">
+              <div class="block p-4 rounded-lg shadow-lg bg-white max-w-sm">
                 <form>
-                  <div class="form-group mb-6">
+                  <div class="form-group mb-2">
                     <label
                       for="exampleInputEmail2"
-                      class="font-medium form-label inline-block mb-2 text-black"
+                      class="font-medium form-label inline-block mb-2 text-gray-800 text-sm"
                       >Name</label
                     >
                     <input
+                      v-model="form.client_name"
                       type="text"
                       class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                       id="exampleInputEmail2"
@@ -145,13 +256,14 @@ const addTableRow = (value) => {
                       placeholder=""
                     />
                   </div>
-                  <div class="form-group mb-6">
+                  <div class="form-group mb-2">
                     <label
                       for="exampleInputEmail2"
-                      class="font-medium form-label inline-block mb-2 text-black"
+                      class="font-medium form-label inline-block mb-2 text-gray-800 text-sm"
                       >Email</label
                     >
                     <input
+                      v-model="form.client_email"
                       type="email"
                       class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                       id="exampleInputEmail2"
@@ -159,34 +271,60 @@ const addTableRow = (value) => {
                       placeholder=""
                     />
                   </div>
-                  <div class="form-group mb-6">
+                  <div class="form-group mb-2">
                     <label
                       for="exampleInputPassword2"
-                      class="font-medium form-label inline-block mb-2 text-black"
+                      class="font-medium form-label inline-block mb-2 text-gray-800 text-sm"
                       >Phone</label
                     >
                     <input
+                      v-model="form.client_contact"
                       type="number"
                       class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                       id="exampleInputPassword2"
                       placeholder=""
                     />
                   </div>
-                  <div class="form-group mb-6">
+                  <div class="form-group mb-2">
                     <label
                       for="exampleInputPassword2"
-                      class="font-medium form-label inline-block mb-2 text-black"
+                      class="font-medium form-label inline-block mb-2 text-gray-800 text-sm"
                       >PIN</label
                     >
                     <input
-                      type="number"
+                      v-model="form.client_kra"
+                      type="text"
                       class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                       id="exampleInputPassword2"
                       placeholder=""
                     />
                   </div>
 
+                  <div class="form-group mb-2">
+                    <label
+                      for="exampleInputPassword2"
+                      class="font-medium form-label inline-block mb-2 text-gray-800 text-sm"
+                      >Address</label
+                    >
+                    <textarea
+                      v-model="form.client_address"
+                      class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                      id="exampleFormControlTextarea1"
+                      rows="3"
+                      placeholder="Your message"
+                    ></textarea>
+
+                    <!-- <input
+                      v-model="form.client_kra"
+                      type="number"
+                      class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                      id="exampleInputPassword2"
+                      placeholder=""
+                    /> -->
+                  </div>
+
                   <button
+                    @click="addClient"
                     type="submit"
                     class="w-full px-6 py-2.5 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
                   >
@@ -208,16 +346,25 @@ const addTableRow = (value) => {
             </select> -->
 
             <input
-                v-model="purchasingClient"
-                type="text"
-                class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
-                id="exampleFormControlInput1"
-                placeholder=""
+              v-model="purchasingClient"
+              type="text"
+              class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+              id="exampleFormControlInput1"
+              placeholder=""
             />
 
-            <div v-if="clientsCollapseValue" class="mt-2 collapse mb-2" id="collapseExample">
+            <div
+              v-if="clientsCollapseValue"
+              class="mt-2 collapse mb-2"
+              id="collapseExample"
+            >
               <div class="block p-3 rounded-lg shadow-lg bg-white">
-                <div  @click="setClient(client)" v-for="client in searchedClient" class="hover:cursor-pointer hover:bg-light-green-100 border-b-2 border-light-green-900 block px-4 py-2 rounded-lg shadow-lg hover:shadow-3xl bg-white max-w-sm">
+                <div
+                  v-if="searchedClientsArray"
+                  @click="setClient(client)"
+                  v-for="client in searchedClient"
+                  class="hover:cursor-pointer hover:bg-light-green-100 border-b-2 border-light-green-900 block px-4 py-2 rounded-lg shadow-lg hover:shadow-3xl bg-white max-w-sm"
+                >
                   {{ client.client_name }}
                 </div>
               </div>
@@ -232,6 +379,8 @@ const addTableRow = (value) => {
             >Customer Phone</label
           >
           <input
+            disabled
+            v-model="selectedClient.client_contact"
             type="text"
             class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
             id="exampleFormControlInput1"
@@ -245,6 +394,8 @@ const addTableRow = (value) => {
             >Customer Email</label
           >
           <input
+            disabled
+            v-model="selectedClient.client_email"
             type="text"
             class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
             id="exampleFormControlInput1"
@@ -258,6 +409,8 @@ const addTableRow = (value) => {
             >Customer Pin</label
           >
           <input
+            disabled
+            v-model="selectedClient.client_kra"
             type="text"
             class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
             id="exampleFormControlInput1"
@@ -273,6 +426,7 @@ const addTableRow = (value) => {
           >Customer Address</label
         >
         <textarea
+          v-model="selectedClient.client_address"
           class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
           id="exampleFormControlTextarea1"
           rows="3"
@@ -391,12 +545,12 @@ const addTableRow = (value) => {
                       >
                         #
                       </th>
-                      <th
+                      <!-- <th
                         scope="col"
                         class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                       >
                         Service Date
-                      </th>
+                      </th> -->
                       <th
                         scope="col"
                         class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
@@ -447,14 +601,14 @@ const addTableRow = (value) => {
                       </th>
                     </tr>
                   </thead>
-                  <tbody class="divide-y divide-gray-200 bg-white">
-                    <tr v-for="(rowNumber, index) in currentrows">
+                  <tbody  class="divide-y divide-gray-200 bg-white">
+                    <tr  v-for="(rowNumber, index) in currentrows">
                       <td
                         class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6"
                       >
                         {{ index + 1 }}
                       </td>
-                      <td
+                      <!-- <td
                         class="whitespace-nowrap px-2 py-2 text-sm font-medium text-gray-900"
                       >
                         <input
@@ -463,9 +617,32 @@ const addTableRow = (value) => {
                           id="exampleFormControlInput1"
                           placeholder=""
                         />
-                      </td>
+                      </td> -->
                       <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-                        <select
+                        <input
+                          v-model="purchasedProduct"
+                          type="text"
+                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          id="exampleFormControlInput1"
+                          placeholder=""
+                        />
+                        <div
+                          v-if="productsCollapseValue"
+                          class="mt-2 collapse mb-2"
+                          id="collapseExample"
+                        >
+                          <div class="block p-3 rounded-lg shadow-lg bg-white">
+                            <div
+                              v-if="searchedProductsArray"
+                              @click="setProduct(product)"
+                              v-for="product in searchedProduct"
+                              class="text-black hover:cursor-pointer hover:bg-light-green-100 border-b-2 border-light-green-900 block px-4 py-2 rounded-lg shadow-lg hover:shadow-3xl bg-white max-w-sm"
+                            >
+                              {{ product.product_name }}
+                            </div>
+                          </div>
+                        </div>
+                        <!-- <select
                           class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                           aria-label="Default select example"
                         >
@@ -473,17 +650,18 @@ const addTableRow = (value) => {
                           <option value="1">One</option>
                           <option value="2">Two</option>
                           <option value="3">Three</option>
-                        </select>
+                        </select> -->
                       </td>
-                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                        20 Liters
+                      
+                      <td v-for="product in selectedProducts" class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                        {{ product.product_quantity }} Liters
                       </td>
-                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                        Multipurpose Soap
+                      <td v-for="product in selectedProducts" class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                        {{ product.product_description }}
                       </td>
-                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">1</td>
-                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                        KES. 200
+                      <td  class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">1</td>
+                      <td v-for="product in selectedProducts" class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                        KES. {{ product.sales_price }}
                       </td>
                       <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                         KES. 200

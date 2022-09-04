@@ -41,7 +41,8 @@ class DashboardController extends Controller
         $client->client_address = $request->client_address;
         $client->client_balance = $request->product_description;
         $client->save();
-        return redirect()->back();
+        // return;
+        return redirect()->back()->with('success', 'User Created Successfully');
 
     }
 

@@ -1,6 +1,6 @@
 <script setup>
 import { useForm, usePage, Link } from "@inertiajs/inertia-vue3";
-import { ref, computed, reactive, watch } from "vue";
+import { ref, computed, reactive, watch, onMounted  } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Canvas from "./Canvas.vue";
@@ -12,6 +12,7 @@ defineProps({
   message: String,
 });
 
+const currentMessage = computed(() => usePage().props.value.flash.success);
 const currentUser = computed(() => usePage().props.value.user.id);
 const currentTime = computed(() => moment().format("LLL"));
 
@@ -39,6 +40,26 @@ const purchasingQuantity = ref(1);
 const purchasingPrice = ref(200);
 
 const bottomCanvas = ref(false);
+onMounted(() => {
+      console.log('check')
+  console.log(currentMessage.value)
+  if (currentMessage.value != null) {
+    bottomCanvas.value = true
+  } else { 
+    bottomCanvas.value = false
+  }
+      // watch(currentMessage.value, (value) =>
+      // { 
+      //   if (value != null) {
+      //     bottomCanvas.value = true
+      //     console.log('check true')
+      //   } else { 
+      //     bottomCanvas.value = false
+      //     console.log('check false')
+      //   }
+      // })
+      
+})
 const addModal = ref(false);
 const saleModal = ref(false);
 const showInvoice = ref(false);
@@ -1089,7 +1110,7 @@ const addProduct = () => {
         <!-- <button type="button" class="btn-close box-content w-4 h-4 p-2 -my-5 -mr-2 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline" data-bs-dismiss="offcanvas" aria-label="Close"></button> -->
       </div>
       <div class="h-screen offcanvas-body flex-grow p-4 overflow-y-auto small">
-        <Canvas :clients="clients" />
+        <Canvas :clients="clients" :products="products" :currentMessage="currentMessage" />
       </div>
     </div>
 
