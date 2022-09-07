@@ -33,14 +33,14 @@ const searchedClientsArray = computed(() => {
     return false;
   }
 });
-const searchedProductsArray = computed(() => {
-  if (searchedProduct.value.length != 0) {
-    return true;
-  } else {
-    return false;
-  }
-});
-
+// const searchedProductsArray = computed(() => {
+//   if (searchedProduct.value.length != 0) {
+//     return true;
+//   } else {
+//     return false;
+//   }
+// });
+const searchedProductsArray = ref(null)
 const clients = computed(() => props.clients);
 const currentUser = computed(() => usePage().props.value.user.id);
 
@@ -59,9 +59,20 @@ const searchedProduct = ref([]);
 const purchasingClient = ref("");
 const purchasedProduct = ref("");
 const selectedClient = ref({});
-const selectedProducts = ref([]);
+const selectedProducts = ref([
+  {
+    productname: "",
+    productSKU: "",
+    productDescription: "",
+    productQuantity: "",
+    productPrice: "",
+    total: "",
+    vat: "",
+  },
+]);
 const tableCounter = ref(1);
-const currentrows = ref([1]);
+const currentrows = ref([]);
+// const currentrows = ref([1]);
 const addClientCollapse = ref(false);
 // const clientsCollapse = ref(true);
 const date = ref(moment().format("MMMM Do YYYY, h:mm:ss a"));
@@ -73,13 +84,19 @@ watch(purchasingClient, (value) => {
   }
   clientsCollapseValue.value = clientsCollapse;
 });
-watch(purchasedProduct, (value) => {
-  if (value == "") {
+
+watch(purchasedProduct, (value) =>
+{
+  console.log(value[0].productname)
+  if (value[0].productname == "") {
+    alert('hi')
     searchedProduct.value = [];
     selectedProducts.value = [];
   }
   productsCollapseValue.value = productsCollapse;
-});
+},
+{deep: true}
+);
 watch(purchasingClient, (value) => {
   if (value) {
     // alert('twende')
@@ -98,24 +115,44 @@ watch(purchasingClient, (value) => {
     }
   }
 });
-watch(purchasedProduct, (value) => {
+watch(purchasedProduct, (value) =>
+{
+  console.log(value)
   if (value) {
     // alert('twende')
     let allProducts = props.products;
     // console.log(allProducts)
+    searchedProduct.value = []
     for (var i = 0; i < allProducts.length; i++) {
       // console.log(allClients[i].client_name)
-      if (allProducts[i].product_name.indexOf(purchasedProduct.value) != -1) {
-        if (!searchedProduct.value.includes(allProducts[i])) {
-          //  arr.push(str);
-          searchedProduct.value.push(allProducts[i]);
-        }
+      // console.log(purchasedProduct.value[i].productname)
+      // if (allProducts[i].product_name.startsWith(selectedProducts.value[0].productname) != -1) {
+      if (allProducts[i].product_name.indexOf(selectedProducts.value[0].productname) != -1) {
+      // if (allProducts[i].product_name.indexOf(purchasedProduct.value.productname) != -1) {
+        // alert('hi 1')
+        
+        searchedProduct.value.push(allProducts[i]);
+
+        // if (!searchedProduct.value.includes(allProducts[i])) {
+        //   //  arr.push(str);
+        //   alert('hi 2')
+        //   searchedProduct.value.push(allProducts[i]);
+        // }
         // console.log(allClients[i].client_name)
         // alert(allClients.clients[i]);
       }
     }
   }
-});
+},
+{deep: true}
+);
+watch(selectedProducts, (value) =>
+{ 
+  purchasedProduct.value = value;
+  searchedProductsArray.value = true
+},
+{deep: true}
+)
 
 const addClient = () => {
   // Inertia.post('/add_product', form)
@@ -140,29 +177,38 @@ const setProduct = (product) => {
   // alert('yess')
   // console.log(client)
   productsCollapseValue.value = false;
-    purchasedProduct.value = product.product_name;
+  purchasedProduct.value = product.product_name;
   if (!selectedProducts.value.includes(product)) {
-        // searchedClient.value.push(allClients[i]);
-        selectedProducts.value.push(product)
-    }
-};
-const addTableRow = (value) => {
-  if (value == "add") {
-    let newTableCounter = tableCounter.value++;
-    currentrows.value.push(newTableCounter);
-    tableCounter.value = newTableCounter;
-  } else if (value == "minus") {
-    if (currentrows.value.length > 1) {
-      currentrows.value.pop();
-    }
-
-    // currentrows.splice(carIndex, 1);
-    // tableCounter.value = newTableCounter
-
-    // let newTableCounter = tableCounter.value++
-    // currentrows.value.push(newTableCounter);
+    // searchedClient.value.push(allClients[i]);
+    selectedProducts.value.push(product);
   }
 };
+const addTableRow = () => {
+  selectedProducts.value.push(
+      {
+        productname: "",
+        productSKU: "",
+        productDescription: "",
+        productQuantity: "",
+        productPrice: "",
+        total: "",
+        vat: "",
+      },
+    );
+};
+const deleteTableRow = (index, selectedProduct) =>
+{ 
+  var idx = selectedProducts.value.indexOf(selectedProduct);
+            console.log(idx, index);
+            if (idx > -1) {
+                selectedProducts.value.splice(idx, 1);
+            }
+            calculateTotal();
+}
+const calculateTotal= () =>
+{ 
+  
+}
 </script>
 
 <template>
@@ -369,7 +415,6 @@ const addTableRow = (value) => {
                 </div>
               </div>
             </div>
-
           </div>
         </div>
         <div class="mb-3 xl:w-96">
@@ -522,8 +567,8 @@ const addTableRow = (value) => {
                   class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                   aria-label="Default select example"
                 >
-                  <option value="2">Inclusive of Tax</option>
-                  <option value="1">Exclusive of Tax</option>
+                  <option value="2">Inclusive of VAT</option>
+                  <option value="1">Exclusive of VAT</option>
                   <option value="3">Out of scope of task</option>
                 </select>
               </div>
@@ -591,7 +636,7 @@ const addTableRow = (value) => {
                         scope="col"
                         class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                       >
-                        Tax
+                        VAT
                       </th>
                       <th
                         scope="col"
@@ -601,23 +646,114 @@ const addTableRow = (value) => {
                       </th>
                     </tr>
                   </thead>
-                  <tbody  class="divide-y divide-gray-200 bg-white">
+                  <tbody class="divide-y divide-gray-200 bg-white">
+                    <tr v-for="(selectedProduct, index) in selectedProducts" :key="index">
+                      <td
+                        class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6"
+                      >
+                        {{ index + 1 }}
+                      </td>
+                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
+                        <input
+                          v-model="selectedProduct.productname"
+                          type="text"
+                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          id="exampleFormControlInput1"
+                          placeholder=""
+                        />
+                        <div
+                          v-if="productsCollapseValue"
+                          class="mt-2 collapse mb-2"
+                          id="collapseExample"
+                        >
+                          <div class="block p-3 rounded-lg shadow-lg bg-white">
+                            <div
+                              v-if="searchedProductsArray"
+                              @click="setProduct(product)"
+                              v-for="product in searchedProduct"
+                              class="text-black hover:cursor-pointer hover:bg-light-green-100 border-b-2 border-light-green-900 block px-4 py-2 rounded-lg shadow-lg hover:shadow-3xl bg-white max-w-sm"
+                            >
+                              {{ product.product_name }}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                        <input
+                          v-model="selectedProduct.productSKU"
+                          type="text"
+                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          id="exampleFormControlInput1"
+                          placeholder=""
+                        />
+                      </td>
+                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                        <input
+                          v-model="selectedProduct.productDescription"
+                          type="text"
+                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          id="exampleFormControlInput1"
+                          placeholder=""
+                        />
+                      </td>
+                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                        <input
+                          v-model="selectedProduct.productQuantity"
+                          type="text"
+                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          id="exampleFormControlInput1"
+                          placeholder=""
+                        />
+                      </td>
+                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                        <input
+                          v-model="selectedProduct.productPrice"
+                          type="text"
+                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          id="exampleFormControlInput1"
+                          placeholder=""
+                        />
+                      </td>
+                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                        <input
+                          v-model="selectedProduct.total"
+                          type="text"
+                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          id="exampleFormControlInput1"
+                          placeholder=""
+                        />
+                      </td>
+                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                        <input
+                          v-model="selectedProduct.vat"
+                          type="text"
+                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          id="exampleFormControlInput1"
+                          placeholder=""
+                        />
+                      </td>
+                      <td
+                        class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
+                      >
+                        <a
+                          @click.prevent="deleteTableRow(index, selectedProduct)"
+                          class="text-red-600 hover:text-red-900"
+                        >
+                          <i class="fas fa-trash"></i>
+                          <span class="sr-only">, Remove Button</span></a
+                        >
+                      </td>
+                    </tr>
+                  </tbody>
+                  <!-- <tbody  class="divide-y divide-gray-200 bg-white">
                     <tr  v-for="(rowNumber, index) in currentrows">
                       <td
                         class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6"
                       >
                         {{ index + 1 }}
                       </td>
-                      <!-- <td
-                        class="whitespace-nowrap px-2 py-2 text-sm font-medium text-gray-900"
-                      >
-                        <input
-                          type="text"
-                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
-                          id="exampleFormControlInput1"
-                          placeholder=""
-                        />
-                      </td> -->
+                      
                       <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
                         <input
                           v-model="purchasedProduct"
@@ -642,15 +778,7 @@ const addTableRow = (value) => {
                             </div>
                           </div>
                         </div>
-                        <!-- <select
-                          class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
-                          aria-label="Default select example"
-                        >
-                          <option selected></option>
-                          <option value="1">One</option>
-                          <option value="2">Two</option>
-                          <option value="3">Three</option>
-                        </select> -->
+                       
                       </td>
                       
                       <td v-for="product in selectedProducts" class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
@@ -682,14 +810,12 @@ const addTableRow = (value) => {
                         >
                       </td>
                     </tr>
-
-                    <!-- More transactions... -->
-                  </tbody>
+                  </tbody> -->
                 </table>
                 <div class="mt-10 m-10 flex flex-row justify-between">
                   <div>
                     <button
-                      @click="addTableRow('add')"
+                      @click="addTableRow()"
                       type="button"
                       class="inline-block px-2 py-2 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
                     >
@@ -701,7 +827,7 @@ const addTableRow = (value) => {
                       <h3>
                         Subtotal: <span class="text-gray-800 text-xl">KES 100</span>
                       </h3>
-                      <h3>Tax: <span class="text-gray-800 text-xl">KES 100</span></h3>
+                      <h3>VAT: <span class="text-gray-800 text-xl">KES 100</span></h3>
                     </div>
 
                     <div>
