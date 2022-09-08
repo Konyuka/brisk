@@ -35,7 +35,7 @@ const searchedClientsArray = computed(() => {
   }
 });
 const selectedProductIndex = computed(() => {
-  return selectedProducts.value.length - 1
+  return selectedProducts.value.length - 1;
 });
 
 // console.log(selectedProducts.value.length)
@@ -68,7 +68,7 @@ const selectedClient = ref({});
 const selectedProducts = ref([
   {
     productname: "",
-    selectedproductName:"",
+    selectedproductName: "",
     productSKU: "",
     productDescription: "",
     productQuantity: "",
@@ -77,11 +77,8 @@ const selectedProducts = ref([
     vat: "",
   },
 ]);
-const tableCounter = ref(1);
-const currentrows = ref([]);
-// const currentrows = ref([1]);
+
 const addClientCollapse = ref(false);
-// const clientsCollapse = ref(true);
 const date = ref(moment().format("MMMM Do YYYY, h:mm:ss a"));
 
 watch(purchasingClient, (value) => {
@@ -96,6 +93,7 @@ watch(purchasingClient, (value) => {
   if (value) {
     // selectedProducts.value.length - 1
     // alert('twende')
+    
     let allClients = clients.value;
     // console.log(clients.value)
     for (var i = 0; i < allClients.length; i++) {
@@ -126,8 +124,9 @@ watch(
         // if (allProducts[i].product_name.startsWith(selectedProducts.value[0].productname) != -1) {
         if (selectedProducts.value != []) {
           if (
-            allProducts[i].product_name.indexOf(selectedProducts.value[selectedProductIndex.value].productname) !=
-            -1
+            allProducts[i].product_name.indexOf(
+              selectedProducts.value[selectedProductIndex.value].productname
+            ) != -1
           ) {
             // if (allProducts[i].product_name.indexOf(purchasedProduct.value.productname) != -1) {
             // alert('hi 1')
@@ -192,20 +191,25 @@ const setClient = (client) => {
 };
 const setProduct = (product) => {
   // alert('yess')
-  console.log(product)
+  // console.log(product);
+  
+  // console.log(selectedProducts.value[selectedProductIndex.value].productQuantity * selectedProducts.value[selectedProductIndex.value].productPrice)
   productsCollapseValue.value = false;
   purchasedProduct.value = product.product_name;
   if (!selectedProducts.value.includes(product)) {
     // searchedClient.value.push(allClients[i]);
-    selectedProducts.value[selectedProductIndex.value].productDescription = product.product_description
+    selectedProducts.value[selectedProductIndex.value].productDescription = product.product_description;
     selectedProducts.value[selectedProductIndex.value].productPrice = product.sales_price;
-    selectedProducts.value[selectedProductIndex.value].productQuantity = 1
-    selectedProducts.value[selectedProductIndex.value].productSKU = product.product_quantity
-    selectedProducts.value[selectedProductIndex.value].selectedproductName = product.product_name
-    // selectedProducts.value[selectedProductIndex.value].total = 
-    // selectedProducts.value[selectedProductIndex.value].vat = 
-    // selectedProducts.value[selectedProductIndex].productDescription = product.product_description
-    // selectedProducts.value.push(product);
+    selectedProducts.value[selectedProductIndex.value].productQuantity = 1;
+    selectedProducts.value[selectedProductIndex.value].productSKU = product.product_quantity;
+    selectedProducts.value[selectedProductIndex.value].selectedproductName = product.product_name;
+    selectedProducts.value[selectedProductIndex.value].total = selectedProducts.value[selectedProductIndex.value].productQuantity * selectedProducts.value[selectedProductIndex.value].productPrice;
+    selectedProducts.value[selectedProductIndex.value].vat = Math.round(selectedProducts.value[selectedProductIndex.value].total * 0.16);
+    selectedProducts.value[selectedProductIndex.value].salePrice = selectedProducts.value[selectedProductIndex.value].total + selectedProducts.value[selectedProductIndex.value].vat
+      
+
+      
+    // console.log(selectedProducts.value[selectedProductIndex.value].productQuantity * selectedProducts.value[selectedProductIndex.value].productPrice)
   }
   addTableRow();
   productsCollapseValue.value = false;
@@ -216,9 +220,10 @@ const addTableRow = () => {
     productSKU: "",
     productDescription: "",
     productQuantity: "",
-    productPrice: "",
-    total: "",
-    vat: "",
+    productPrice: null,
+    total: null,
+    vat: null,
+    salePrice: null,
   });
 };
 const deleteTableRow = (index, selectedProduct) => {
@@ -229,7 +234,15 @@ const deleteTableRow = (index, selectedProduct) => {
   }
   calculateTotal();
 };
-const calculateTotal = () => {};
+const setCalculations = (index) =>
+{
+  // alert(index)
+  console.log(selectedProducts.value[index].total
+  )
+  selectedProducts.value[index].total = selectedProducts.value[index].productQuantity * selectedProducts.value[index].productPrice;
+  selectedProducts.value[index].vat = Math.round(selectedProducts.value[index].total * 0.16);
+  selectedProducts.value[index].salePrice = selectedProducts.value[index].total + selectedProducts.value[index].vat
+};
 </script>
 
 <template>
@@ -575,15 +588,15 @@ const calculateTotal = () => {};
             <!-- <p class="mt-2 text-sm text-gray-700">
               A table of placeholder stock market data that does not make any sense.
             </p> -->
-            
+
             <div class="mt-4 whitespace-nowrap py-2 text-sm text-gray-900">
               <input
-              v-model="selectedProducts[selectedProductIndex].productname"
-              type="text"
+                v-model="selectedProducts[selectedProductIndex].productname"
+                type="text"
                 class="form-control block w-1/2 px-3 py-1.5 text-base font-bold text-gray-900 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                 id="exampleFormControlInput1"
                 placeholder="Search Products"
-                />
+              />
               <div
                 v-if="productsCollapseValue"
                 class="mt-2 collapse mb-2 w-1/2 max-h-52 overflow-y-auto"
@@ -601,9 +614,8 @@ const calculateTotal = () => {};
                 </div>
               </div>
             </div>
-
           </div>
-          <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+          <!-- <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
             <div class="mb-3 xl:w-96">
               <label
                 for="exampleFormControlInput1"
@@ -621,7 +633,7 @@ const calculateTotal = () => {};
                 </select>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
         <div class="mt-8 flex flex-col">
           <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -684,7 +696,13 @@ const calculateTotal = () => {};
                         scope="col"
                         class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                       >
-                        VAT
+                        VAT (16%)
+                      </th>
+                      <th
+                        scope="col"
+                        class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Sale Price
                       </th>
                       <th
                         scope="col"
@@ -748,16 +766,18 @@ const calculateTotal = () => {};
                       </td>
                       <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                         <input
+                          disabled
                           v-model="selectedProduct.productDescription"
                           type="text"
-                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                           id="exampleFormControlInput1"
                           placeholder=""
                         />
                       </td>
                       <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                         <input
-                          v-model="selectedProduct.productQuantity"
+                        v-model="selectedProduct.productQuantity"
+                        @change="setCalculations(index)"
                           type="text"
                           class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                           id="exampleFormControlInput1"
@@ -766,7 +786,8 @@ const calculateTotal = () => {};
                       </td>
                       <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                         <input
-                          v-model="selectedProduct.productPrice"
+                        v-model="selectedProduct.productPrice"
+                        @change="setCalculations(index)"
                           type="text"
                           class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                           id="exampleFormControlInput1"
@@ -775,22 +796,44 @@ const calculateTotal = () => {};
                       </td>
                       <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                         <input
-                          v-model="selectedProduct.total"
+                          disabled
+                          :value="selectedProduct.total"
                           type="text"
-                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                           id="exampleFormControlInput1"
                           placeholder=""
                         />
                       </td>
                       <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                         <input
+                          disabled
                           v-model="selectedProduct.vat"
                           type="text"
-                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                           id="exampleFormControlInput1"
                           placeholder=""
                         />
                       </td>
+                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                        <input
+                          disabled
+                          v-model="selectedProduct.salePrice"
+                          type="text"
+                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          id="exampleFormControlInput1"
+                          placeholder=""
+                        />
+                      </td>
+                      <!-- <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                        <select
+                          class="form-select form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          aria-label="Default select example"
+                        >
+                          <option value="2">Inclusive</option>
+                          <option value="1">Exclusive</option>
+                          <option value="3">Scopeless</option>
+                        </select>
+                      </td> -->
                       <td
                         class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
                       >
