@@ -65,6 +65,11 @@ const searchedProduct = ref([]);
 const purchasingClient = ref("");
 const purchasedProduct = ref("");
 const selectedClient = ref({});
+
+const overallSubtotal = ref(null);
+const overallTax = ref(null);
+const overallTotal = ref(null);
+
 const selectedProducts = ref([
   {
     productname: "",
@@ -72,9 +77,10 @@ const selectedProducts = ref([
     productSKU: "",
     productDescription: "",
     productQuantity: "",
-    productPrice: "",
-    total: "",
-    vat: "",
+    productPrice: null,
+    total: null,
+    vat: null,
+    salePrice: null,
   },
 ]);
 
@@ -206,10 +212,8 @@ const setProduct = (product) => {
     selectedProducts.value[selectedProductIndex.value].total = selectedProducts.value[selectedProductIndex.value].productQuantity * selectedProducts.value[selectedProductIndex.value].productPrice;
     selectedProducts.value[selectedProductIndex.value].vat = Math.round(selectedProducts.value[selectedProductIndex.value].total * 0.16);
     selectedProducts.value[selectedProductIndex.value].salePrice = selectedProducts.value[selectedProductIndex.value].total + selectedProducts.value[selectedProductIndex.value].vat
-      
 
-      
-    // console.log(selectedProducts.value[selectedProductIndex.value].productQuantity * selectedProducts.value[selectedProductIndex.value].productPrice)
+    addEverything();      
   }
   addTableRow();
   productsCollapseValue.value = false;
@@ -242,7 +246,22 @@ const setCalculations = (index) =>
   selectedProducts.value[index].total = selectedProducts.value[index].productQuantity * selectedProducts.value[index].productPrice;
   selectedProducts.value[index].vat = Math.round(selectedProducts.value[index].total * 0.16);
   selectedProducts.value[index].salePrice = selectedProducts.value[index].total + selectedProducts.value[index].vat
+  addEverything();
 };
+
+const addEverything = () =>
+{ 
+  var sumSubtotal = selectedProducts.value.reduce((accumulator, object) => {
+    return accumulator + object.salePrice;
+  }, 0);
+  var sumTax = selectedProducts.value.reduce((accumulator, object) => {
+    return accumulator + object.vat;
+  }, 0);
+
+  overallSubtotal.value = sumSubtotal
+  overallTax.value = sumTax
+  overallTotal.value = sumSubtotal + sumTax
+}
 </script>
 
 <template>
@@ -283,7 +302,7 @@ const setCalculations = (index) =>
         </div>
         <div class="container-fluid">
           <h5 class="text-xl text-black font-semibold" href="#">
-            <i class="fa-solid fa-coins"></i> Balance Due KES.200
+            <i class="fa-solid fa-coins"></i> Balance Due KES. {{ overallTotal }}
           </h5>
         </div>
       </div>
@@ -593,13 +612,13 @@ const setCalculations = (index) =>
               <input
                 v-model="selectedProducts[selectedProductIndex].productname"
                 type="text"
-                class="form-control block w-1/2 px-3 py-1.5 text-base font-bold text-gray-900 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                class="form-control block w-full sm:w-1/2 px-3 py-1.5 text-base font-bold text-gray-900 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                 id="exampleFormControlInput1"
                 placeholder="Search Products"
               />
               <div
                 v-if="productsCollapseValue"
-                class="mt-2 collapse mb-2 w-1/2 max-h-52 overflow-y-auto"
+                class="mt-2 collapse mb-2 w-full sm:w-1/2 max-h-52 overflow-y-auto"
                 id="collapseExample"
               >
                 <div class="block p-3 rounded-lg shadow-lg bg-white">
@@ -924,19 +943,25 @@ const setCalculations = (index) =>
                     </button> -->
                   </div>
                   <div class="flex flex-col font-extrabold">
+                    <!-- <div>
+                      <button
+                      @click="addEverything()" 
+                      type="button"
+                      class="mb-2 inline-block px-2 py-2 sm:px-6 sm:py-2.5 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
+                    >
+                      <i class="fas fa-square-root-variable mr-2 fa-xl"></i> Do Calculations
+                    </button>
+                    </div> -->
                     <div>
                       <h3>
-                        Subtotal: <span class="text-gray-800 text-xl">KES 100</span>
+                        Subtotal: <span class="text-gray-800 text-xl">KES {{ overallSubtotal }} </span>
                       </h3>
-                      <h3>VAT: <span class="text-gray-800 text-xl">KES 100</span></h3>
+                      <h3>VAT: <span class="text-gray-800 text-xl">KES {{ overallTax }}</span></h3>
                     </div>
 
                     <div>
                       <h3 class="mt-5">
-                        Total: <span class="text-black text-2xl">KES 100</span>
-                      </h3>
-                      <h3>
-                        Balance Due: <span class="text-black text-2xl">KES 100</span>
+                        Total: <span class="text-black text-2xl">KES {{ overallTotal }}</span>
                       </h3>
                     </div>
                   </div>
