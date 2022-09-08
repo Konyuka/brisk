@@ -20,7 +20,8 @@ const clientsCollapse = computed(() => {
   }
 });
 const productsCollapse = computed(() => {
-  if (purchasedProduct.value != "") {
+  if (selectedProducts.value[0].productname != "") {
+    // if (purchasedProduct.value != "") {
     return true;
   } else {
     return false;
@@ -33,6 +34,11 @@ const searchedClientsArray = computed(() => {
     return false;
   }
 });
+const selectedProductIndex = computed(() => {
+  return selectedProducts.value.length - 1
+});
+
+// console.log(selectedProducts.value.length)
 // const searchedProductsArray = computed(() => {
 //   if (searchedProduct.value.length != 0) {
 //     return true;
@@ -40,7 +46,7 @@ const searchedClientsArray = computed(() => {
 //     return false;
 //   }
 // });
-const searchedProductsArray = ref(null)
+const searchedProductsArray = ref(null);
 const clients = computed(() => props.clients);
 const currentUser = computed(() => usePage().props.value.user.id);
 
@@ -62,6 +68,7 @@ const selectedClient = ref({});
 const selectedProducts = ref([
   {
     productname: "",
+    selectedproductName:"",
     productSKU: "",
     productDescription: "",
     productQuantity: "",
@@ -85,20 +92,9 @@ watch(purchasingClient, (value) => {
   clientsCollapseValue.value = clientsCollapse;
 });
 
-watch(purchasedProduct, (value) =>
-{
-  console.log(value[0].productname)
-  if (value[0].productname == "") {
-    alert('hi')
-    searchedProduct.value = [];
-    selectedProducts.value = [];
-  }
-  productsCollapseValue.value = productsCollapse;
-},
-{deep: true}
-);
 watch(purchasingClient, (value) => {
   if (value) {
+    // selectedProducts.value.length - 1
     // alert('twende')
     let allClients = clients.value;
     // console.log(clients.value)
@@ -115,44 +111,65 @@ watch(purchasingClient, (value) => {
     }
   }
 });
-watch(purchasedProduct, (value) =>
-{
-  console.log(value)
-  if (value) {
-    // alert('twende')
-    let allProducts = props.products;
-    // console.log(allProducts)
-    searchedProduct.value = []
-    for (var i = 0; i < allProducts.length; i++) {
-      // console.log(allClients[i].client_name)
-      // console.log(purchasedProduct.value[i].productname)
-      // if (allProducts[i].product_name.startsWith(selectedProducts.value[0].productname) != -1) {
-      if (allProducts[i].product_name.indexOf(selectedProducts.value[0].productname) != -1) {
-      // if (allProducts[i].product_name.indexOf(purchasedProduct.value.productname) != -1) {
-        // alert('hi 1')
-        
-        searchedProduct.value.push(allProducts[i]);
-
-        // if (!searchedProduct.value.includes(allProducts[i])) {
-        //   //  arr.push(str);
-        //   alert('hi 2')
-        //   searchedProduct.value.push(allProducts[i]);
-        // }
+watch(
+  purchasedProduct,
+  (value) => {
+    // console.log(value.length);
+    if (value.length != 0) {
+      // alert('twende')
+      let allProducts = props.products;
+      // console.log(allProducts)
+      searchedProduct.value = [];
+      for (var i = 0; i < allProducts.length; i++) {
         // console.log(allClients[i].client_name)
-        // alert(allClients.clients[i]);
+        // console.log(purchasedProduct.value[i].productname)
+        // if (allProducts[i].product_name.startsWith(selectedProducts.value[0].productname) != -1) {
+        if (selectedProducts.value != []) {
+          if (
+            allProducts[i].product_name.indexOf(selectedProducts.value[selectedProductIndex.value].productname) !=
+            -1
+          ) {
+            // if (allProducts[i].product_name.indexOf(purchasedProduct.value.productname) != -1) {
+            // alert('hi 1')
+
+            searchedProduct.value.push(allProducts[i]);
+
+            // if (!searchedProduct.value.includes(allProducts[i])) {
+            //   //  arr.push(str);
+            //   alert('hi 2')
+            //   searchedProduct.value.push(allProducts[i]);
+            // }
+            // console.log(allClients[i].client_name)
+            // alert(allClients.clients[i]);
+          }
+        }
       }
     }
-  }
-},
-{deep: true}
+  },
+  { deep: true }
 );
-watch(selectedProducts, (value) =>
-{ 
-  purchasedProduct.value = value;
-  searchedProductsArray.value = true
-},
-{deep: true}
-)
+watch(
+  purchasedProduct,
+  (value) => {
+    // console.log(value[0].productname)
+    if (value.length != 0 && value[0].productname == "") {
+      // alert('hi')
+      searchedProduct.value = [];
+      // selectedProducts.value = [];
+      searchedProductsArray.value = null;
+    }
+    productsCollapseValue.value = productsCollapse;
+  },
+  { deep: true }
+);
+watch(
+  selectedProducts,
+  (value) => {
+    purchasedProduct.value = value;
+    searchedProductsArray.value = true;
+  },
+  { deep: true }
+);
 
 const addClient = () => {
   // Inertia.post('/add_product', form)
@@ -175,40 +192,44 @@ const setClient = (client) => {
 };
 const setProduct = (product) => {
   // alert('yess')
-  // console.log(client)
+  console.log(product)
   productsCollapseValue.value = false;
   purchasedProduct.value = product.product_name;
   if (!selectedProducts.value.includes(product)) {
     // searchedClient.value.push(allClients[i]);
-    selectedProducts.value.push(product);
+    selectedProducts.value[selectedProductIndex.value].productDescription = product.product_description
+    selectedProducts.value[selectedProductIndex.value].productPrice = product.sales_price;
+    selectedProducts.value[selectedProductIndex.value].productQuantity = 1
+    selectedProducts.value[selectedProductIndex.value].productSKU = product.product_quantity
+    selectedProducts.value[selectedProductIndex.value].selectedproductName = product.product_name
+    // selectedProducts.value[selectedProductIndex.value].total = 
+    // selectedProducts.value[selectedProductIndex.value].vat = 
+    // selectedProducts.value[selectedProductIndex].productDescription = product.product_description
+    // selectedProducts.value.push(product);
   }
+  addTableRow();
+  productsCollapseValue.value = false;
 };
 const addTableRow = () => {
-  selectedProducts.value.push(
-      {
-        productname: "",
-        productSKU: "",
-        productDescription: "",
-        productQuantity: "",
-        productPrice: "",
-        total: "",
-        vat: "",
-      },
-    );
+  selectedProducts.value.push({
+    productname: "",
+    productSKU: "",
+    productDescription: "",
+    productQuantity: "",
+    productPrice: "",
+    total: "",
+    vat: "",
+  });
 };
-const deleteTableRow = (index, selectedProduct) =>
-{ 
+const deleteTableRow = (index, selectedProduct) => {
   var idx = selectedProducts.value.indexOf(selectedProduct);
-            console.log(idx, index);
-            if (idx > -1) {
-                selectedProducts.value.splice(idx, 1);
-            }
-            calculateTotal();
-}
-const calculateTotal= () =>
-{ 
-  
-}
+  console.log(idx, index);
+  if (idx > -1) {
+    selectedProducts.value.splice(idx, 1);
+  }
+  calculateTotal();
+};
+const calculateTotal = () => {};
 </script>
 
 <template>
@@ -554,6 +575,33 @@ const calculateTotal= () =>
             <!-- <p class="mt-2 text-sm text-gray-700">
               A table of placeholder stock market data that does not make any sense.
             </p> -->
+            
+            <div class="mt-4 whitespace-nowrap py-2 text-sm text-gray-900">
+              <input
+              v-model="selectedProducts[selectedProductIndex].productname"
+              type="text"
+                class="form-control block w-1/2 px-3 py-1.5 text-base font-bold text-gray-900 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                id="exampleFormControlInput1"
+                placeholder="Search Products"
+                />
+              <div
+                v-if="productsCollapseValue"
+                class="mt-2 collapse mb-2 w-1/2 max-h-52 overflow-y-auto"
+                id="collapseExample"
+              >
+                <div class="block p-3 rounded-lg shadow-lg bg-white">
+                  <div
+                    v-if="searchedProductsArray"
+                    @click="setProduct(product)"
+                    v-for="product in searchedProduct"
+                    class="text-black hover:cursor-pointer hover:bg-light-green-100 border-b-2 border-light-green-900 block px-4 py-2 rounded-lg shadow-lg hover:shadow-3xl bg-white max-w-sm"
+                  >
+                    {{ product.product_name }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
           <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
             <div class="mb-3 xl:w-96">
@@ -653,7 +701,8 @@ const calculateTotal= () =>
                       >
                         {{ index + 1 }}
                       </td>
-                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
+
+                      <!-- <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
                         <input
                           v-model="selectedProduct.productname"
                           type="text"
@@ -677,8 +726,17 @@ const calculateTotal= () =>
                             </div>
                           </div>
                         </div>
-                      </td>
+                      </td> -->
 
+                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                        <input
+                          v-model="selectedProduct.selectedproductName"
+                          type="text"
+                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          id="exampleFormControlInput1"
+                          placeholder=""
+                        />
+                      </td>
                       <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                         <input
                           v-model="selectedProduct.productSKU"
@@ -814,13 +872,13 @@ const calculateTotal= () =>
                 </table>
                 <div class="mt-10 m-10 flex flex-row justify-between">
                   <div>
-                    <button
+                    <!-- <button
                       @click="addTableRow()"
                       type="button"
                       class="inline-block px-2 py-2 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
                     >
                       <i class="fas fa-plus mr-1"></i> Add Lines
-                    </button>
+                    </button> -->
                   </div>
                   <div class="flex flex-col font-extrabold">
                     <div>
