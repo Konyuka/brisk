@@ -36,6 +36,8 @@ Route::middleware([
     ->name('register_sale');
     Route::get('/dashboard/process_order', [DashboardController::class, 'processOrder'])
     ->name('process_order');
+    Route::get('/dashboard/invoice_number', [DashboardController::class, 'invoiceNumber'])
+    ->name('invoice_number');
     Route::get('/dashboard/display_receipt', [DashboardController::class, 'displayReceipt'])
     ->name('display_receipt');
     Route::post('/dashboard/finish_sale', [DashboardController::class, 'finishSale'])

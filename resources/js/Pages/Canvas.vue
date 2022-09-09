@@ -10,6 +10,7 @@ const props = defineProps({
   clients: Array,
   products: Array,
   currentMessage: String,
+  invoiceLog: String
 });
 
 const clientsCollapse = computed(() => {
@@ -297,13 +298,13 @@ const addEverything = () =>
         class="container-fluid w-full flex flex-wrap items-center justify-between px-6"
       >
         <div class="container-fluid">
-          <h5 class="text-xl text-black font-semibold" href="#">
-            <i class="fa-solid fa-file-invoice-dollar"></i> Invoice no.S4567
+          <h5 class="text-md text-black font-semibold" href="#">
+            <i class="fa-solid fa-file-invoice-dollar"></i> Invoice no. <span class="text-2xl">{{ invoiceLog }}</span>
           </h5>
         </div>
         <div class="container-fluid">
-          <h5 class="text-xl text-black font-semibold" href="#">
-            <i class="fa-solid fa-coins"></i> Balance Due KES. {{ overallTotal }}
+          <h5 class="text-md text-black font-semibold" href="#">
+            <i class="fa-solid fa-coins"></i> Balance Due KES. <span class="text-2xl">{{ overallTotal }}</span> 
           </h5>
         </div>
       </div>
@@ -322,7 +323,7 @@ const addEverything = () =>
         v-if="anonymousSale"
         @click="anonymousSale=false"
         for="exampleFormControlInput1"
-        class="bg-orange-700 hover:bg-orange-900 form-label font-bold rounded-md text-xs px-2 py-2 inline-block mb-2 text-white"
+        class="bg-blue-700 hover:bg-blue-900 form-label font-bold rounded-md text-xs px-2 py-2 inline-block mb-2 text-white"
       >
         Add Client Details
       </button>
@@ -557,7 +558,9 @@ const addEverything = () =>
             class="form-label inline-block mb-2 text-gray-700"
             >Invoice Number</label
           >
-          <input
+          <input 
+            disabled
+            :value="invoiceLog"
             type="text"
             class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
             id="exampleFormControlInput1"
@@ -582,23 +585,7 @@ const addEverything = () =>
           </div>
         </div>
 
-        <!-- <v-date-picker v-model="date" /> -->
-
-        <!-- <div class="mb-3 xl:w-96">
-          <label
-            for="exampleFormControlInput1"
-            class="form-label inline-block mb-2 text-gray-700"
-            >Invoice Date</label
-          >
-          <input
-            type="text"
-            class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
-            id="exampleFormControlInput1"
-            placeholder=""
-            v-model="date"
-          />
-          <DatePicker disable v-model="date" />
-        </div> -->
+        
         <div class="mb-3 xl:w-96">
           <label
             for="exampleFormControlInput1"
@@ -606,6 +593,7 @@ const addEverything = () =>
             >Invoice Date</label
           >
           <input
+            disabled
             type="text"
             class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
             id="exampleFormControlInput1"
@@ -785,18 +773,20 @@ const addEverything = () =>
 
                       <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                         <input
+                          disabled
                           v-model="selectedProduct.selectedproductName"
                           type="text"
-                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-gray-200  bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                           id="exampleFormControlInput1"
                           placeholder=""
                         />
                       </td>
                       <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                         <input
+                          disabled
                           v-model="selectedProduct.productSKU"
                           type="text"
-                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-gray-200  bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                           id="exampleFormControlInput1"
                           placeholder=""
                         />
@@ -806,7 +796,7 @@ const addEverything = () =>
                           disabled
                           v-model="selectedProduct.productDescription"
                           type="text"
-                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-gray-200   border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                           id="exampleFormControlInput1"
                           placeholder=""
                         />

@@ -123,9 +123,11 @@ class DashboardController extends Controller
     {
         $products = Product::latest()->get();
         $clients = Client::latest()->get();
+        $invoice = Sale::latest()->get()->first();
         return Inertia::render('Stock', [
             'products' => $products,
-            'clients' => $clients
+            'clients' => $clients,
+            'invoiceLog' => $invoice->id,
         ]);
     }
 
@@ -153,9 +155,14 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function show($id)
+    public function invoiceNumber()
     {
-        //
+        $invoice = Sale::latest()->get()->first();
+        // return Inertia::render('Stock', [
+        //     'invoiceLog' => $invoice->id,
+        // ]);
+        // return redirect()->back()->with($invoice->id);
+        return $invoice->id;
     }
 
     

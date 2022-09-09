@@ -10,6 +10,7 @@ defineProps({
   products: Array,
   clients: Array,
   message: String,
+  invoiceLog: String
 });
 
 const currentMessage = computed(() => usePage().props.value.flash.success);
@@ -77,6 +78,12 @@ const payload = reactive({
   payment_status: false,
   invoice_number: 1,
 });
+
+const getInvoiceForm = async () =>
+{ 
+  Inertia.reload({ only: ['invoiceLog'] })
+  bottomCanvas.value = true
+}
 
 const processButtons = (value) => {
   if (value == "existing") {
@@ -214,7 +221,7 @@ const addProduct = () => {
           </button> -->
 
           <button
-            @click="bottomCanvas = true"
+            @click="getInvoiceForm"
             class="inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md md:w-auto bg-light-green-900 hover:bg-white hover:text-light-green-900 focus:shadow-outline focus:outline-none"
           >
             Register Sale
@@ -1110,7 +1117,7 @@ const addProduct = () => {
         <!-- <button type="button" class="btn-close box-content w-4 h-4 p-2 -my-5 -mr-2 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline" data-bs-dismiss="offcanvas" aria-label="Close"></button> -->
       </div>
       <div class="h-screen offcanvas-body flex-grow p-4 overflow-y-auto small">
-        <Canvas :clients="clients" :products="products" :currentMessage="currentMessage" />
+        <Canvas :clients="clients" :products="products" :currentMessage="currentMessage" :invoiceLog="invoiceLog"/>
       </div>
     </div>
 
