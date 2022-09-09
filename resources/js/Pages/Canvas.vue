@@ -238,7 +238,8 @@ const deleteTableRow = (index, selectedProduct) => {
   if (idx > -1) {
     selectedProducts.value.splice(idx, 1);
   }
-  calculateTotal();
+  // calculateTotal();
+  addEverything(); 
 };
 const setCalculations = (index) =>
 {
