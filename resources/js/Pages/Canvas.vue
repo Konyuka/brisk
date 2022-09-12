@@ -1,10 +1,11 @@
 <script setup>
 import { useForm, usePage } from "@inertiajs/inertia-vue3";
-import { ref, computed, watch, toRef } from "vue";
+import { ref, computed, watch, toRef, reactive } from "vue";
 // import { Inertia } from "@inertiajs/inertia";
 // import AppLayout from "@/Layouts/AppLayout.vue";
 // import { Calendar, DatePicker } from "v-calendar";
 import moment from "moment";
+import Receipt from "./Receipt.vue";
 
 const props = defineProps({
   clients: Array,
@@ -39,14 +40,14 @@ const selectedProductIndex = computed(() => {
   return selectedProducts.value.length - 1;
 });
 
-// console.log(selectedProducts.value.length)
-// const searchedProductsArray = computed(() => {
-//   if (searchedProduct.value.length != 0) {
-//     return true;
-//   } else {
-//     return false;
-//   }
+// const payload = reactive({
+//   amount_paid: amountPaid.value,
+//   payment_method: paymentMethod.value,
+//   sale_id: props.sale.id,
+//   product_id: props.product.id,
 // });
+
+const printTrigger = ref(false)
 const searchedProductsArray = ref(null);
 const clients = computed(() => props.clients);
 const currentUser = computed(() => usePage().props.value.user.id);
@@ -74,6 +75,7 @@ const overallTotal = ref(null);
 
 const selectedProducts = ref([
   {
+    selectedproductID: null, 
     productname: "",
     selectedproductName: "",
     productSKU: "",
@@ -178,6 +180,16 @@ watch(
   { deep: true }
 );
 
+
+const finishSale = () =>
+{
+  // console.log(payload)
+  // Inertia.post("/dashboard/finish_sale", payload);
+};
+const printInvoice = () =>
+{
+  printTrigger.value = !printTrigger.value
+}
 const addClient = () => {
   // Inertia.post('/add_product', form)
   form.post("/dashboard/register_client", {
@@ -199,11 +211,26 @@ const setClient = (client) => {
 };
 const setProduct = (product) => {
   // alert('yess')
-  // console.log(product);
+  // console.log(product.id);
   
   // console.log(selectedProducts.value[selectedProductIndex.value].productQuantity * selectedProducts.value[selectedProductIndex.value].productPrice)
   productsCollapseValue.value = false;
   purchasedProduct.value = product.product_name;
+
+  // var checkDuplicate 
+  for (var i = 0; i < selectedProducts.value.length; i++) { 
+    if (i > 0) { 
+      console.log(i)
+      console.log(selectedProducts.value[i].selectedproductID)
+    }
+    // if (!product.includes(selectedProducts.value[i])) {
+    //   alert('haiko')
+    // } else { 
+    //   alert('iko')
+    //   // return false
+    // }
+  }
+
   if (!selectedProducts.value.includes(product)) {
     // searchedClient.value.push(allClients[i]);
     selectedProducts.value[selectedProductIndex.value].productDescription = product.product_description;
@@ -211,6 +238,7 @@ const setProduct = (product) => {
     selectedProducts.value[selectedProductIndex.value].productQuantity = 1;
     selectedProducts.value[selectedProductIndex.value].productSKU = product.product_quantity;
     selectedProducts.value[selectedProductIndex.value].selectedproductName = product.product_name;
+    selectedProducts.value[selectedProductIndex.value].selectedproductID = product.id;
     selectedProducts.value[selectedProductIndex.value].total = selectedProducts.value[selectedProductIndex.value].productQuantity * selectedProducts.value[selectedProductIndex.value].productPrice;
     selectedProducts.value[selectedProductIndex.value].vat = Math.round(selectedProducts.value[selectedProductIndex.value].total * 0.16);
     selectedProducts.value[selectedProductIndex.value].salePrice = selectedProducts.value[selectedProductIndex.value].total + selectedProducts.value[selectedProductIndex.value].vat
@@ -998,12 +1026,14 @@ const addEverything = () =>
         </div>
         <div class="container-fluid">
           <button
+            @click="printInvoice"
             type="button"
             class="mb-2 mr-2 inline-block px-2 py-2 sm:px-6 sm:py-2.5 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
           >
             <i class="fas fa-print mr-2"></i> Print Invoice
           </button>
           <button
+            @click="finishSale"
             type="button"
             class="mb-2 inline-block px-2 py-2 sm:px-6 sm:py-2.5 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
           >
@@ -1012,5 +1042,8 @@ const addEverything = () =>
         </div>
       </div>
     </nav>
+
+    <Receipt :selectedProducts="selectedProducts" :invoiceLog="invoiceLog" :overallSubtotal="overallSubtotal" :overallTax="overallTax" :overallTotal="overallTotal" :printTrigger="printTrigger" class="hidden" />
+
   </div>
 </template>

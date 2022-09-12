@@ -1,13 +1,27 @@
 <script setup>
-// import { Head, Link } from "@inertiajs/inertia-vue3";
+import { usePage  } from "@inertiajs/inertia-vue3";
 import { watch, toRefs, computed, ref } from "vue";
 import moment from 'moment'
 
 const props = defineProps({
-    testProp: Boolean,
+  selectedProducts: Array,
+  invoiceLog: String,
+  overallSubtotal: String,
+  overallTax: String,
+  overallTotal: String,
+  printTrigger: String,
 });
 
-const { testProp } = toRefs(props)
+const { selectedProducts } = toRefs(props)
+const { invoiceLog } = toRefs(props)
+const { overallSubtotal } = toRefs(props)
+const { overallTax } = toRefs(props)
+const { overallTotal } = toRefs(props)
+const { printTrigger } = toRefs(props)
+
+const salesPerson = computed(() => usePage().props.value.user.name)
+
+const itemNumber = computed(() => { return selectedProducts.value.length - 1  } )
 
 const invoiceNumber = ref(JSON.parse(localStorage.getItem('invoiceNumber')))
 const productName = ref(JSON.parse(localStorage.getItem('productName')))
@@ -21,7 +35,7 @@ const invoiceTime = computed(() => {
     return moment().format('MMMM Do YYYY, h:mm:ss a');
 });
 
-watch(testProp, (value) => {
+watch(printTrigger, (value) => {
   generatePDF();
   // console.log(value)
 })
@@ -103,7 +117,7 @@ const generatePDF = () =>
               margin-top: 15pt;
             "
           >
-            Invoice #{{ invoiceNumber }}
+            Invoice # {{ invoiceLog }}
             <p
               style="
                 color: black;
@@ -121,7 +135,7 @@ const generatePDF = () =>
         </h1>
       </div>
 
-      <table class="mt-5">
+      <table cellspacing="0" cellpadding="0" class="mt-5">
         <thead>
           <tr>
             <th class="description">Name</th>
@@ -130,13 +144,39 @@ const generatePDF = () =>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td style="font-size: 9.5pt;" class="description">{{ productName}}</td>
-            <td class="quantity">{{ saleQuantity}} Item(s)</td>
-            <td class="price">KES. {{ salePrice }}</td>
+          <tr v-for="(product, index) in selectedProducts.slice(0, itemNumber)" :key="index">
+            <td  style="font-size: 9.5pt;" class="description">{{ product.selectedproductName}}</td>
+            <td  class="quantity">{{ product.productQuantity}} Item(s)</td>
+            <td  class="price">KES. {{ product.productPrice }}</td>
           </tr>
         </tbody>
       </table>
+
+      <!-- <div style="display: grid; 
+margin-top: 1.25rem;
+margin-bottom: 1.25rem; 
+width: 24rem; 
+grid-template-columns: repeat(4, minmax(0, 1fr)); 
+gap: 1rem; ">
+        <div>Item</div>
+        <div>Quantity</div>
+        <div>Price</div>
+        <div>Total</div>
+      </div> -->
+
+      <!-- <div class="flex flex-row justify-between">
+        <div class="flex flex-cols justify-between">
+          <p>Item</p>
+          <p>Item</p>
+          <p>Item</p>
+        </div>
+        <div class="flex flex-cols justify-between">
+          <p>Items</p>
+          <p>Items</p>
+          <p>Items</p>
+        </div>
+      </div> -->
+
         <p
             style="
               color: black;
@@ -148,7 +188,7 @@ const generatePDF = () =>
               margin: 0pt;
             "
           >
-            Subtotal: KES. {{ subTotal }} 
+            Subtotal: KES. {{ overallSubtotal }} 
           </p>
         <p
             style="
@@ -161,7 +201,7 @@ const generatePDF = () =>
               margin: 0pt;
             "
           >
-            Tax (16%): KES. {{ tax}} 
+            Tax (16%): KES. {{ overallTax }} 
           </p>
         <p
             style="
@@ -174,11 +214,14 @@ const generatePDF = () =>
               margin: 0pt;
             "
           >
-            Grand Total: KES. {{ grandTotal }} 
+            Grand Total: KES. {{ overallTotal }} 
           </p>
 
 
-      <div style="font-size: 20.5pt;" class="mt-10">
+      <div style="font-size: 15.5pt;" class="mt-10">
+        <p>Served by {{ salesPerson }}</p>
+      </div>
+      <div style="font-size: 20.5pt;" class="">
         <p>Thank you for the purchase</p>
       </div>
     </div>
@@ -193,8 +236,7 @@ td,
 th,
 tr,
 table {
-  border-top: 0.3px solid white;
-  border-collapse: collapse;
+  border: none !important;
 }
 
 td.description,
