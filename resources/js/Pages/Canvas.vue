@@ -11,7 +11,7 @@ const props = defineProps({
   clients: Array,
   products: Array,
   currentMessage: String,
-  invoiceLog: String
+  invoiceLog: String,
 });
 
 const clientsCollapse = computed(() => {
@@ -47,7 +47,7 @@ const selectedProductIndex = computed(() => {
 //   product_id: props.product.id,
 // });
 
-const printTrigger = ref(false)
+const printTrigger = ref(false);
 const searchedProductsArray = ref(null);
 const clients = computed(() => props.clients);
 const currentUser = computed(() => usePage().props.value.user.id);
@@ -75,12 +75,13 @@ const overallTotal = ref(null);
 
 const selectedProducts = ref([
   {
-    selectedproductID: null, 
+    selectedproductID: null,
     productname: "",
     selectedproductName: "",
     productSKU: "",
     productDescription: "",
     productQuantity: "",
+    remainingProducts: null,
     productPrice: null,
     total: null,
     vat: null,
@@ -103,7 +104,7 @@ watch(purchasingClient, (value) => {
   if (value) {
     // selectedProducts.value.length - 1
     // alert('twende')
-    
+
     let allClients = clients.value;
     // console.log(clients.value)
     for (var i = 0; i < allClients.length; i++) {
@@ -157,7 +158,7 @@ watch(
   },
   {
     deep: true,
-    immediate: true
+    immediate: true,
   }
 );
 watch(
@@ -174,7 +175,7 @@ watch(
   },
   {
     deep: true,
-    immediate: true
+    immediate: true,
   }
 );
 watch(
@@ -185,19 +186,17 @@ watch(
   },
   {
     deep: true,
-    immediate: true
+    immediate: true,
   }
 );
 
-const finishSale = () =>
-{
+const finishSale = () => {
   // console.log(payload)
   // Inertia.post("/dashboard/finish_sale", payload);
 };
-const printInvoice = () =>
-{
-  printTrigger.value = !printTrigger.value
-}
+const printInvoice = () => {
+  printTrigger.value = !printTrigger.value;
+};
 const addClient = () => {
   // Inertia.post('/add_product', form)
   form.post("/dashboard/register_client", {
@@ -220,20 +219,20 @@ const setClient = (client) => {
 const setProduct = (product) => {
   // alert('yess')
   // console.log(product.id);
-  
+
   // console.log(selectedProducts.value[selectedProductIndex.value].productQuantity * selectedProducts.value[selectedProductIndex.value].productPrice)
   productsCollapseValue.value = false;
   purchasedProduct.value = product.product_name;
 
-  // var checkDuplicate 
-  for (var i = 0; i < selectedProducts.value.length; i++) { 
-    if (i > 0) { 
-      console.log(i)
-      console.log(selectedProducts.value[i].selectedproductID)
+  // var checkDuplicate
+  for (var i = 0; i < selectedProducts.value.length; i++) {
+    if (i > 0) {
+      console.log(i);
+      console.log(selectedProducts.value[i].selectedproductID);
     }
     // if (!product.includes(selectedProducts.value[i])) {
     //   alert('haiko')
-    // } else { 
+    // } else {
     //   alert('iko')
     //   // return false
     // }
@@ -241,17 +240,27 @@ const setProduct = (product) => {
 
   if (!selectedProducts.value.includes(product)) {
     // searchedClient.value.push(allClients[i]);
-    selectedProducts.value[selectedProductIndex.value].productDescription = product.product_description;
+    selectedProducts.value[selectedProductIndex.value].productDescription =
+      product.product_description;
     selectedProducts.value[selectedProductIndex.value].productPrice = product.sales_price;
     selectedProducts.value[selectedProductIndex.value].productQuantity = 1;
-    selectedProducts.value[selectedProductIndex.value].productSKU = product.product_quantity;
-    selectedProducts.value[selectedProductIndex.value].selectedproductName = product.product_name;
+    selectedProducts.value[selectedProductIndex.value].remainingProducts = product.stock_quantity;
+    selectedProducts.value[selectedProductIndex.value].productSKU =
+      product.product_quantity;
+    selectedProducts.value[selectedProductIndex.value].selectedproductName =
+      product.product_name;
     selectedProducts.value[selectedProductIndex.value].selectedproductID = product.id;
-    selectedProducts.value[selectedProductIndex.value].total = selectedProducts.value[selectedProductIndex.value].productQuantity * selectedProducts.value[selectedProductIndex.value].productPrice;
-    selectedProducts.value[selectedProductIndex.value].vat = Math.round(selectedProducts.value[selectedProductIndex.value].total * 0.16);
-    selectedProducts.value[selectedProductIndex.value].salePrice = selectedProducts.value[selectedProductIndex.value].total + selectedProducts.value[selectedProductIndex.value].vat
+    selectedProducts.value[selectedProductIndex.value].total =
+      selectedProducts.value[selectedProductIndex.value].productQuantity *
+      selectedProducts.value[selectedProductIndex.value].productPrice;
+    selectedProducts.value[selectedProductIndex.value].vat = Math.round(
+      selectedProducts.value[selectedProductIndex.value].total * 0.16
+    );
+    selectedProducts.value[selectedProductIndex.value].salePrice =
+      selectedProducts.value[selectedProductIndex.value].total +
+      selectedProducts.value[selectedProductIndex.value].vat;
 
-    addEverything();      
+    addEverything();
   }
   addTableRow();
   productsCollapseValue.value = false;
@@ -262,6 +271,7 @@ const addTableRow = () => {
     productSKU: "",
     productDescription: "",
     productQuantity: "",
+    remainingProducts: null,
     productPrice: null,
     total: null,
     vat: null,
@@ -275,21 +285,24 @@ const deleteTableRow = (index, selectedProduct) => {
     selectedProducts.value.splice(idx, 1);
   }
   // calculateTotal();
-  addEverything(); 
+  addEverything();
 };
-const setCalculations = (index) =>
-{
+const setCalculations = (index) => {
   // alert(index)
-  console.log(selectedProducts.value[index].total
-  )
-  selectedProducts.value[index].total = selectedProducts.value[index].productQuantity * selectedProducts.value[index].productPrice;
-  selectedProducts.value[index].vat = Math.round(selectedProducts.value[index].total * 0.16);
-  selectedProducts.value[index].salePrice = selectedProducts.value[index].total + selectedProducts.value[index].vat
+  // console.log(selectedProducts.value[index].total);
+
+  selectedProducts.value[index].total =
+    selectedProducts.value[index].productQuantity *
+    selectedProducts.value[index].productPrice;
+  selectedProducts.value[index].vat = Math.round(
+    selectedProducts.value[index].total * 0.16
+  );
+  selectedProducts.value[index].salePrice =
+    selectedProducts.value[index].total + selectedProducts.value[index].vat;
   addEverything();
 };
 
-const addEverything = () =>
-{ 
+const addEverything = () => {
   var sumSubtotal = selectedProducts.value.reduce((accumulator, object) => {
     return accumulator + object.salePrice;
   }, 0);
@@ -297,10 +310,10 @@ const addEverything = () =>
     return accumulator + object.vat;
   }, 0);
 
-  overallSubtotal.value = sumSubtotal
-  overallTax.value = sumTax
-  overallTotal.value = sumSubtotal + sumTax
-}
+  overallSubtotal.value = sumSubtotal;
+  overallTax.value = sumTax;
+  overallTotal.value = sumSubtotal + sumTax;
+};
 </script>
 
 <template>
@@ -336,12 +349,14 @@ const addEverything = () =>
       >
         <div class="container-fluid">
           <h5 class="text-md text-black font-semibold" href="#">
-            <i class="fa-solid fa-file-invoice-dollar"></i> Invoice no. <span class="text-2xl">{{ invoiceLog }}</span>
+            <i class="fa-solid fa-file-invoice-dollar"></i> Invoice no.
+            <span class="text-md sm:text-2xl">{{ invoiceLog }}</span>
           </h5>
         </div>
         <div class="container-fluid">
           <h5 class="text-md text-black font-semibold" href="#">
-            <i class="fa-solid fa-coins"></i> Balance Due KES. <span class="text-2xl">{{ overallTotal }}</span> 
+            <i class="fa-solid fa-coins"></i> Balance Due KES.
+            <span class="text-md sm:text-2xl">{{ overallTotal }}</span>
           </h5>
         </div>
       </div>
@@ -350,7 +365,7 @@ const addEverything = () =>
     <div class="mt-10 mb-20">
       <button
         v-if="!anonymousSale"
-        @click="anonymousSale=true"
+        @click="anonymousSale = true"
         for="exampleFormControlInput1"
         class="bg-orange-700 hover:bg-orange-900 form-label font-bold rounded-md text-xs px-2 py-2 inline-block mb-2 text-white"
       >
@@ -358,17 +373,18 @@ const addEverything = () =>
       </button>
       <button
         v-if="anonymousSale"
-        @click="anonymousSale=false"
+        @click="anonymousSale = false"
         for="exampleFormControlInput1"
         class="bg-blue-700 hover:bg-blue-900 form-label font-bold rounded-md text-xs px-2 py-2 inline-block mb-2 text-white"
       >
         Add Client Details
       </button>
-      <div v-if="!anonymousSale" class="grid grid-cols-1 sm:grid-cols-4 sm:gap-6 justify-around">
-        
+      <div
+        v-if="!anonymousSale"
+        class="grid grid-cols-1 sm:grid-cols-4 sm:gap-6 justify-around"
+      >
         <div class="mb-3 xl:w-96">
           <div class="flex flex-row justify-between">
-            
             <label
               for="exampleFormControlInput1"
               class="form-label inline-block mb-2 text-gray-700"
@@ -403,7 +419,7 @@ const addEverything = () =>
                       >Name</label
                     >
                     <input
-                     @input="e => form.client_name = e.target.value"
+                      @input="(e) => (form.client_name = e.target.value)"
                       :value="form.client_name"
                       type="text"
                       class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
@@ -588,7 +604,6 @@ const addEverything = () =>
         </div>
       </div>
 
-
       <div class="mt-10 grid grid-cols-1 sm:grid-cols-4 sm:gap-6 justify-around">
         <div class="mb-3 xl:w-96">
           <label
@@ -596,7 +611,7 @@ const addEverything = () =>
             class="form-label inline-block mb-2 text-gray-700"
             >Invoice Number</label
           >
-          <input 
+          <input
             disabled
             :value="invoiceLog"
             type="text"
@@ -623,7 +638,6 @@ const addEverything = () =>
           </div>
         </div>
 
-        
         <div class="mb-3 xl:w-96">
           <label
             for="exampleFormControlInput1"
@@ -655,7 +669,10 @@ const addEverything = () =>
             <div class="mt-4 whitespace-nowrap py-2 text-sm text-gray-900">
               <input
                 :value="selectedProducts[selectedProductIndex].productname"
-                @input="e => selectedProducts[selectedProductIndex].productname = e.target.value"
+                @input="
+                  (e) =>
+                    (selectedProducts[selectedProductIndex].productname = e.target.value)
+                "
                 type="text"
                 class="form-control block w-full sm:w-1/2 px-3 py-1.5 text-base font-bold text-gray-900 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                 id="exampleFormControlInput1"
@@ -724,37 +741,37 @@ const addEverything = () =>
                         scope="col"
                         class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                       >
-                        Product/Service
+                        Product Name
                       </th>
                       <th
                         scope="col"
                         class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                       >
-                        SKU
+                        Product Unit (SKU)
                       </th>
                       <th
                         scope="col"
                         class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                       >
-                        Description
+                        Product Description
                       </th>
                       <th
                         scope="col"
                         class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                       >
-                        QTY
+                        Number of Items
                       </th>
                       <th
                         scope="col"
                         class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                       >
-                        Rate
+                        Sale Rate Per Unit
                       </th>
                       <th
                         scope="col"
                         class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                       >
-                        Amount
+                        Row Amount
                       </th>
                       <th
                         scope="col"
@@ -766,7 +783,7 @@ const addEverything = () =>
                         scope="col"
                         class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                       >
-                        Sale Price
+                        Selling Price
                       </th>
                       <th
                         scope="col"
@@ -784,38 +801,12 @@ const addEverything = () =>
                         {{ index + 1 }}
                       </td>
 
-                      <!-- <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-                        <input
-                          v-model="selectedProduct.productname"
-                          type="text"
-                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
-                          id="exampleFormControlInput1"
-                          placeholder=""
-                        />
-                        <div
-                          v-if="productsCollapseValue"
-                          class="mt-2 collapse mb-2"
-                          id="collapseExample"
-                        >
-                          <div class="block p-3 rounded-lg shadow-lg bg-white">
-                            <div
-                              v-if="searchedProductsArray"
-                              @click="setProduct(product)"
-                              v-for="product in searchedProduct"
-                              class="text-black hover:cursor-pointer hover:bg-light-green-100 border-b-2 border-light-green-900 block px-4 py-2 rounded-lg shadow-lg hover:shadow-3xl bg-white max-w-sm"
-                            >
-                              {{ product.product_name }}
-                            </div>
-                          </div>
-                        </div>
-                      </td> -->
-
                       <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                         <input
                           disabled
                           v-model="selectedProduct.selectedproductName"
                           type="text"
-                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-gray-200  bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          class="form-control block w-full sm:px-3 sm:py-1.5 text-xs sm:text-base font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                           id="exampleFormControlInput1"
                           placeholder=""
                         />
@@ -825,7 +816,7 @@ const addEverything = () =>
                           disabled
                           v-model="selectedProduct.productSKU"
                           type="text"
-                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-gray-200  bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          class="form-control block w-full sm:px-3 sm:py-1.5 text-xs sm:text-base font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                           id="exampleFormControlInput1"
                           placeholder=""
                         />
@@ -835,37 +826,51 @@ const addEverything = () =>
                           disabled
                           v-model="selectedProduct.productDescription"
                           type="text"
-                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-gray-200   border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          class="form-control block w-full sm:px-3 sm:py-1.5 text-xs sm:text-base font-normal text-gray-700 bg-gray-200 border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                           id="exampleFormControlInput1"
                           placeholder=""
                         />
                       </td>
-                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                        <input
-                        v-model="selectedProduct.productQuantity"
-                        @change="setCalculations(index)"
-                          type="text"
-                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
-                          id="exampleFormControlInput1"
-                          placeholder=""
-                        />
+                      <td class="flex whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                        <div class="mt-1 flex rounded-md shadow-sm">
+                          <span
+                            class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-200 px-1 text-gray-500 text-xs"
+                            >{{ selectedProduct.remainingProducts}} Units</span
+                          >
+                          <input
+                            v-model="selectedProduct.productQuantity"
+                            @change="setCalculations(index)"
+                            type="text"
+                            name="username"
+                            id="username"
+                            autocomplete="username"
+                            class="text-black font-bold block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-green-800 focus:ring-green-800 text-xs"
+                          />
+                        </div>
                       </td>
                       <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                        <input
-                        v-model="selectedProduct.productPrice"
-                        @change="setCalculations(index)"
-                          type="text"
-                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
-                          id="exampleFormControlInput1"
-                          placeholder=""
-                        />
+                        <div class="mt-1 flex rounded-md shadow-sm">
+                          <span
+                            class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-200 px-1 text-gray-500 text-xs"
+                            >{{ selectedProduct.productPrice }} KES</span
+                          >
+                          <input
+                            v-model="selectedProduct.productPrice"
+                            @change="setCalculations(index)"
+                            type="text"
+                            name="username"
+                            id="username"
+                            autocomplete="username"
+                            class="text-black font-bold block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-green-800 focus:ring-green-800 sm:text-sm"
+                          />
+                        </div>
                       </td>
                       <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                         <input
                           disabled
                           :value="selectedProduct.total"
                           type="text"
-                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          class="form-control block w-full sm:px-3 sm:py-1.5 text-xs sm:text-base font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                           id="exampleFormControlInput1"
                           placeholder=""
                         />
@@ -875,7 +880,7 @@ const addEverything = () =>
                           disabled
                           v-model="selectedProduct.vat"
                           type="text"
-                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          class="form-control block w-full sm:px-3 sm:py-1.5 text-xs sm:text-base font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                           id="exampleFormControlInput1"
                           placeholder=""
                         />
@@ -885,21 +890,11 @@ const addEverything = () =>
                           disabled
                           v-model="selectedProduct.salePrice"
                           type="text"
-                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          class="form-control block w-full sm:px-3 sm:py-1.5 text-xs sm:text-base font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                           id="exampleFormControlInput1"
                           placeholder=""
                         />
                       </td>
-                      <!-- <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                        <select
-                          class="form-select form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
-                          aria-label="Default select example"
-                        >
-                          <option value="2">Inclusive</option>
-                          <option value="1">Exclusive</option>
-                          <option value="3">Scopeless</option>
-                        </select>
-                      </td> -->
                       <td
                         class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
                       >
@@ -913,102 +908,27 @@ const addEverything = () =>
                       </td>
                     </tr>
                   </tbody>
-                  <!-- <tbody  class="divide-y divide-gray-200 bg-white">
-                    <tr  v-for="(rowNumber, index) in currentrows">
-                      <td
-                        class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6"
-                      >
-                        {{ index + 1 }}
-                      </td>
-                      
-                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-                        <input
-                          v-model="purchasedProduct"
-                          type="text"
-                          class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
-                          id="exampleFormControlInput1"
-                          placeholder=""
-                        />
-                        <div
-                          v-if="productsCollapseValue"
-                          class="mt-2 collapse mb-2"
-                          id="collapseExample"
-                        >
-                          <div class="block p-3 rounded-lg shadow-lg bg-white">
-                            <div
-                              v-if="searchedProductsArray"
-                              @click="setProduct(product)"
-                              v-for="product in searchedProduct"
-                              class="text-black hover:cursor-pointer hover:bg-light-green-100 border-b-2 border-light-green-900 block px-4 py-2 rounded-lg shadow-lg hover:shadow-3xl bg-white max-w-sm"
-                            >
-                              {{ product.product_name }}
-                            </div>
-                          </div>
-                        </div>
-                       
-                      </td>
-                      
-                      <td v-for="product in selectedProducts" class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                        {{ product.product_quantity }} Liters
-                      </td>
-                      <td v-for="product in selectedProducts" class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                        {{ product.product_description }}
-                      </td>
-                      <td  class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">1</td>
-                      <td v-for="product in selectedProducts" class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                        KES. {{ product.sales_price }}
-                      </td>
-                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                        KES. 200
-                      </td>
-                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                        KES. 60
-                      </td>
-                      <td
-                        class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
-                      >
-                        <a
-                          @click.prevent="addTableRow('minus')"
-                          href="#"
-                          class="text-red-600 hover:text-red-900"
-                        >
-                          <i class="fas fa-trash"></i>
-                          <span class="sr-only">, AAPS0L</span></a
-                        >
-                      </td>
-                    </tr>
-                  </tbody> -->
                 </table>
                 <div class="mt-10 m-10 flex flex-row justify-between">
-                  <div>
-                    <!-- <button
-                      @click="addTableRow()"
-                      type="button"
-                      class="inline-block px-2 py-2 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
-                    >
-                      <i class="fas fa-plus mr-1"></i> Add Lines
-                    </button> -->
-                  </div>
+                  <div></div>
                   <div class="flex flex-col font-extrabold">
-                    <!-- <div>
-                      <button
-                      @click="addEverything()" 
-                      type="button"
-                      class="mb-2 inline-block px-2 py-2 sm:px-6 sm:py-2.5 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
-                    >
-                      <i class="fas fa-square-root-variable mr-2 fa-xl"></i> Do Calculations
-                    </button>
-                    </div> -->
                     <div>
                       <h3>
-                        Subtotal: <span class="text-gray-800 text-xl">KES {{ overallSubtotal }} </span>
+                        Subtotal:
+                        <span class="text-gray-800 text-xl"
+                          >KES {{ overallSubtotal }}
+                        </span>
                       </h3>
-                      <h3>VAT: <span class="text-gray-800 text-xl">KES {{ overallTax }}</span></h3>
+                      <h3>
+                        VAT:
+                        <span class="text-gray-800 text-xl">KES {{ overallTax }}</span>
+                      </h3>
                     </div>
 
                     <div>
                       <h3 class="mt-5">
-                        Total: <span class="text-black text-2xl">KES {{ overallTotal }}</span>
+                        Total:
+                        <span class="text-black text-2xl">KES {{ overallTotal }}</span>
                       </h3>
                     </div>
                   </div>
@@ -1053,7 +973,14 @@ const addEverything = () =>
       </div>
     </nav>
 
-    <Receipt :selectedProducts="selectedProducts" :invoiceLog="invoiceLog" :overallSubtotal="overallSubtotal" :overallTax="overallTax" :overallTotal="overallTotal" :printTrigger="printTrigger" class="hidden" />
-
+    <Receipt
+      :selectedProducts="selectedProducts"
+      :invoiceLog="invoiceLog"
+      :overallSubtotal="overallSubtotal"
+      :overallTax="overallTax"
+      :overallTotal="overallTotal"
+      :printTrigger="printTrigger"
+      class="hidden"
+    />
   </div>
 </template>
