@@ -83,6 +83,7 @@ const selectedProducts = ref([
     productQuantity: "",
     remainingProducts: null,
     productPrice: null,
+    fixedPrice: null,
     total: null,
     vat: null,
     salePrice: null,
@@ -218,7 +219,7 @@ const setClient = (client) => {
 };
 const setProduct = (product) => {
   // alert('yess')
-  // console.log(product.id);
+  console.log(product);
 
   // console.log(selectedProducts.value[selectedProductIndex.value].productQuantity * selectedProducts.value[selectedProductIndex.value].productPrice)
   productsCollapseValue.value = false;
@@ -243,6 +244,7 @@ const setProduct = (product) => {
     selectedProducts.value[selectedProductIndex.value].productDescription =
       product.product_description;
     selectedProducts.value[selectedProductIndex.value].productPrice = product.sales_price;
+    selectedProducts.value[selectedProductIndex.value].fixedPrice = product.sales_price;
     selectedProducts.value[selectedProductIndex.value].productQuantity = 1;
     selectedProducts.value[selectedProductIndex.value].remainingProducts = product.stock_quantity;
     selectedProducts.value[selectedProductIndex.value].productSKU =
@@ -273,6 +275,7 @@ const addTableRow = () => {
     productQuantity: "",
     remainingProducts: null,
     productPrice: null,
+    fixedPrice: null,
     total: null,
     vat: null,
     salePrice: null,
@@ -287,6 +290,30 @@ const deleteTableRow = (index, selectedProduct) => {
   // calculateTotal();
   addEverything();
 };
+const checkSaleChanges = (index) =>
+{ 
+  const availableStock  = selectedProducts.value[index].remainingProducts
+  const leastPrice = selectedProducts.value[index].fixedPrice
+  if (selectedProducts.value[index].productQuantity > availableStock) {
+    alert('Check Available Stock')
+    selectedProducts.value[index].productQuantity = availableStock;
+    setCalculations(index)
+    addEverything();
+  } else { 
+    setCalculations(index)
+    addEverything();
+  }
+
+  if (selectedProducts.value[index].productPrice < leastPrice) {
+    alert('Check Product Price')
+    selectedProducts.value[index].productPrice = leastPrice
+    setCalculations(index)
+    addEverything();
+  } else { 
+    setCalculations(index)
+    addEverything();
+  }
+}
 const setCalculations = (index) => {
   // alert(index)
   // console.log(selectedProducts.value[index].total);
@@ -299,6 +326,7 @@ const setCalculations = (index) => {
   );
   selectedProducts.value[index].salePrice =
     selectedProducts.value[index].total + selectedProducts.value[index].vat;
+
   addEverything();
 };
 
@@ -310,9 +338,9 @@ const addEverything = () => {
     return accumulator + object.vat;
   }, 0);
 
-  overallSubtotal.value = sumSubtotal;
+  overallSubtotal.value = sumSubtotal - sumTax;
   overallTax.value = sumTax;
-  overallTotal.value = sumSubtotal + sumTax;
+  overallTotal.value = sumSubtotal;
 };
 </script>
 
@@ -839,7 +867,7 @@ const addEverything = () => {
                           >
                           <input
                             v-model="selectedProduct.productQuantity"
-                            @change="setCalculations(index)"
+                            @change="checkSaleChanges(index)"
                             type="text"
                             name="username"
                             id="username"
@@ -852,11 +880,11 @@ const addEverything = () => {
                         <div class="mt-1 flex rounded-md shadow-sm">
                           <span
                             class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-200 px-1 text-gray-500 text-xs"
-                            >{{ selectedProduct.productPrice }} KES</span
+                            >{{ selectedProduct.fixedPrice }} KES</span
                           >
                           <input
                             v-model="selectedProduct.productPrice"
-                            @change="setCalculations(index)"
+                            @change="checkSaleChanges(index)"
                             type="text"
                             name="username"
                             id="username"

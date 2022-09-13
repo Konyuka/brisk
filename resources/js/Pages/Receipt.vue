@@ -23,14 +23,6 @@ const salesPerson = computed(() => usePage().props.value.user.name)
 
 const itemNumber = computed(() => { return selectedProducts.value.length - 1  } )
 
-const invoiceNumber = ref(JSON.parse(localStorage.getItem('invoiceNumber')))
-const productName = ref(JSON.parse(localStorage.getItem('productName')))
-const saleQuantity = ref(JSON.parse(localStorage.getItem('saleQuantity')))
-const salePrice = ref(JSON.parse(localStorage.getItem('salePrice')))
-const subTotal = ref(JSON.parse(localStorage.getItem('subTotal')))
-const tax = ref(JSON.parse(localStorage.getItem('tax')))
-const grandTotal = ref(JSON.parse(localStorage.getItem('grandTotal')))
-
 const invoiceTime = computed(() => {
     return moment().format('MMMM Do YYYY, h:mm:ss a');
 });
@@ -59,7 +51,7 @@ const generatePDF = () =>
     // 'height': "44mm",
     elementHandlers: specialElementHandlers,
   });
-  doc.save(invoiceNumber.value+".pdf");
+  doc.save(invoiceLog.value+".pdf");
 };
 
 </script>
@@ -146,7 +138,7 @@ const generatePDF = () =>
         <tbody>
           <tr v-for="(product, index) in selectedProducts.slice(0, itemNumber)" :key="index">
             <td  style="font-size: 9.5pt;" class="description">{{ product.selectedproductName}}</td>
-            <td  class="quantity">{{ product.productQuantity}} Item(s)</td>
+            <td  class="quantity">{{ product.productQuantity}} </td>
             <td  class="price">KES. {{ product.productPrice }}</td>
           </tr>
         </tbody>
