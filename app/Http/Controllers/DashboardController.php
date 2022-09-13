@@ -124,10 +124,12 @@ class DashboardController extends Controller
         $products = Product::latest()->get();
         $clients = Client::latest()->get();
         $invoice = Sale::latest()->get()->first();
+        $sales = Sale::latest()->get();
         return Inertia::render('Stock', [
             'products' => $products,
             'clients' => $clients,
             'invoiceLog' => $invoice->id,
+            'sales' => $sales,
         ]);
     }
 
@@ -166,9 +168,20 @@ class DashboardController extends Controller
     }
 
     
-    public function edit($id)
+    public function inventory()
     {
-        //
+        $products = Product::latest()->get();
+        
+        return Inertia::render('Inventory', [
+            'products' => $products,
+        ]);
+    }
+
+    public function delivery()
+    {
+        return Inertia::render('Delivery', [
+            // 'clients' => $clients
+        ]);
     }
    
     public function update(Request $request, $id)

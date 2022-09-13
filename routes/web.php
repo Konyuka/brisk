@@ -30,6 +30,10 @@ Route::middleware([
     ->name('add_product');
     Route::get('/dashboard/add_client', [DashboardController::class, 'addClient'])
     ->name('add_client');
+    Route::get('/dashboard/product_inventory', [DashboardController::class, 'inventory'])
+    ->name('product_inventory');
+    Route::get('/dashboard/product_delivery', [DashboardController::class, 'delivery'])
+    ->name('product_delivery');
     Route::post('/dashboard/register_client', [DashboardController::class, 'registerClient'])
     ->name('register_client');
     Route::post('/dashboard/register_sale', [DashboardController::class, 'registerSale'])

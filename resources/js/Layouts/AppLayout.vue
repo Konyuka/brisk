@@ -398,7 +398,35 @@ const logout = () => {
             >
               <span class="sr-only">Open</span>
               <!-- Heroicon name: outline/inbox -->
-              <i class="fas fa-cubes-stacked fa-xl"></i>
+              <i class="fas fa-print fa-xl"></i> 
+            </Link>
+
+            <Link
+              href="/dashboard/product_inventory"
+              :class="
+                    currentRoute == 'product_inventory'
+                    ? 'bg-white text-black'
+                    : 'bg-black text-white'
+              "
+              class="text-gray-400 hover:bg-white hover:text-black flex-shrink-0 inline-flex items-center justify-center h-14 w-14 rounded-lg"
+            >
+              <span class="sr-only">Archive</span>
+              <!-- Heroicon name: outline/archive -->
+              <i class="fas fa-box-open fa-xl"></i>
+            </Link>
+
+            <Link
+              href="/dashboard/product_delivery"
+              :class="
+                    currentRoute == 'product_delivery'
+                    ? 'bg-white text-black'
+                    : 'bg-black text-white'
+              "
+              class="text-gray-400 hover:bg-white hover:text-black flex-shrink-0 inline-flex items-center justify-center h-14 w-14 rounded-lg"
+            >
+              <span class="sr-only">Archive</span>
+              <!-- Heroicon name: outline/archive -->
+              <i class="fas fa-people-carry-box fa-xl"></i>
             </Link>
 
             <Link
@@ -412,7 +440,7 @@ const logout = () => {
             >
               <span class="sr-only">Archive</span>
               <!-- Heroicon name: outline/archive -->
-              <i class="fas fa-user-tag fa-xl"></i>
+              <i class="fas fa-users fa-xl"></i>
             </Link>
 
            
