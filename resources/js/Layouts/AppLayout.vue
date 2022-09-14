@@ -1,38 +1,19 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { Inertia } from "@inertiajs/inertia";
-import { Head, Link } from "@inertiajs/inertia-vue3";
-
-// import ResponsiveNavLink from "../../../vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/ResponsiveNavLink.vue";
+import { Head, Link, usePage } from "@inertiajs/inertia-vue3";
 
 defineProps({
   title: String,
 });
 
-const myProfile = ref(false);
-const mobileMenu = ref(false);
 const currentRoute = computed(() => {
   return route().current();
 })
+const adminLevel = computed(() => usePage().props.value.user.admin);
 
-onMounted(() => {
-  
-})
-
-// console.log(currentRoute.value)
-
-
-// const switchToTeam = (team) => {
-//   Inertia.put(
-//     route("current-team.update"),
-//     {
-//       team_id: team.id,
-//     },
-//     {
-//       preserveState: false,
-//     }
-//   );
-// };
+const myProfile = ref(false);
+const mobileMenu = ref(false);
 
 const logout = () => {
   Inertia.post(route("logout"));
@@ -410,6 +391,7 @@ const logout = () => {
         >
           <div class="relative flex w-20 flex-col space-y-3 p-3">
             <Link
+              v-if="adminLevel==1 || adminLevel==2 || adminLevel==3 || adminLevel==4"
               href="/dashboard"
               :class="
                     currentRoute == 'dashboard'
@@ -424,6 +406,7 @@ const logout = () => {
             </Link>
 
             <Link
+              v-if="adminLevel==1 || adminLevel==2"
               href="/dashboard/product_inventory"
               :class="
                     currentRoute == 'product_inventory'
@@ -438,6 +421,7 @@ const logout = () => {
             </Link>
 
             <Link
+              v-if="adminLevel==1 || adminLevel==2 || adminLevel==3"
               href="/dashboard/product_delivery"
               :class="
                     currentRoute == 'product_delivery'
@@ -452,6 +436,7 @@ const logout = () => {
             </Link>
 
             <Link
+              v-if="adminLevel==1 || adminLevel==2"
               href="/dashboard/add_client"
               :class="
                     currentRoute == 'add_client'

@@ -153,7 +153,7 @@ const addProduct = () => {
                   height="24"
                 ></rect>
               </svg>
-              <span class="relative">Stock</span>
+              <span class="relative">Sales</span>
             </span>
           </h2>
         </div>
