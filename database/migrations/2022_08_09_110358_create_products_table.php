@@ -17,13 +17,13 @@ return new class extends Migration
             $table->id();
             $table->string('product_name');
             $table->string('product_quantity')->default(0);
-            $table->integer('product_code')->default(0);
-            $table->integer('bar_code')->default(0);
+            $table->string('product_code')->default(0);
+            $table->bigInteger('bar_code')->default(0);
             $table->integer('sales_price')->default(0);
             $table->integer('finished_products')->default(0);
             $table->integer('in_delivery')->default(0);
             $table->integer('spoiled_products')->default(0);
-            $table->string('added_by');
+            $table->integer('added_by');
             $table->timestamps();
         });
     }

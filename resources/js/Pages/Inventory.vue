@@ -9,6 +9,13 @@ defineProps({
   products: Array,
 });
 
+const vLowerCase = {
+  updated: (el) =>
+  { 
+    el.value = el.value.toLowerCase()
+  }
+}
+
 const currentUser = computed(() => usePage().props.value.user.id);
 const available_products = computed(() => {
   return form.finished_products - form.in_delivery - form.spoiled_products;
@@ -19,8 +26,8 @@ const productAddNotification = ref(false);
 
 const form = useForm({
   product_name: null,
-  product_quantity: "200G",
-  product_code: null,
+  product_quantity: null,
+  product_code: "BSK-112",
   bar_code: 717400099200,
   sales_price: 300,
   finished_products: 250,
@@ -33,12 +40,16 @@ const addProduct = () => {
   form.post("/dashboard/add_product", {
     preserveScroll: true,
     onSuccess: () => {
-      form.reset();
       productAddNotification.value = true
+      // form.reset();
       // alert("Product Added");
     },
   });
 };
+const clearForm = () =>
+{ 
+  form.reset();
+}
 </script>
 
 <template>
@@ -90,7 +101,8 @@ const addProduct = () => {
                     id="first-name"
                     v-model="form.product_name"
                     autocomplete="given-name"
-                    class="lowercase mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    v-LowerCase
+                    class="capitalize mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
                 </div>
 
@@ -232,7 +244,7 @@ const addProduct = () => {
     >
       <button
         type="button"
-        @click="addProduct"
+        @click="clearForm"
         class="inline-block px-6 py-2.5 bg-gray-400 text-white font-bold text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-green-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-1"
       >
         <i class="fas fa-xmark fa-xl mr-1"></i> Clear Form
@@ -284,7 +296,7 @@ const addProduct = () => {
                   View status
                 </button>
                 <button
-                  @click="productAddNotification=!productAddNotification"
+                  @click="productAddNotification=false"
                   type="button"
                   class="ml-3 rounded-md bg-green-50 px-2 py-1.5 text-sm font-medium text-green-800 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50"
                 >
@@ -358,17 +370,27 @@ const addProduct = () => {
                         <p
                           class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
                         >
-                          {{ product.product_quantity }} Grams
+                          {{ product.product_quantity }}
                         </p>
                       </div>
                     </td>
                     <td class="pl-2">
                       <div class="flex items-center">
-                        <i class="fas fa-boxes-packing text-green-900"></i>
+                        <i class="fas fa-signature text-green-900"></i>
                         <p
                           class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
                         >
-                          {{ product.stock_quantity }} items
+                          {{ product.product_code }}
+                        </p>
+                      </div>
+                    </td>
+                    <td class="pl-2">
+                      <div class="flex items-center">
+                        <i class="fas fa-barcode text-green-900"></i>
+                        <p
+                          class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
+                        >
+                          {{ product.bar_code }}
                         </p>
                       </div>
                     </td>
@@ -382,16 +404,12 @@ const addProduct = () => {
                         </p>
                       </div>
                     </td>
-                    <!-- <td>
-                        <div class="relative px-5 pt-2">
-                          <button
-                            @click="saleItem(product)"
-                            class="font-bold py-2 px-2 text-sm focus:outline-none leading-none text-white bg-light-green-900 hover:bg-green-900 rounded"
-                          >
-                            Sell <i class="ml-1 sm:ml-2 fas fa-handshake"></i>
-                          </button>
+                    <td>
+                        <div class="relative px-5">
+                          <i class="text-blue-600 fas fa-edit fa-md transform translate hover:scale-150 duration-300 hover:cursor-pointer mr-3"></i>
+                          <i class="text-red-500 fas fa-trash fa-md transform translate hover:scale-150 duration-300 hover:cursor-pointer mr-3"></i>
                         </div>
-                      </td> -->
+                      </td>
                   </tr>
                   <tr class="h-3"></tr>
                 </tbody>

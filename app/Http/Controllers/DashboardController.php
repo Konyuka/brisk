@@ -14,7 +14,7 @@ class DashboardController extends Controller
     
     public function addProduct(Request $request)
     {
-        return dd($request);
+        // return dd($request);
         // return dd(json_decode($request));
         $product = new Product();
         $product->product_name = $request->product_name;
@@ -126,11 +126,18 @@ class DashboardController extends Controller
         $products = Product::latest()->get();
         $clients = Client::latest()->get();
         $invoice = Sale::latest()->get()->first();
+
+        if($invoice != null){
+            $invoiceID = $invoice->id;
+        }else {
+            $invoiceID = 1;
+        }
+        // return dd($invoice);
         $sales = Sale::latest()->get();
         return Inertia::render('Stock', [
             'products' => $products,
             'clients' => $clients,
-            'invoiceLog' => $invoice->id,
+            'invoiceLog' => $invoiceID,
             'sales' => $sales,
         ]);
     }
