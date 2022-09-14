@@ -343,7 +343,7 @@ const logout = () => {
                     : 'text-gray-500 pl-5'
                   "
                   class="block rounded-md py-2 px-3 text-lg font-bold hover:bg-gray-100"
-                  >Stock</Link
+                  >Sale</Link
                 >
 
                 <Link
@@ -354,7 +354,7 @@ const logout = () => {
                     : 'text-gray-500 pl-5'
                   "
                   class="block rounded-md py-2 pr-3 text-lg font-bold  hover:bg-gray-100"
-                  >Clients</Link
+                  >Inventory</Link
                 >
 
                 <Link
@@ -365,7 +365,7 @@ const logout = () => {
                     : 'text-gray-500 pl-5'
                   "
                   class="block rounded-md py-2 pr-3 text-lg font-bold  hover:bg-gray-100"
-                  >Clients</Link
+                  >Delivery</Link
                 >
 
                 <Link
@@ -376,7 +376,7 @@ const logout = () => {
                     : 'text-gray-500 pl-5'
                   "
                   class="block rounded-md py-2 pr-3 text-lg font-bold  hover:bg-gray-100"
-                  >Clients</Link
+                  >Users</Link
                 >
 
               </div>
