@@ -10,13 +10,15 @@ class Product extends Model
     use HasFactory;
     
     protected $fillable = [ 
-        'added_by',
         'product_name',
         'product_quantity',
-        'stock_quantity',
-        'production_price',
+        'product_code',
+        'bar_code',
         'sales_price',
-        'product_description',
+        'finished_products',
+        'in_delivery',
+        'spoiled_products',
+        'added_by',
     ];
 
     public function user()

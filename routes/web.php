@@ -26,7 +26,7 @@ Route::middleware([
     // })->name('dashboard');
     Route::get('/dashboard', [DashboardController::class, 'stock'])
     ->name('dashboard');
-    Route::post('/add_product', [DashboardController::class, 'addProduct'])
+    Route::post('/dashboard/add_product', [DashboardController::class, 'addProduct'])
     ->name('add_product');
     Route::get('/dashboard/add_client', [DashboardController::class, 'addClient'])
     ->name('add_client');

@@ -437,8 +437,8 @@ const addEverything = () => {
             </button>
           </div>
           <div v-if="addClientCollapse" class="collapse mb-2" id="collapseExample">
-            <div class="block rounded-lg shadow-lg bg-white">
-              <div class="block p-4 rounded-lg shadow-lg bg-white max-w-sm">
+            <div class="block rounded-lg shadow-lg bg-gray-50">
+              <div class="block p-4 rounded-lg shadow-lg bg-gray-50 max-w-sm">
                 <form>
                   <div class="form-group mb-2">
                     <label
@@ -511,7 +511,7 @@ const addEverything = () => {
                       class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                       id="exampleFormControlTextarea1"
                       rows="3"
-                      placeholder="Your message"
+                      placeholder=""
                     ></textarea>
 
                     <!-- <input

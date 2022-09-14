@@ -3,35 +3,39 @@ import { useForm, usePage, Link } from "@inertiajs/inertia-vue3";
 import { ref, computed, reactive, watch, onMounted } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
+import { IS_REF } from "@vue/compiler-core";
 
 defineProps({
   products: Array,
 });
 
 const currentUser = computed(() => usePage().props.value.user.id);
+const available_products = computed(() => {
+  return form.finished_products - form.in_delivery - form.spoiled_products;
+});
+
+
+const productAddNotification = ref(false);
 
 const form = useForm({
-  finished_products: 250,  
-  spoiled_products: 50,  
-  in_delivery: 50,  
-  production_code: null,
-  bar_code: 717400099200,
   product_name: null,
   product_quantity: "200G",
-  stock_quantity: 300,
-  production_price: null,
+  product_code: null,
+  bar_code: 717400099200,
   sales_price: 300,
-  product_description: null,
+  finished_products: 250,
+  in_delivery: 50,
+  spoiled_products: 50,
   added_by: currentUser,
 });
 
 const addProduct = () => {
-  form.post("/add_product", {
+  form.post("/dashboard/add_product", {
     preserveScroll: true,
     onSuccess: () => {
       form.reset();
-      // addModal = false
-      alert("Product Added");
+      productAddNotification.value = true
+      // alert("Product Added");
     },
   });
 };
@@ -52,11 +56,11 @@ const addProduct = () => {
           Add Product
         </h5>
         <button
-        type="button"
-        class="inline-block px-6 py-2.5 bg-light-green-900 text-white font-bold text-xs leading-tight uppercase rounded shadow-md hover:bg-green-900 hover:shadow-lg focus:bg-green-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-1"
-      >
-        <i class="fas fa-file-excel fa-xl mr-1"></i> Upload Products
-      </button>
+          type="button"
+          class="inline-block px-6 py-2.5 bg-light-green-900 text-white font-bold text-xs leading-tight uppercase rounded shadow-md hover:bg-green-900 hover:shadow-lg focus:bg-green-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-1"
+        >
+          <i class="fas fa-file-excel fa-xl mr-1"></i> Upload Products
+        </button>
         <button
           type="button"
           class="btn-close box-content w-4 h-4 p-1 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline"
@@ -75,7 +79,10 @@ const addProduct = () => {
               <div class="grid grid-cols-6 gap-6">
                 <div class="col-span-6 sm:col-span-2">
                   <label for="first-name" class="block text-sm font-medium text-gray-700"
-                    ><i class="fa-solid fa-file-signature text-light-green-800 fa-lg mr-1"></i> Product name</label
+                    ><i
+                      class="fa-solid fa-file-signature text-light-green-800 fa-lg mr-1"
+                    ></i>
+                    Product name</label
                   >
                   <input
                     type="text"
@@ -89,7 +96,10 @@ const addProduct = () => {
 
                 <div class="col-span-3 sm:col-span-1">
                   <label for="last-name" class="block text-sm font-medium text-gray-700"
-                    ><i class="fa-solid fa-scale-unbalanced-flip text-light-green-800 fa-lg mr-1"></i> SKU (g/mg)</label
+                    ><i
+                      class="fa-solid fa-scale-unbalanced-flip text-light-green-800 fa-lg mr-1"
+                    ></i>
+                    SKU (g/mg)</label
                   >
                   <input
                     type="text"
@@ -103,13 +113,14 @@ const addProduct = () => {
 
                 <div class="col-span-3 sm:col-span-1">
                   <label for="last-name" class="block text-sm font-medium text-gray-700"
-                    ><i class="fa-solid fa-signature text-light-green-800 fa-lg mr-1"></i> Product Code</label
+                    ><i class="fa-solid fa-signature text-light-green-800 fa-lg mr-1"></i>
+                    Product Code</label
                   >
                   <input
                     type="text"
                     name="last-name"
                     id="last-name"
-                    v-model="form.production_code"
+                    v-model="form.product_code"
                     autocomplete="family-name"
                     class="mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
@@ -117,7 +128,8 @@ const addProduct = () => {
 
                 <div class="col-span-3 sm:col-span-1">
                   <label for="last-name" class="block text-sm font-medium text-gray-700"
-                    ><i class="fa-solid fa-barcode text-light-green-800 fa-lg mr-1"></i> Bar Code</label
+                    ><i class="fa-solid fa-barcode text-light-green-800 fa-lg mr-1"></i>
+                    Bar Code</label
                   >
                   <input
                     type="number"
@@ -131,7 +143,10 @@ const addProduct = () => {
 
                 <div class="col-span-3 sm:col-span-1">
                   <label for="last-name" class="block text-sm font-medium text-gray-700"
-                    ><i class="fa-solid fa-money-bill-trend-up text-light-green-800 fa-lg mr-1"></i> Sales Price (ksh.)</label
+                    ><i
+                      class="fa-solid fa-money-bill-trend-up text-light-green-800 fa-lg mr-1"
+                    ></i>
+                    Sales Price (ksh.)</label
                   >
                   <input
                     type="number"
@@ -145,7 +160,8 @@ const addProduct = () => {
 
                 <div class="col-span-3 sm:col-span-2">
                   <label for="last-name" class="block text-sm font-medium text-gray-700"
-                    ><i class="fas fa-square-check text-light-green-800 fa-lg mr-1"></i> Finished Products</label
+                    ><i class="fas fa-square-check text-light-green-800 fa-lg mr-1"></i>
+                    Finished Products</label
                   >
                   <input
                     type="number"
@@ -157,9 +173,27 @@ const addProduct = () => {
                   />
                 </div>
 
-                <div class="col-span-3 sm:col-span-2">
+                <div class="col-span-3 sm:col-span-1">
                   <label for="last-name" class="block text-sm font-medium text-gray-700"
-                    ><i class="fas fa-square-caret-right text-light-green-800 fa-lg mr-1"></i> In Delivery</label
+                    ><i class="fas fa-check-double text-light-green-800 fa-lg mr-1"></i>
+                    Available Products</label
+                  >
+                  <input
+                    type="number"
+                    name="last-name"
+                    id="last-name"
+                    v-model="available_products"
+                    autocomplete="family-name"
+                    class="mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  />
+                </div>
+
+                <div class="col-span-3 sm:col-span-1">
+                  <label for="last-name" class="block text-sm font-medium text-gray-700"
+                    ><i
+                      class="fas fa-square-caret-right text-light-green-800 fa-lg mr-1"
+                    ></i>
+                    In Delivery</label
                   >
                   <input
                     type="number"
@@ -173,7 +207,10 @@ const addProduct = () => {
 
                 <div class="col-span-3 sm:col-span-2">
                   <label for="last-name" class="block text-sm font-medium text-gray-700"
-                    ><i class="fas fa-rectangle-xmark text-light-green-800 fa-lg mr-1"></i> Spoiled Products</label
+                    ><i
+                      class="fas fa-rectangle-xmark text-light-green-800 fa-lg mr-1"
+                    ></i>
+                    Spoiled Products</label
                   >
                   <input
                     type="number"
@@ -184,8 +221,6 @@ const addProduct = () => {
                     class="mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
                 </div>
-
-                
               </div>
             </div>
           </div>
@@ -198,12 +233,70 @@ const addProduct = () => {
       <button
         type="button"
         @click="addProduct"
+        class="inline-block px-6 py-2.5 bg-gray-400 text-white font-bold text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-green-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-1"
+      >
+        <i class="fas fa-xmark fa-xl mr-1"></i> Clear Form
+      </button>
+
+      <button
+        type="button"
+        @click="addProduct"
         class="inline-block px-6 py-2.5 bg-light-green-900 text-white font-bold text-xs leading-tight uppercase rounded shadow-md hover:bg-green-900 hover:shadow-lg focus:bg-green-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-1"
       >
         <i class="fas fa-plus fa-xl mr-1"></i> Add Product
       </button>
-      
     </div>
+
+    <div v-if="productAddNotification" class="px-20 py-10">
+      <!-- This example requires Tailwind CSS v2.0+ -->
+      <div class="rounded-md bg-green-50 p-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <!-- Heroicon name: mini/check-circle -->
+            <svg
+              class="h-5 w-5 text-green-400"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-green-800">Product Added Successfully</h3>
+            <div class="mt-2 text-sm text-green-700">
+              <!-- <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid pariatur,
+                ipsum similique veniam.
+              </p> -->
+            </div>
+            <div class="mt-4">
+              <div class="-mx-2 -my-1.5 flex">
+                <button
+                  type="button"
+                  class="rounded-md bg-green-50 px-2 py-1.5 text-sm font-medium text-green-800 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50"
+                >
+                  View status
+                </button>
+                <button
+                  @click="productAddNotification=!productAddNotification"
+                  type="button"
+                  class="ml-3 rounded-md bg-green-50 px-2 py-1.5 text-sm font-medium text-green-800 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
     <div>
       <div class="flex items-center justify-center py-1 px-2">
