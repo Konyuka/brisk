@@ -347,6 +347,28 @@ const logout = () => {
                 >
 
                 <Link
+                  href="/dashboard/product_inventory"
+                  :class="
+                    currentRoute == 'product_inventory'
+                    ? 'text-black'
+                    : 'text-gray-500 pl-5'
+                  "
+                  class="block rounded-md py-2 pr-3 text-lg font-bold  hover:bg-gray-100"
+                  >Clients</Link
+                >
+
+                <Link
+                  href="/dashboard/product_delivery"
+                  :class="
+                    currentRoute == 'product_delivery'
+                    ? 'text-black'
+                    : 'text-gray-500 pl-5'
+                  "
+                  class="block rounded-md py-2 pr-3 text-lg font-bold  hover:bg-gray-100"
+                  >Clients</Link
+                >
+
+                <Link
                   href="/dashboard/add_client"
                   :class="
                     currentRoute == 'add_client'
