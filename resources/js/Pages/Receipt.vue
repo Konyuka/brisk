@@ -176,7 +176,7 @@ gap: 1rem; ">
               font-style: normal;
               font-weight: bold;
               text-decoration: none;
-              font-size: 20.5pt;
+              font-size: 18.5pt;
               margin: 0pt;
             "
           >
@@ -189,11 +189,11 @@ gap: 1rem; ">
               font-style: normal;
               font-weight: bold;
               text-decoration: none;
-              font-size: 20.5pt;
+              font-size: 18.5pt;
               margin: 0pt;
             "
           >
-            Tax (16%): KES. {{ overallTax }} 
+            VAT (16%): KES. {{ overallTax }} 
           </p>
         <p
             style="
@@ -202,7 +202,7 @@ gap: 1rem; ">
               font-style: normal;
               font-weight: bold;
               text-decoration: none;
-              font-size: 20.5pt;
+              font-size: 18.5pt;
               margin: 0pt;
             "
           >
@@ -210,10 +210,10 @@ gap: 1rem; ">
           </p>
 
 
-      <div style="font-size: 15.5pt;" class="mt-10">
+      <div style="font-size: 18.5pt;" class="">
         <p>Served by {{ salesPerson }}</p>
       </div>
-      <div style="font-size: 20.5pt;" class="">
+      <div style="font-size: 18.5pt;" class="">
         <p>Thank you for the purchase</p>
       </div>
     </div>
