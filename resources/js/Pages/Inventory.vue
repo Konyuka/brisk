@@ -59,8 +59,39 @@ const setTax = () =>
 
 <template>
   <AppLayout>
+    <div class="mt-8 max-w-xl mb-10 md:mx-auto sm:text-center lg:max-w-2xl md:mb-2">
+          <h2
+            class="max-w-lg mb-6 font-sans text-3xl font-bold leading-none tracking-tight text-gray-900 sm:text-4xl md:mx-auto"
+          >
+            <span class="relative inline-block">
+              <svg
+                viewBox="0 0 52 24"
+                fill="currentColor"
+                class="absolute top-0 left-0 z-0 hidden w-32 -mt-8 -ml-20 text-blue-gray-100 lg:w-32 lg:-ml-28 lg:-mt-10 sm:block"
+              >
+                <defs>
+                  <pattern
+                    id="34f481be-159a-4846-821d-9ca19fb6bcc5"
+                    x="0"
+                    y="0"
+                    width=".135"
+                    height=".30"
+                  >
+                    <circle cx="1" cy="1" r=".7"></circle>
+                  </pattern>
+                </defs>
+                <rect
+                  fill="url(#34f481be-159a-4846-821d-9ca19fb6bcc5)"
+                  width="52"
+                  height="24"
+                ></rect>
+              </svg>
+              <span class="relative px-2">Inventory</span>
+            </span>
+          </h2>
+        </div>
     <div
-      class="modal-content border-none relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current"
+      class="px-0 sm:px-10 modal-content border-none relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current"
     >
       <div
         class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md"

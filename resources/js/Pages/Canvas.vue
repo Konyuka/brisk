@@ -87,6 +87,11 @@ const selectedProducts = ref([
     total: null,
     vat: null,
     salePrice: null,
+    productCode: null,
+    barCode: null,
+    finishedProduct: null,
+    inDelivery: null,
+    spoiledProduct: null,
   },
 ]);
 
@@ -252,6 +257,7 @@ const setProduct = (product) => {
     selectedProducts.value[selectedProductIndex.value].selectedproductName =
       product.product_name;
     selectedProducts.value[selectedProductIndex.value].selectedproductID = product.id;
+    selectedProducts.value[selectedProductIndex.value].inDelivery = product.in_delivery;
     selectedProducts.value[selectedProductIndex.value].total =
       selectedProducts.value[selectedProductIndex.value].productQuantity *
       selectedProducts.value[selectedProductIndex.value].productPrice;
@@ -702,7 +708,7 @@ const addEverything = () => {
                     (selectedProducts[selectedProductIndex].productname = e.target.value)
                 "
                 type="text"
-                class="form-control block w-full sm:w-1/2 px-3 py-1.5 text-base font-bold text-gray-900 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                class="capitalize form-control block w-full sm:w-1/2 px-3 py-1.5 text-base font-medium text-gray-900 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                 id="exampleFormControlInput1"
                 placeholder="Search Products"
               />
@@ -716,9 +722,9 @@ const addEverything = () => {
                     v-if="searchedProductsArray"
                     @click="setProduct(product)"
                     v-for="product in searchedProduct"
-                    class="text-black hover:cursor-pointer hover:bg-light-green-100 border-b-2 border-light-green-900 block px-4 py-2 rounded-lg shadow-lg hover:shadow-3xl bg-white max-w-sm"
+                    class="font-bold text-black hover:cursor-pointer hover:bg-light-green-100 border-b-2 border-light-green-900 block px-4 py-2 rounded-lg shadow-lg hover:shadow-3xl bg-white max-w-sm"
                   >
-                    {{ product.product_name }}
+                    <span class="italic">{{ product.product_name }}</span> - {{ product.product_quantity }}
                   </div>
                 </div>
               </div>
@@ -777,12 +783,12 @@ const addEverything = () => {
                       >
                         Product Unit (SKU)
                       </th>
-                      <th
+                      <!-- <th
                         scope="col"
                         class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                       >
                         Product Description
-                      </th>
+                      </th> -->
                       <th
                         scope="col"
                         class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
@@ -849,7 +855,7 @@ const addEverything = () => {
                           placeholder=""
                         />
                       </td>
-                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                      <!-- <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                         <input
                           disabled
                           v-model="selectedProduct.productDescription"
@@ -858,12 +864,12 @@ const addEverything = () => {
                           id="exampleFormControlInput1"
                           placeholder=""
                         />
-                      </td>
+                      </td> -->
                       <td class="flex whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                         <div class="mt-1 flex rounded-md shadow-sm">
                           <span
                             class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-200 px-1 text-gray-500 text-xs"
-                            >{{ selectedProduct.remainingProducts}} Units</span
+                            >{{ selectedProduct.inDelivery}} Items</span
                           >
                           <input
                             v-model="selectedProduct.productQuantity"
