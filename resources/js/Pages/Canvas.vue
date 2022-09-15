@@ -14,6 +14,12 @@ const props = defineProps({
   invoiceLog: String,
 });
 
+const vLowerCase = {
+  updated: (el) => {
+    el.value = el.value.toLowerCase();
+  },
+};
+
 const clientsCollapse = computed(() => {
   if (purchasingClient.value != "") {
     return true;
@@ -251,7 +257,8 @@ const setProduct = (product) => {
     selectedProducts.value[selectedProductIndex.value].productPrice = product.sales_price;
     selectedProducts.value[selectedProductIndex.value].fixedPrice = product.sales_price;
     selectedProducts.value[selectedProductIndex.value].productQuantity = 1;
-    selectedProducts.value[selectedProductIndex.value].remainingProducts = product.stock_quantity;
+    selectedProducts.value[selectedProductIndex.value].remainingProducts =
+      product.stock_quantity;
     selectedProducts.value[selectedProductIndex.value].productSKU =
       product.product_quantity;
     selectedProducts.value[selectedProductIndex.value].selectedproductName =
@@ -296,30 +303,29 @@ const deleteTableRow = (index, selectedProduct) => {
   // calculateTotal();
   addEverything();
 };
-const checkSaleChanges = (index) =>
-{ 
-  const availableStock  = selectedProducts.value[index].remainingProducts
-  const leastPrice = selectedProducts.value[index].fixedPrice
+const checkSaleChanges = (index) => {
+  const availableStock = selectedProducts.value[index].remainingProducts;
+  const leastPrice = selectedProducts.value[index].fixedPrice;
   if (selectedProducts.value[index].productQuantity > availableStock) {
-    alert('Check Available Stock')
+    alert("Check Available Stock");
     selectedProducts.value[index].productQuantity = availableStock;
-    setCalculations(index)
+    setCalculations(index);
     addEverything();
-  } else { 
-    setCalculations(index)
+  } else {
+    setCalculations(index);
     addEverything();
   }
 
   if (selectedProducts.value[index].productPrice < leastPrice) {
-    alert('Check Product Price')
-    selectedProducts.value[index].productPrice = leastPrice
-    setCalculations(index)
+    alert("Check Product Price");
+    selectedProducts.value[index].productPrice = leastPrice;
+    setCalculations(index);
     addEverything();
-  } else { 
-    setCalculations(index)
+  } else {
+    setCalculations(index);
     addEverything();
   }
-}
+};
 const setCalculations = (index) => {
   // alert(index)
   // console.log(selectedProducts.value[index].total);
@@ -552,7 +558,8 @@ const addEverything = () => {
             </select> -->
 
             <input
-              v-model="purchasingClient"
+              :value="purchasingClient"
+              @input="(e) => (purchasingClient = e.target.value)"
               type="text"
               class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
               id="exampleFormControlInput1"
@@ -702,6 +709,7 @@ const addEverything = () => {
 
             <div class="mt-4 whitespace-nowrap py-2 text-sm text-gray-900">
               <input
+                v-LowerCase
                 :value="selectedProducts[selectedProductIndex].productname"
                 @input="
                   (e) =>
@@ -724,7 +732,8 @@ const addEverything = () => {
                     v-for="product in searchedProduct"
                     class="font-bold text-black hover:cursor-pointer hover:bg-light-green-100 border-b-2 border-light-green-900 block px-4 py-2 rounded-lg shadow-lg hover:shadow-3xl bg-white max-w-sm"
                   >
-                    <span class="italic">{{ product.product_name }}</span> - {{ product.product_quantity }}
+                    <span class="italic">{{ product.product_name }}</span> -
+                    {{ product.product_quantity }}
                   </div>
                 </div>
               </div>
@@ -869,7 +878,7 @@ const addEverything = () => {
                         <div class="mt-1 flex rounded-md shadow-sm">
                           <span
                             class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-200 px-1 text-gray-500 text-xs"
-                            >{{ selectedProduct.inDelivery}} Items</span
+                            >{{ selectedProduct.inDelivery }} Items</span
                           >
                           <input
                             v-model="selectedProduct.productQuantity"

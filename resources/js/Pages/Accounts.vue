@@ -10,6 +10,12 @@ defineProps({
   users: Array,
 });
 
+const vLowerCase = {
+  updated: (el) => {
+    el.value = el.value.toLowerCase();
+  },
+};
+
 const currentUser = computed(() => usePage().props.value.user.id);
 const currentTable = ref("usersTable");
 
@@ -399,6 +405,7 @@ const setCurrentMenu = (value) => {
                           type="text"
                           name="first-name"
                           id="first-name"
+                          v-LowerCase
                           v-model="form.client_name"
                           autocomplete="given-name"
                           class="mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
