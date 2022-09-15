@@ -19,6 +19,7 @@ class Product extends Model
         'in_delivery',
         'spoiled_products',
         'added_by',
+        'tax_exempt',
     ];
 
     public function user()

@@ -17,5 +17,6 @@ class Client extends Model
         'client_kra',
         'client_address',
         'client_balance',
+        'tax_exempt',
     ];
 }

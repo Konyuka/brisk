@@ -317,6 +317,7 @@ const logout = () => {
               </div>
               <div class="max-w-8xl mx-auto py-3 px-2 sm:px-4">
                 <Link
+                  v-if="adminLevel==1 || adminLevel==2 || adminLevel==3 || adminLevel==4"
                   href="/dashboard"
                   :class="
                     currentRoute == 'dashboard'
@@ -328,6 +329,7 @@ const logout = () => {
                 >
 
                 <Link
+                  v-if="adminLevel==1 || adminLevel==2"
                   href="/dashboard/product_inventory"
                   :class="
                     currentRoute == 'product_inventory'
@@ -339,6 +341,7 @@ const logout = () => {
                 >
 
                 <Link
+                  v-if="adminLevel==1 || adminLevel==2 || adminLevel==3"
                   href="/dashboard/product_delivery"
                   :class="
                     currentRoute == 'product_delivery'
@@ -350,7 +353,8 @@ const logout = () => {
                 >
 
                 <Link
-                  href="/dashboard/add_client"
+                  v-if="adminLevel==1 || adminLevel==2"
+                  href="/dashboard/users_clients"
                   :class="
                     currentRoute == 'add_client'
                     ? 'text-black'
@@ -437,9 +441,9 @@ const logout = () => {
 
             <Link
               v-if="adminLevel==1 || adminLevel==2"
-              href="/dashboard/add_client"
+              href="/dashboard/users_clients"
               :class="
-                    currentRoute == 'add_client'
+                    currentRoute == 'users_clients'
                     ? 'bg-white text-black'
                     : 'bg-black text-white'
               "

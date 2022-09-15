@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Product;
 use App\Models\Client;
+use App\Models\User;
 use App\Models\Sale;
+use Illuminate\Support\Facades\Hash;
 
 class DashboardController extends Controller
 {
@@ -26,6 +28,7 @@ class DashboardController extends Controller
         $product->in_delivery = $request->in_delivery;
         $product->spoiled_products = $request->spoiled_products;
         $product->added_by = $request->added_by;
+        $product->tax_exempt = $request->tax_exempt;
         $product->save();
         return redirect()->back();
 
@@ -41,8 +44,23 @@ class DashboardController extends Controller
         $client->client_contact = $request->client_contact;
         $client->client_kra = $request->client_kra;
         $client->client_address = $request->client_address;
-        $client->client_balance = $request->product_description;
+        $client->client_balance = 0;
+        $client->tax_exempt = $request->tax_exempt;
         $client->save();
+        // return;
+        return redirect()->back()->with('success', 'Client Created Successfully');
+
+    }
+
+    public function registerUser(Request $request)
+    {
+       
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->admin = $request->permission;
+        $user->save();
         // return;
         return redirect()->back()->with('success', 'User Created Successfully');
 
@@ -142,11 +160,13 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function addClient()
+    public function usersClients()
     {
         $clients = Client::latest()->get();
-        return Inertia::render('AddClient', [
-            'clients' => $clients
+        $users = User::latest()->get();
+        return Inertia::render('Accounts', [
+            'clients' => $clients,
+            'users' => $users
         ]);
     }
 

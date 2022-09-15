@@ -10,19 +10,18 @@ defineProps({
 });
 
 const vLowerCase = {
-  updated: (el) =>
-  { 
-    el.value = el.value.toLowerCase()
-  }
-}
+  updated: (el) => {
+    el.value = el.value.toLowerCase();
+  },
+};
 
 const currentUser = computed(() => usePage().props.value.user.id);
 const available_products = computed(() => {
   return form.finished_products - form.in_delivery - form.spoiled_products;
 });
 
-
 const productAddNotification = ref(false);
+const taxable = ref(true);
 
 const form = useForm({
   product_name: null,
@@ -34,21 +33,27 @@ const form = useForm({
   in_delivery: 50,
   spoiled_products: 50,
   added_by: currentUser,
+  tax_exempt: false,
 });
 
 const addProduct = () => {
   form.post("/dashboard/add_product", {
     preserveScroll: true,
     onSuccess: () => {
-      productAddNotification.value = true
+      productAddNotification.value = true;
       // form.reset();
       // alert("Product Added");
     },
   });
 };
-const clearForm = () =>
-{ 
+const clearForm = () => {
   form.reset();
+};
+const setTax = () =>
+{ 
+  taxable.value = !taxable.value
+  form.tax_exempt = !form.tax_exempt
+  // console.log(form.tax_exempt)
 }
 </script>
 
@@ -233,6 +238,32 @@ const clearForm = () =>
                     class="mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
                 </div>
+
+                <div>
+                  <!-- This example requires Tailwind CSS v2.0+ -->
+                  <div class="flex items-center">
+                    <!-- Enabled: "bg-indigo-600", Not Enabled: "bg-gray-200" -->
+                    <button
+                      @click="setTax"
+                      :class="taxable == true ? 'bg-light-green-600' : 'bg-gray-200'"
+                      type="button"
+                      class="bg-gray-200 relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-light-green-600 focus:ring-offset-2"
+                      role="switch"
+                      aria-checked="false"
+                      aria-labelledby="annual-billing-label"
+                    >
+                      <!-- Enabled: "translate-x-5", Not Enabled: "translate-x-0" -->
+                      <span
+                        aria-hidden="true"
+                        :class="taxable == true ? 'translate-x-5' : 'translate-x-0'"
+                        class="translate-x-5 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                      ></span>
+                    </button>
+                    <span class="ml-3" id="annual-billing-label">
+                      <span class="text-sm font-bold text-gray-600">Taxable</span>
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -296,7 +327,7 @@ const clearForm = () =>
                   View status
                 </button>
                 <button
-                  @click="productAddNotification=false"
+                  @click="productAddNotification = false"
                   type="button"
                   class="ml-3 rounded-md bg-green-50 px-2 py-1.5 text-sm font-medium text-green-800 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50"
                 >
@@ -308,7 +339,6 @@ const clearForm = () =>
         </div>
       </div>
     </div>
-
 
     <div>
       <div class="flex items-center justify-center py-1 px-2">
@@ -405,11 +435,15 @@ const clearForm = () =>
                       </div>
                     </td>
                     <td>
-                        <div class="relative px-5">
-                          <i class="text-blue-600 fas fa-edit fa-md transform translate hover:scale-150 duration-300 hover:cursor-pointer mr-3"></i>
-                          <i class="text-red-500 fas fa-trash fa-md transform translate hover:scale-150 duration-300 hover:cursor-pointer mr-3"></i>
-                        </div>
-                      </td>
+                      <div class="relative px-5">
+                        <i
+                          class="text-blue-600 fas fa-edit fa-md transform translate hover:scale-150 duration-300 hover:cursor-pointer mr-3"
+                        ></i>
+                        <i
+                          class="text-red-500 fas fa-trash fa-md transform translate hover:scale-150 duration-300 hover:cursor-pointer mr-3"
+                        ></i>
+                      </div>
+                    </td>
                   </tr>
                   <tr class="h-3"></tr>
                 </tbody>

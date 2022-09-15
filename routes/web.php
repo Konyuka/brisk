@@ -28,8 +28,10 @@ Route::middleware([
     ->name('dashboard');
     Route::post('/dashboard/add_product', [DashboardController::class, 'addProduct'])
     ->name('add_product');
-    Route::get('/dashboard/add_client', [DashboardController::class, 'addClient'])
-    ->name('add_client');
+    Route::get('/dashboard/users_clients', [DashboardController::class, 'usersClients'])
+    ->name('users_clients');
+    Route::post('/dashboard/user_register', [DashboardController::class, 'registerUser'])
+    ->name('user_register');
     Route::get('/dashboard/product_inventory', [DashboardController::class, 'inventory'])
     ->name('product_inventory');
     Route::get('/dashboard/product_delivery', [DashboardController::class, 'delivery'])

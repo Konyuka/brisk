@@ -24,6 +24,7 @@ return new class extends Migration
             $table->integer('in_delivery')->default(0);
             $table->integer('spoiled_products')->default(0);
             $table->integer('added_by');
+            $table->boolean('tax_exempt')->default(false);
             $table->timestamps();
         });
     }

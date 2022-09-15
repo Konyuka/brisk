@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('client_kra')->default(0);
             $table->string('client_address')->nullable();
             $table->integer('client_balance')->nullable();
+            $table->boolean('tax_exempt')->default(false);
             $table->timestamps();
         });
     }
