@@ -304,7 +304,7 @@ const deleteTableRow = (index, selectedProduct) => {
   addEverything();
 };
 const checkSaleChanges = (index) => {
-  const availableStock = selectedProducts.value[index].remainingProducts;
+  const availableStock = selectedProducts.value[index].inDelivery;
   const leastPrice = selectedProducts.value[index].fixedPrice;
   if (selectedProducts.value[index].productQuantity > availableStock) {
     alert("Check Available Stock");
