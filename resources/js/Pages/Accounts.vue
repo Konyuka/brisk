@@ -52,7 +52,14 @@ const setTax = () => {
 const getRole = (value) => {
   if (value == 1) {
     return "Super Admin";
-  } else if (value == 4) {
+  }
+  else if (value == 2) {
+    return "Sales Manager";
+  }
+  else if (value == 3) {
+    return "Team Lead";
+  }
+  else if (value == 4) {
     return "Sales Person";
   }
 };
