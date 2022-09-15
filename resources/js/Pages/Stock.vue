@@ -184,7 +184,7 @@ const addProduct = () => {
                   tabindex="0"
                   class="focus:outline-none text-base sm:text-lg md:text-xl lg:text-2xl font-bold leading-normal text-gray-800"
                 >
-                  Products Listing
+                  Sales Listing
                 </p>
                 <div
                   class="py-3 px-4 flex items-center text-sm font-medium leading-none text-gray-600 bg-gray-200 hover:bg-gray-300 cursor-pointer rounded"
@@ -259,7 +259,7 @@ const addProduct = () => {
                           </p>
                         </div>
                       </td>
-                      <td>
+                      <!-- <td>
                         <div class="relative px-5 pt-2">
                           <button
                             @click="saleItem(product)"
@@ -268,7 +268,7 @@ const addProduct = () => {
                             Sell <i class="ml-1 sm:ml-2 fas fa-handshake"></i>
                           </button>
                         </div>
-                      </td>
+                      </td> -->
                     </tr>
                     <tr class="h-3"></tr>
                   </tbody>
