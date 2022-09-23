@@ -65,6 +65,7 @@ const form = useForm({
   client_kra: "A87686HDIU5Y",
   client_address: "Ngong Road 30287",
   added_by: currentUser,
+  tax_exempt: false,
 });
 const clientsCollapseValue = ref("");
 const productsCollapseValue = ref("");

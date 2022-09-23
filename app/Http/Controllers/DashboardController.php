@@ -36,6 +36,7 @@ class DashboardController extends Controller
 
     public function registerClient(Request $request)
     {
+        // return dd($request);
        
         $client = new Client();
         $client->added_by = $request->added_by;

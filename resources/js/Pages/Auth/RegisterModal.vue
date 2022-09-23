@@ -44,6 +44,7 @@ const submit = () => {
     onFinish: () =>
     {
       form.reset("name", "email")
+      // form.reset()
       currentMessageText.value = true;
     },
   });

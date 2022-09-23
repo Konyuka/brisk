@@ -21,8 +21,8 @@ const currentTable = ref("usersTable");
 
 const form = useForm({
   client_name: "",
-  client_email: "michael@gmail.com",
-  client_contact: "0716202297",
+  client_email: "micel@gmail.com",
+  client_contact: "071620229",
   client_kra: "A87686HDIU5Y",
   client_address: "Ngong Road 30287",
   added_by: currentUser,
