@@ -1,7 +1,7 @@
 <script setup>
 import { useForm, usePage } from "@inertiajs/inertia-vue3";
-import { ref, computed, watch, toRef, reactive } from "vue";
-// import { Inertia } from "@inertiajs/inertia";
+import { ref, computed, watch, toRefs, reactive } from "vue";
+import { Inertia } from "@inertiajs/inertia";
 // import AppLayout from "@/Layouts/AppLayout.vue";
 // import { Calendar, DatePicker } from "v-calendar";
 import moment from "moment";
@@ -15,6 +15,7 @@ const props = defineProps({
   currentMessage: String,
   tripBatch: String,
 });
+const { tripBatch } = toRefs(props);
 
 const vLowerCase = {
   updated: (el) => {
@@ -94,7 +95,6 @@ const form = useForm({
   tax_exempt: false,
 });
 
-
 const clientsCollapseValue = ref("");
 const productsCollapseValue = ref("");
 const agentsCollapseValue = ref("");
@@ -105,7 +105,6 @@ const purchasingClient = ref("");
 const purchasedProduct = ref("");
 const chosenAgent = ref("");
 
-
 const selectedProducts = ref([
   {
     selectedproductID: null,
@@ -114,25 +113,27 @@ const selectedProducts = ref([
     productSKU: "",
     productQuantity: "",
     remainingProducts: null,
+    selectedType: null,
   },
 ]);
 const selectedAgents = ref([
   {
     selectedAgentName: null,
     selectedAgentID: null,
+    selectedType: null,
   },
 ]);
-const tripDetails = useForm(
-  {
-    lead: null,
-    location: 'nairobi',
-    truckPlate: 'KBA 1765T',
-    driver: 'driver X',
-    returnedProducts: null,
-    soldProducts: null,
-    spoiledProducts: null,
-  },
-);
+const tripDetails = useForm({
+  lead: null,
+  location: "nairobi",
+  truckPlate: "KBA 1765T",
+  driver: "driver X",
+  returnedProducts: null,
+  soldProducts: null,
+  spoiledProducts: null,
+  tripBatch: tripBatch.value,
+  selectedType: "details"
+});
 
 const date = ref(moment().format("MMMM Do YYYY, h:mm:ss a"));
 
@@ -222,7 +223,7 @@ watch(
 watch(
   chosenAgent,
   (value) => {
-    console.log(value);
+    // console.log(value);
     if (value.length != 0 && value[0].selectedAgentName == null) {
       // alert('hi')
       searchedAgent.value = [];
@@ -277,24 +278,25 @@ watch(
     immediate: true,
   }
 );
-
+const clearForm = () =>
+{ 
+  Inertia.get("/dashboard/product_delivery")
+}
 const processTrip = () => {
-  // Inertia.post('/add_product', form)
   selectedProducts.value.pop();
   selectedAgents.value.pop();
 
-  $deliveryArray = array_merge($firstArray, $secondArray);
+  let productsAgents = selectedProducts.value.concat(
+    selectedAgents.value  );
+  let productsAgentsDetails = productsAgents.concat(tripDetails);
 
-  console.log(selectedProducts.value, selectedAgents.value);
+  Inertia.post("/dashboard/process_delivery", productsAgentsDetails);
 
-  form.post("/dashboard/register_client", {
-    preserveScroll: true,
-    preserveState: true,
-    onSuccess: () => {
-      form.reset();
-      alert("Client Added");
-    },
-  });
+  setTimeout(() =>
+    { 
+      Inertia.get("/dashboard/product_delivery")
+    }, 2000)
+
 };
 const setAgent = (agent) => {
   // console.log(agent)
@@ -303,14 +305,15 @@ const setAgent = (agent) => {
 
   for (var i = 0; i < selectedAgents.value.length; i++) {
     if (i > 0) {
-      console.log(i);
-      console.log(selectedAgents.value[i].selectedAgentID);
+      // console.log(i);
+      // console.log(selectedAgents.value[i].selectedAgentID);
     }
   }
 
   if (!selectedAgents.value.includes(agent)) {
     selectedAgents.value[selectedAgentIndex.value].selectedAgentName = agent.name;
     selectedAgents.value[selectedAgentIndex.value].selectedAgentID = agent.id;
+    selectedAgents.value[selectedAgentIndex.value].selectedType = 'agent';
   }
   addAgentRow();
   agentsCollapseValue.value = false;
@@ -321,8 +324,8 @@ const setProduct = (product) => {
 
   for (var i = 0; i < selectedProducts.value.length; i++) {
     if (i > 0) {
-      console.log(i);
-      console.log(selectedProducts.value[i].selectedproductID);
+      // console.log(i);
+      // console.log(selectedProducts.value[i].selectedproductID);
     }
   }
 
@@ -336,6 +339,7 @@ const setProduct = (product) => {
     selectedProducts.value[selectedProductIndex.value].selectedproductName =
       product.product_name;
     selectedProducts.value[selectedProductIndex.value].selectedproductID = product.id;
+    selectedProducts.value[selectedProductIndex.value].selectedType = 'product';
   }
   addTableRow();
   productsCollapseValue.value = false;
@@ -350,14 +354,8 @@ const addTableRow = () => {
   selectedProducts.value.push({
     productname: "",
     productSKU: "",
-    productDescription: "",
     productQuantity: "",
     remainingProducts: null,
-    productPrice: null,
-    fixedPrice: null,
-    total: null,
-    vat: null,
-    salePrice: null,
   });
 };
 const deleteTableRow = (index, selectedProduct) => {
@@ -379,29 +377,6 @@ const deleteAgentRow = (index, selectedAgent) => {
 
 <template>
   <div>
-    <div
-      v-if="props.currentMessage != null"
-      class="flex p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
-      role="alert"
-    >
-      <svg
-        aria-hidden="true"
-        class="flex-shrink-0 inline w-5 h-5 mr-3"
-        fill="currentColor"
-        viewBox="0 0 20 20"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-          clip-rule="evenodd"
-        ></path>
-      </svg>
-      <span class="sr-only">Info</span>
-      <div>
-        <span class="font-medium">{{ props.currentMessage }}</span>
-      </div>
-    </div>
     <nav
       class="relative w-full flex flex-wrap items-center justify-between py-3 bg-gray-200 text-gray-500 hover:text-gray-700 focus:text-gray-700 shadow-lg"
     >
@@ -437,14 +412,18 @@ const deleteAgentRow = (index, selectedAgent) => {
                     name="location"
                     class="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-green-500 focus:outline-none focus:ring-green-500 sm:text-sm"
                   >
-                    <option v-for="(lead, index) in teamLead" :key="index" :value="lead.id">{{ lead.name }}</option>
+                    <option
+                      v-for="(lead, index) in teamLead"
+                      :key="index"
+                      :value="lead.id"
+                    >
+                      {{ lead.name }}
+                    </option>
                   </select>
                 </div>
 
                 <div class="col-span-3 sm:col-span-2">
-                  <label for="last-name" class="block text-sm font-medium text-gray-700"
-                    >
-                    
+                  <label for="last-name" class="block text-sm font-medium text-gray-700">
                     Trip Location</label
                   >
                   <input
@@ -458,8 +437,7 @@ const deleteAgentRow = (index, selectedAgent) => {
                 </div>
 
                 <div class="col-span-3 sm:col-span-1">
-                  <label for="last-name" class="block text-sm font-medium text-gray-700"
-                    >
+                  <label for="last-name" class="block text-sm font-medium text-gray-700">
                     Truck Number Plate</label
                   >
                   <input
@@ -473,8 +451,7 @@ const deleteAgentRow = (index, selectedAgent) => {
                 </div>
 
                 <div class="col-span-3 sm:col-span-1">
-                  <label for="last-name" class="block text-sm font-medium text-gray-700"
-                    >
+                  <label for="last-name" class="block text-sm font-medium text-gray-700">
                     Truck Driver</label
                   >
                   <input
@@ -536,7 +513,6 @@ const deleteAgentRow = (index, selectedAgent) => {
                     class="bg-gray-100 mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
                 </div>
-
               </div>
             </div>
           </div>
@@ -799,6 +775,32 @@ const deleteAgentRow = (index, selectedAgent) => {
       </div>
     </div>
 
+    <div>
+      <div
+        v-if="props.currentMessage != null"
+        class="flex justify-center p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
+        role="alert"
+      >
+        <svg
+          aria-hidden="true"
+          class="flex-shrink-0 inline w-5 h-5 mr-3"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+        <span class="sr-only">Info</span>
+        <div class="">
+          <span class="font-medium">{{ props.currentMessage }}</span>
+        </div>
+      </div>
+    </div>
+
     <nav
       class="relative w-full flex flex-wrap items-center justify-between py-3 bg-light-green-100 text-gray-500 hover:text-gray-700 focus:text-gray-700 shadow-lg"
     >
@@ -807,6 +809,7 @@ const deleteAgentRow = (index, selectedAgent) => {
       >
         <div class="mb-2 container-fluid">
           <button
+            @click="clearForm"
             type="button"
             class="inline-block px-2 py-2 sm:px-6 sm:py-2.5 bg-red-300 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
           >

@@ -36,6 +36,8 @@ Route::middleware([
     ->name('product_inventory');
     Route::get('/dashboard/product_delivery', [DashboardController::class, 'delivery'])
     ->name('product_delivery');
+    Route::post('/dashboard/process_delivery', [DashboardController::class, 'processDelivery'])
+    ->name('process_delivery');
     Route::post('/dashboard/register_client', [DashboardController::class, 'registerClient'])
     ->name('register_client');
     Route::post('/dashboard/register_sale', [DashboardController::class, 'registerSale'])

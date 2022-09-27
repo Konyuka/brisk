@@ -234,6 +234,57 @@ class DashboardController extends Controller
         ]);
 
     }
+
+    public function processDelivery(Request $request)
+    
+    {
+        $agentArray = json_decode($request->getContent());
+        $productArray = json_decode($request->getContent());
+        $detailsArray = json_decode($request->getContent());
+
+        foreach($agentArray as $elementKey => $element) {
+            foreach($element as $valueKey => $value) {
+                if($valueKey == 'selectedType' && $value == 'product'){
+                    //delete this particular object from the $array
+                    unset($agentArray[$elementKey]);
+                }
+                if($valueKey == 'selectedType' && $value == 'details'){
+                    //delete this particular object from the $array
+                    unset($agentArray[$elementKey]);
+                } 
+            }
+        }
+        foreach($productArray as $elementKey => $element) {
+            foreach($element as $valueKey => $value) {
+                if($valueKey == 'selectedType' && $value == 'agent'){
+                    //delete this particular object from the $array
+                    unset($productArray[$elementKey]);
+                }
+                if($valueKey == 'selectedType' && $value == 'details'){
+                    //delete this particular object from the $array
+                    unset($productArray[$elementKey]);
+                } 
+            }
+        }
+        foreach($detailsArray as $elementKey => $element) {
+            foreach($element as $valueKey => $value) {
+                if($valueKey == 'selectedType' && $value == 'product'){
+                    //delete this particular object from the $array
+                    unset($detailsArray[$elementKey]);
+                } 
+                if($valueKey == 'selectedType' && $value == 'agent'){
+                    //delete this particular object from the $array
+                    unset($detailsArray[$elementKey]);
+                } 
+            }
+        }
+
+        return dd($agentArray, $productArray, $detailsArray);
+
+        
+        return redirect()->back()->with('success', 'Delivery Registered Successfully');
+
+    }
    
     public function update(Request $request, $id)
     {

@@ -1,6 +1,6 @@
 <script setup>
 import { useForm, usePage, Link } from "@inertiajs/inertia-vue3";
-import { ref, computed, reactive, watch, onMounted  } from "vue";
+import { ref, computed, reactive, watch, onMounted } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Canvass from "./Canvass.vue";
@@ -12,7 +12,7 @@ defineProps({
   teamLead: Array,
   sales: Array,
   message: String,
-  tripBatch: String
+  tripBatch: String,
 });
 
 const currentMessage = computed(() => usePage().props.value.flash.success);
@@ -45,12 +45,11 @@ const purchasingPrice = ref(200);
 const bottomCanvas = ref(false);
 onMounted(() => {
   if (currentMessage.value != null) {
-    bottomCanvas.value = true
-  } else { 
-    bottomCanvas.value = false
+    bottomCanvas.value = true;
+  } else {
+    bottomCanvas.value = false;
   }
-      
-})
+});
 const addModal = ref(false);
 const saleModal = ref(false);
 const showInvoice = ref(false);
@@ -69,11 +68,10 @@ const payload = reactive({
   invoice_number: 1,
 });
 
-const getInvoiceForm = async () =>
-{ 
-  Inertia.reload({ only: ['tripBatch'] })
-  bottomCanvas.value = true
-}
+const getInvoiceForm = async () => {
+  Inertia.reload({ only: ["tripBatch"] });
+  bottomCanvas.value = true;
+};
 
 const processButtons = (value) => {
   if (value == "existing") {
@@ -112,7 +110,6 @@ const addProduct = () => {
 <template>
   <AppLayout title="Dashboard">
     <div>
-
       <div
         class="px-4 py-6 sm:py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-8"
       >
@@ -147,7 +144,7 @@ const addProduct = () => {
             </span>
           </h2>
         </div>
-       
+
         <div class="text-center">
           <!-- <button
             @click="addModal = true"
@@ -165,10 +162,36 @@ const addProduct = () => {
         </div>
       </div>
 
+      <div class="px-20">
+        <div
+          v-if="currentMessage != null"
+          class="flex p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
+          role="alert"
+        >
+          <svg
+            aria-hidden="true"
+            class="flex-shrink-0 inline w-5 h-5 mr-3"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+          <span class="sr-only">Info</span>
+          <div>
+            <span class="font-medium">{{ currentMessage }}</span>
+          </div>
+        </div>
+      </div>
+
+
       <div>
         <div class="flex items-center justify-center py-1 px-2">
           <div class="sm:px-6 w-full">
-
             <div class="px-4 md:px-10 py-4 md:py-7">
               <div class="flex items-center justify-between">
                 <p
@@ -257,23 +280,36 @@ const addProduct = () => {
                 </table>
               </div>
             </div>
-
           </div>
         </div>
       </div>
     </div>
 
-    <div v-if="bottomCanvas" class="offcanvas offcanvas-bottom fixed bottom-0 flex flex-col max-w-full bg-gray-100 bg-clip-padding shadow-sm outline-none transition duration-300 ease-in-out text-gray-700 left-0 right-0 border-none h-screen max-h-full" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+    <div
+      v-if="bottomCanvas"
+      class="offcanvas offcanvas-bottom fixed bottom-0 flex flex-col max-w-full bg-gray-100 bg-clip-padding shadow-sm outline-none transition duration-300 ease-in-out text-gray-700 left-0 right-0 border-none h-screen max-h-full"
+      tabindex="-1"
+      id="offcanvasBottom"
+      aria-labelledby="offcanvasBottomLabel"
+    >
       <div class="offcanvas-header flex items-center justify-between p-4">
         <!-- <h5 class="offcanvas-title mb-0 leading-normal font-extrabold text-gray-700 text-xl" id="offcanvasBottomLabel">Process Invoice</h5> -->
-        <i @click="bottomCanvas=false" class="fas fa-xmark fa-2x hover:cursor-pointer"></i>
+        <i
+          @click="bottomCanvas = false"
+          class="fas fa-xmark fa-2x hover:cursor-pointer"
+        ></i>
         <!-- <button type="button" class="btn-close box-content w-4 h-4 p-2 -my-5 -mr-2 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline" data-bs-dismiss="offcanvas" aria-label="Close"></button> -->
       </div>
       <div class="h-screen offcanvas-body flex-grow p-4 overflow-y-auto small">
-        <Canvass :teamLead="teamLead" :salesAgents="salesAgents" :products="products" :currentMessage="currentMessage" :tripBatch="tripBatch"/>
+        <Canvass
+          :teamLead="teamLead"
+          :salesAgents="salesAgents"
+          :products="products"
+          :currentMessage="currentMessage"
+          :tripBatch="tripBatch"
+        />
       </div>
     </div>
-
   </AppLayout>
 </template>
 
