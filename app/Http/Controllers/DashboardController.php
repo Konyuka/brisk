@@ -213,6 +213,7 @@ class DashboardController extends Controller
     {
         $products = Product::latest()->get();
         $salesAgents = User::where(['admin'=>4])->latest()->get();
+        $teamLead = User::where(['admin'=>3])->latest()->get();
         $trip = Trip::latest()->get()->first();  
         $trips = Trip::latest()->get();  
 
@@ -227,6 +228,7 @@ class DashboardController extends Controller
         return Inertia::render('Delivery', [
             'products' => $products,
             'salesAgents' => $salesAgents,
+            'teamLead' => $teamLead,
             'tripBatch' => $tripBatch,
             'trips' => $trips,
         ]);

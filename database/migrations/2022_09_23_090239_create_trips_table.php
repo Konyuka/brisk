@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('added_by');
             $table->string('number_users')->default(0);
             $table->string('number_products')->default(0);
+            $table->string('number_brands')->default(0);
             $table->string('products_sold')->default(0);
             $table->string('products_returned')->default(0);
             $table->string('products_spoiled')->default(0);

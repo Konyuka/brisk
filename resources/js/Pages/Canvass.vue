@@ -9,6 +9,7 @@ import Receipt from "./Receipt.vue";
 
 const props = defineProps({
   salesAgents: Array,
+  teamLead: Array,
   products: Array,
   trips: Array,
   currentMessage: String,
@@ -20,6 +21,16 @@ const vLowerCase = {
     el.value = el.value.toLowerCase();
   },
 };
+
+const productsNumber = computed(() => {
+  return selectedProducts.value.length - 1;
+});
+const brandsNumber = computed(() => {
+  return selectedProducts.value.length - 1;
+});
+const agentsNumber = computed(() => {
+  return selectedAgents.value.length - 1;
+});
 
 const clientsCollapse = computed(() => {
   if (purchasingClient.value != "") {
@@ -82,6 +93,8 @@ const form = useForm({
   added_by: currentUser,
   tax_exempt: false,
 });
+
+
 const clientsCollapseValue = ref("");
 const productsCollapseValue = ref("");
 const agentsCollapseValue = ref("");
@@ -91,12 +104,7 @@ const searchedAgent = ref([]);
 const purchasingClient = ref("");
 const purchasedProduct = ref("");
 const chosenAgent = ref("");
-const selectedClient = ref({});
-const anonymousSale = ref(false);
 
-const overallSubtotal = ref(null);
-const overallTax = ref(null);
-const overallTotal = ref(null);
 
 const selectedProducts = ref([
   {
@@ -104,19 +112,8 @@ const selectedProducts = ref([
     productname: "",
     selectedproductName: "",
     productSKU: "",
-    productDescription: "",
     productQuantity: "",
     remainingProducts: null,
-    productPrice: null,
-    fixedPrice: null,
-    total: null,
-    vat: null,
-    salePrice: null,
-    productCode: null,
-    barCode: null,
-    finishedProduct: null,
-    inDelivery: null,
-    spoiledProduct: null,
   },
 ]);
 const selectedAgents = ref([
@@ -125,6 +122,17 @@ const selectedAgents = ref([
     selectedAgentID: null,
   },
 ]);
+const tripDetails = useForm(
+  {
+    lead: null,
+    location: 'nairobi',
+    truckPlate: 'KBA 1765T',
+    driver: 'driver X',
+    returnedProducts: null,
+    soldProducts: null,
+    spoiledProducts: null,
+  },
+);
 
 const date = ref(moment().format("MMMM Do YYYY, h:mm:ss a"));
 
@@ -214,7 +222,7 @@ watch(
 watch(
   chosenAgent,
   (value) => {
-    console.log(value)
+    console.log(value);
     if (value.length != 0 && value[0].selectedAgentName == null) {
       // alert('hi')
       searchedAgent.value = [];
@@ -247,8 +255,7 @@ watch(
 );
 watch(
   selectedAgents,
-  (value) =>
-  {
+  (value) => {
     // console.log(value)
     chosenAgent.value = value;
     searchedAgentsArray.value = true;
@@ -260,8 +267,7 @@ watch(
 );
 watch(
   selectedProducts,
-  (value) =>
-  {
+  (value) => {
     // console.log(value)
     purchasedProduct.value = value;
     searchedProductsArray.value = true;
@@ -272,34 +278,25 @@ watch(
   }
 );
 
-const finishSale = () => {
-  // console.log(payload)
-  // Inertia.post("/dashboard/finish_sale", payload);
-};
-const printInvoice = () => {
-  printTrigger.value = !printTrigger.value;
-};
-const addClient = () => {
+const processTrip = () => {
   // Inertia.post('/add_product', form)
+  selectedProducts.value.pop();
+  selectedAgents.value.pop();
+
+  $deliveryArray = array_merge($firstArray, $secondArray);
+
+  console.log(selectedProducts.value, selectedAgents.value);
+
   form.post("/dashboard/register_client", {
     preserveScroll: true,
     preserveState: true,
     onSuccess: () => {
       form.reset();
-      // addModal = false
       alert("Client Added");
     },
   });
 };
-const setClient = (client) => {
-  // alert('yess')
-  // console.log(client)
-  clientsCollapseValue.value = false;
-  purchasingClient.value = client.client_name;
-  selectedClient.value = client;
-};
-const setAgent = (agent) =>
-{
+const setAgent = (agent) => {
   // console.log(agent)
   agentsCollapseValue.value = false;
   chosenAgent.value = agent.name;
@@ -312,10 +309,8 @@ const setAgent = (agent) =>
   }
 
   if (!selectedAgents.value.includes(agent)) {
-    selectedAgents.value[selectedAgentIndex.value].selectedAgentName =
-      agent.name;
-    selectedAgents.value[selectedAgentIndex.value].selectedAgentID =
-      agent.id;
+    selectedAgents.value[selectedAgentIndex.value].selectedAgentName = agent.name;
+    selectedAgents.value[selectedAgentIndex.value].selectedAgentID = agent.id;
   }
   addAgentRow();
   agentsCollapseValue.value = false;
@@ -332,28 +327,15 @@ const setProduct = (product) => {
   }
 
   if (!selectedProducts.value.includes(product)) {
-    selectedProducts.value[selectedProductIndex.value].productDescription =
-      product.product_description;
-    selectedProducts.value[selectedProductIndex.value].productPrice = product.sales_price;
-    selectedProducts.value[selectedProductIndex.value].fixedPrice = product.sales_price;
-    selectedProducts.value[selectedProductIndex.value].productQuantity = 1;
+    selectedProducts.value[selectedProductIndex.value].productQuantity =
+      selectedProducts.value.productQuantity;
     selectedProducts.value[selectedProductIndex.value].remainingProducts =
-      product.stock_quantity;
+      product.finished_products;
     selectedProducts.value[selectedProductIndex.value].productSKU =
       product.product_quantity;
     selectedProducts.value[selectedProductIndex.value].selectedproductName =
       product.product_name;
     selectedProducts.value[selectedProductIndex.value].selectedproductID = product.id;
-    selectedProducts.value[selectedProductIndex.value].inDelivery = product.in_delivery;
-    selectedProducts.value[selectedProductIndex.value].total =
-      selectedProducts.value[selectedProductIndex.value].productQuantity *
-      selectedProducts.value[selectedProductIndex.value].productPrice;
-    selectedProducts.value[selectedProductIndex.value].vat = Math.round(
-      selectedProducts.value[selectedProductIndex.value].total * 0.16
-    );
-    selectedProducts.value[selectedProductIndex.value].salePrice =
-      selectedProducts.value[selectedProductIndex.value].total +
-      selectedProducts.value[selectedProductIndex.value].vat;
   }
   addTableRow();
   productsCollapseValue.value = false;
@@ -381,62 +363,17 @@ const addTableRow = () => {
 const deleteTableRow = (index, selectedProduct) => {
   var idx = selectedProducts.value.indexOf(selectedProduct);
   console.log(idx, index);
-  if (idx > -1) {
+  if (idx > 0) {
     selectedProducts.value.splice(idx, 1);
   }
   // calculateTotal();
-  addEverything();
 };
-const checkSaleChanges = (index) => {
-  const availableStock = selectedProducts.value[index].inDelivery;
-  const leastPrice = selectedProducts.value[index].fixedPrice;
-  if (selectedProducts.value[index].productQuantity > availableStock) {
-    alert("Check Available Stock");
-    selectedProducts.value[index].productQuantity = availableStock;
-    setCalculations(index);
-    addEverything();
-  } else {
-    setCalculations(index);
-    addEverything();
+const deleteAgentRow = (index, selectedAgent) => {
+  var idx = selectedAgents.value.indexOf(selectedAgent);
+  console.log(idx, index);
+  if (idx > 0) {
+    selectedAgents.value.splice(idx, 1);
   }
-
-  if (selectedProducts.value[index].productPrice < leastPrice) {
-    alert("Check Product Price");
-    selectedProducts.value[index].productPrice = leastPrice;
-    setCalculations(index);
-    addEverything();
-  } else {
-    setCalculations(index);
-    addEverything();
-  }
-};
-const setCalculations = (index) => {
-  // alert(index)
-  // console.log(selectedProducts.value[index].total);
-
-  selectedProducts.value[index].total =
-    selectedProducts.value[index].productQuantity *
-    selectedProducts.value[index].productPrice;
-  selectedProducts.value[index].vat = Math.round(
-    selectedProducts.value[index].total * 0.16
-  );
-  selectedProducts.value[index].salePrice =
-    selectedProducts.value[index].total + selectedProducts.value[index].vat;
-
-  addEverything();
-};
-
-const addEverything = () => {
-  var sumSubtotal = selectedProducts.value.reduce((accumulator, object) => {
-    return accumulator + object.salePrice;
-  }, 0);
-  var sumTax = selectedProducts.value.reduce((accumulator, object) => {
-    return accumulator + object.vat;
-  }, 0);
-
-  overallSubtotal.value = sumSubtotal - sumTax;
-  overallTax.value = sumTax;
-  overallTotal.value = sumSubtotal;
 };
 </script>
 
@@ -479,6 +416,133 @@ const addEverything = () => {
         </div>
       </div>
     </nav>
+
+    <div>
+      <div class="modal-body relative p-4">
+        <div class="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
+          <div class="md:grid md:grid-cols-2 md:gap-6">
+            <div class="md:col-span-1">
+              <!-- <h3 class="text-lg font-medium leading-6 text-gray-900">Add Product</h3>
+        <p class="mt-1 text-sm text-gray-500">Key in product details</p> -->
+            </div>
+            <div class="mt-5 md:mt-0 md:col-span-2">
+              <div class="grid grid-cols-6 gap-6">
+                <div class="col-span-6 sm:col-span-2">
+                  <label for="first-name" class="block text-sm font-medium text-gray-700">
+                    Trip Team Lead</label
+                  >
+                  <select
+                    v-model="tripDetails.lead"
+                    id="location"
+                    name="location"
+                    class="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-green-500 focus:outline-none focus:ring-green-500 sm:text-sm"
+                  >
+                    <option v-for="(lead, index) in teamLead" :key="index" :value="lead.id">{{ lead.name }}</option>
+                  </select>
+                </div>
+
+                <div class="col-span-3 sm:col-span-2">
+                  <label for="last-name" class="block text-sm font-medium text-gray-700"
+                    >
+                    
+                    Trip Location</label
+                  >
+                  <input
+                    type="text"
+                    name="last-name"
+                    id="last-name"
+                    v-model="tripDetails.location"
+                    autocomplete="family-name"
+                    class="uppercase mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  />
+                </div>
+
+                <div class="col-span-3 sm:col-span-1">
+                  <label for="last-name" class="block text-sm font-medium text-gray-700"
+                    >
+                    Truck Number Plate</label
+                  >
+                  <input
+                    type="text"
+                    name="last-name"
+                    id="last-name"
+                    v-model="tripDetails.truckPlate"
+                    autocomplete="family-name"
+                    class="mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  />
+                </div>
+
+                <div class="col-span-3 sm:col-span-1">
+                  <label for="last-name" class="block text-sm font-medium text-gray-700"
+                    >
+                    Truck Driver</label
+                  >
+                  <input
+                    type="text"
+                    name="last-name"
+                    id="last-name"
+                    v-model="tripDetails.driver"
+                    autocomplete="family-name"
+                    class="mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  />
+                </div>
+
+                <div class="col-span-3 sm:col-span-2">
+                  <label for="last-name" class="block text-sm font-medium text-gray-700"
+                    ><i class="fas fa-retweet text-light-green-800 fa-lg mr-1"></i>
+                    Returned Products</label
+                  >
+                  <input
+                    disabled
+                    type="number"
+                    name="last-name"
+                    id="last-name"
+                    v-model="tripDetails.returnedProducts"
+                    autocomplete="family-name"
+                    class="bg-gray-100 mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  />
+                </div>
+
+                <div class="col-span-3 sm:col-span-2">
+                  <label for="last-name" class="block text-sm font-medium text-gray-700"
+                    ><i class="fas fa-square-check text-light-green-800 fa-lg mr-1"></i>
+                    Sold Products</label
+                  >
+                  <input
+                    disabled
+                    type="number"
+                    name="last-name"
+                    id="last-name"
+                    v-model="tripDetails.soldProducts"
+                    autocomplete="family-name"
+                    class="bg-gray-100 mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  />
+                </div>
+
+                <div class="col-span-3 sm:col-span-2">
+                  <label for="last-name" class="block text-sm font-medium text-gray-700"
+                    ><i
+                      class="fas fa-rectangle-xmark text-light-green-800 fa-lg mr-1"
+                    ></i>
+                    Spoiled Products</label
+                  >
+                  <input
+                    disabled
+                    type="number"
+                    name="last-name"
+                    id="last-name"
+                    v-model="tripDetails.spoiledProducts"
+                    autocomplete="family-name"
+                    class="bg-gray-100 mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  />
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="mt-2 mb-20">
       <div class="sm:mt-20 px-4 sm:px-6 lg:px-8">
@@ -569,7 +633,7 @@ const addEverything = () => {
                         class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
                       >
                         <a
-                          @click.prevent="deleteTableRow(index, selectedAgent)"
+                          @click.prevent="deleteAgentRow(index, selectedAgent)"
                           class="text-red-600 hover:text-red-900"
                         >
                           <i class="fas fa-trash"></i>
@@ -701,7 +765,7 @@ const addEverything = () => {
                         <div class="mt-1 flex rounded-md shadow-sm">
                           <span
                             class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-200 px-1 text-gray-500 text-xs"
-                            >{{ selectedProduct.inDelivery }} Items</span
+                            >{{ selectedProduct.remainingProducts }} Items</span
                           >
                           <input
                             v-model="selectedProduct.productQuantity"
@@ -751,7 +815,7 @@ const addEverything = () => {
         </div>
         <div class="container-fluid">
           <button
-            @click="finishSale"
+            @click="processTrip"
             type="button"
             class="mb-2 inline-block px-2 py-2 sm:px-6 sm:py-2.5 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
           >
