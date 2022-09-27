@@ -23,6 +23,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
+            $table->integer('trip_batch')->default(1);
             $table->timestamps();
         });
     }

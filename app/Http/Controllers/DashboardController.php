@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\Client;
 use App\Models\User;
 use App\Models\Sale;
+use App\Models\Trip;
 use Illuminate\Support\Facades\Hash;
 
 class DashboardController extends Controller
@@ -208,10 +209,28 @@ class DashboardController extends Controller
     }
 
     public function delivery()
+    
     {
+        $products = Product::latest()->get();
+        $salesAgents = User::where(['admin'=>4])->latest()->get();
+        $trip = Trip::latest()->get()->first();  
+        $trips = Trip::latest()->get();  
+
+        // return dd($salesAgents);
+        
+        if($trip != null){
+            $tripBatch = $trip->id;
+        }else {
+            $tripBatch = 1;
+        }
+
         return Inertia::render('Delivery', [
-            // 'clients' => $clients
+            'products' => $products,
+            'salesAgents' => $salesAgents,
+            'tripBatch' => $tripBatch,
+            'trips' => $trips,
         ]);
+
     }
    
     public function update(Request $request, $id)

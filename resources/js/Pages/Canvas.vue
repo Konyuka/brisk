@@ -135,9 +135,11 @@ watch(purchasingClient, (value) => {
 });
 watch(
   purchasedProduct,
-  (value) => {
+  (value) =>
+  {
     // console.log(value.length);
     if (value.length != 0) {
+      alert('hi')
       // alert('twende')
       let allProducts = props.products;
       // console.log(allProducts)

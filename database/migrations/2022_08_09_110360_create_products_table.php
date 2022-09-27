@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('sales_price')->default(0);
             $table->integer('finished_products')->default(0);
             $table->integer('in_delivery')->default(0);
+            $table->integer('trip_batch')->default(0);
             $table->integer('spoiled_products')->default(0);
             $table->integer('added_by');
             $table->boolean('tax_exempt')->default(false);
