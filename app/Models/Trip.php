@@ -13,11 +13,13 @@ class Trip extends Model
         'added_by',
         'number_users',
         'number_products',
+        'number_brands',
         'products_sold',
         'products_returned',
         'products_spoiled',
         'trip_location',
         'team_lead',
+        'lead_name',
         'vehicle_number',
         'driver_name',
     ];

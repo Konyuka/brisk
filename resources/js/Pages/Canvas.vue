@@ -139,7 +139,7 @@ watch(
   {
     // console.log(value.length);
     if (value.length != 0) {
-      alert('hi')
+      // alert('hi')
       // alert('twende')
       let allProducts = props.products;
       // console.log(allProducts)

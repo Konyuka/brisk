@@ -24,13 +24,13 @@ const vLowerCase = {
 };
 
 const productsNumber = computed(() => {
-  return selectedProducts.value.length - 1;
+  return selectedProducts.value.length;
 });
 const brandsNumber = computed(() => {
-  return selectedProducts.value.length - 1;
+  return selectedProducts.value.length;
 });
 const agentsNumber = computed(() => {
-  return selectedAgents.value.length - 1;
+  return selectedAgents.value.length;
 });
 
 const clientsCollapse = computed(() => {
@@ -132,7 +132,10 @@ const tripDetails = useForm({
   soldProducts: null,
   spoiledProducts: null,
   tripBatch: tripBatch.value,
-  selectedType: "details"
+  selectedType: "details",
+  added_by: currentUser.value,
+  brandsNumber: brandsNumber,
+  agentsNumber: agentsNumber
 });
 
 const date = ref(moment().format("MMMM Do YYYY, h:mm:ss a"));
@@ -295,7 +298,7 @@ const processTrip = () => {
   setTimeout(() =>
     { 
       Inertia.get("/dashboard/product_delivery")
-    }, 2000)
+    }, 7000)
 
 };
 const setAgent = (agent) => {
@@ -745,7 +748,6 @@ const deleteAgentRow = (index, selectedAgent) => {
                           >
                           <input
                             v-model="selectedProduct.productQuantity"
-                            @change="checkSaleChanges(index)"
                             type="text"
                             name="username"
                             id="username"

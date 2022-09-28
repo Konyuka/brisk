@@ -13,6 +13,7 @@ defineProps({
   sales: Array,
   message: String,
   tripBatch: String,
+  trips: Array,
 });
 
 const currentMessage = computed(() => usePage().props.value.flash.success);
@@ -67,6 +68,11 @@ const payload = reactive({
   payment_status: false,
   invoice_number: 1,
 });
+
+const formatTime = (value) =>
+{ 
+  return moment(value).format('MMMM Do YYYY, h:mm:ss a');
+}
 
 const getInvoiceForm = async () => {
   Inertia.reload({ only: ["tripBatch"] });
@@ -231,7 +237,7 @@ const addProduct = () => {
                           <div
                             class="bg-light-green-100 focus:bg-green-300 font-extrabold rounded-sm w-5 h-5 flex flex-shrink-0 justify-center items-center relative"
                           >
-                            {{ index + 1 }}
+                            # {{ trip.id }}
                           </div>
                         </div>
                       </td>
@@ -240,38 +246,43 @@ const addProduct = () => {
                           <p
                             class="hover:font-extrabold cursor-help text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
                           >
-                            {{ trip.product_name }}
+                           <span class="capitalize">{{ trip.lead_name }}'s</span> Group
                           </p>
                         </div>
                       </td>
                       <td class="pl-2">
                         <div class="flex items-center">
-                          <i class="fas fa-scale-unbalanced text-green-900"></i>
+                          <i class="fas fa-location-dot text-green-900"></i>
                           <p
                             class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
                           >
-                            {{ trip.product_quantity }} Grams
+                            Location: {{ trip.trip_location }}
                           </p>
                         </div>
                       </td>
                       <td class="pl-2">
                         <div class="flex items-center">
-                          <i class="fas fa-boxes-packing text-green-900"></i>
+                          <i class="fas fa-truck text-green-900"></i>
                           <p
                             class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
                           >
-                            {{ trip.stock_quantity }} items
+                            Truck {{ trip.vehicle_number }}
                           </p>
                         </div>
                       </td>
                       <td class="pl-2">
                         <div class="flex items-center">
-                          <i class="fas fa-money-bill-trend-up text-green-900"></i>
+                          <i class="fas fa-money-timer text-green-900"></i>
                           <p
                             class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
                           >
-                            {{ trip.sales_price }} KES
+                            {{ formatTime(trip.created_at) }}
                           </p>
+                        </div>
+                      </td>
+                      <td class="pl-2">
+                        <div class="flex items-center">
+                          <i class="fas fa-eye text-green-900"></i>
                         </div>
                       </td>
                     </tr>

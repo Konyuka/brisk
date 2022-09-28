@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('products_spoiled')->default(0);
             $table->string('trip_location')->nullable();
             $table->integer('team_lead')->nullable();
+            $table->string('lead_name')->nullable();
             $table->string('vehicle_number')->nullable();
             $table->string('driver_name')->nullable();
             $table->timestamps();

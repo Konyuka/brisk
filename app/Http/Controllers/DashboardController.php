@@ -217,13 +217,14 @@ class DashboardController extends Controller
         $trip = Trip::latest()->get()->first();  
         $trips = Trip::latest()->get();  
 
-        // return dd($salesAgents);
+        
         
         if($trip != null){
-            $tripBatch = $trip->id;
+            $tripBatch = $trip->id + 1;
         }else {
             $tripBatch = 1;
         }
+
 
         return Inertia::render('Delivery', [
             'products' => $products,
@@ -238,22 +239,17 @@ class DashboardController extends Controller
     public function processDelivery(Request $request)
     
     {
-        $agentArray = json_decode($request->getContent());
         $productArray = json_decode($request->getContent());
+        $agentArray = json_decode($request->getContent());
         $detailsArray = json_decode($request->getContent());
 
-        foreach($agentArray as $elementKey => $element) {
-            foreach($element as $valueKey => $value) {
-                if($valueKey == 'selectedType' && $value == 'product'){
-                    //delete this particular object from the $array
-                    unset($agentArray[$elementKey]);
-                }
-                if($valueKey == 'selectedType' && $value == 'details'){
-                    //delete this particular object from the $array
-                    unset($agentArray[$elementKey]);
-                } 
-            }
-        }
+        // $tripBatch = $detailsArray[1]->tripBatch;
+        // $tripBatch = $detailsArray->tripBatch;
+
+        
+        // return dump($tripBatch);
+
+        
         foreach($productArray as $elementKey => $element) {
             foreach($element as $valueKey => $value) {
                 if($valueKey == 'selectedType' && $value == 'agent'){
@@ -263,6 +259,18 @@ class DashboardController extends Controller
                 if($valueKey == 'selectedType' && $value == 'details'){
                     //delete this particular object from the $array
                     unset($productArray[$elementKey]);
+                } 
+            }
+        }
+        foreach($agentArray as $elementKey => $element) {
+            foreach($element as $valueKey => $value) {
+                if($valueKey == 'selectedType' && $value == 'product'){
+                    //delete this particular object from the $array
+                    unset($agentArray[$elementKey]);
+                }
+                if($valueKey == 'selectedType' && $value == 'details'){
+                    //delete this particular object from the $array
+                    unset($agentArray[$elementKey]);
                 } 
             }
         }
@@ -279,7 +287,46 @@ class DashboardController extends Controller
             }
         }
 
-        return dd($agentArray, $productArray, $detailsArray);
+        foreach($detailsArray as $key=>$value){
+             $tripBatch = $value->tripBatch;
+        }
+        foreach($detailsArray as $key=>$value){
+             $leadName = User::where('id', $value->lead)->get()->first();
+            //  return dd($leadName->name);
+             Trip::create([
+                'added_by' => $value->added_by,
+                'number_users' => $value->agentsNumber,
+                'number_product' => 0,
+                'number_brands' => $value->brandsNumber,
+                'products_sold' => 0,
+                'products_returned' => 0,
+                'products_spoiled' => 0,
+                'trip_location' => $value->location,
+                'team_lead' => $value->lead,
+                'lead_name' => $leadName->name,
+                'vehicle_number' => $value->truckPlate,
+                'driver_name' => $value->driver,
+            ]);
+        }
+        foreach($productArray as $key=>$value){
+             $remainingStock = $value->remainingProducts - $value->productQuantity;
+             Product::where('id', $value->selectedproductID)
+             ->update([
+                 'trip_batch' => $tripBatch,
+                 'in_delivery' => $value->productQuantity,
+                 'finished_products' => $remainingStock
+             ]);
+        }
+        foreach($agentArray as $key=>$value){
+             User::where('id', $value->selectedAgentID)
+             ->update([
+                 'trip_batch' => $tripBatch
+             ]);
+        }
+
+
+        // return dd($productArray, $agentArray, $detailsArray);
+        // return dd($productArray);
 
         
         return redirect()->back()->with('success', 'Delivery Registered Successfully');
