@@ -128,14 +128,16 @@ const tripDetails = useForm({
   location: "nairobi",
   truckPlate: "KBA 1765T",
   driver: "driver X",
+  loadedProducts: null,
   returnedProducts: null,
   soldProducts: null,
   spoiledProducts: null,
+  missingProducts: null,
   tripBatch: tripBatch.value,
   selectedType: "details",
   added_by: currentUser.value,
   brandsNumber: brandsNumber,
-  agentsNumber: agentsNumber
+  agentsNumber: agentsNumber,
 });
 
 const date = ref(moment().format("MMMM Do YYYY, h:mm:ss a"));
@@ -281,24 +283,73 @@ watch(
     immediate: true,
   }
 );
-const clearForm = () =>
-{ 
-  Inertia.get("/dashboard/product_delivery")
-}
-const processTrip = () => {
-  selectedProducts.value.pop();
-  selectedAgents.value.pop();
-
-  let productsAgents = selectedProducts.value.concat(
-    selectedAgents.value  );
-  let productsAgentsDetails = productsAgents.concat(tripDetails);
-
-  Inertia.post("/dashboard/process_delivery", productsAgentsDetails);
-
-  setTimeout(() =>
+watch(
+  selectedProducts,
+  (value) => {
+    // console.log(value)
+    let numberOfItems = []
+    selectedProducts.value.forEach(function (item, index)
     { 
-      Inertia.get("/dashboard/product_delivery")
-    }, 7000)
+      numberOfItems.push(parseInt(item.productQuantity))
+    })
+    numberOfItems.pop()
+    console.log(numberOfItems.reduce((a, b) => a + b, 0))
+  },
+  {
+    deep: true,
+    immediate: true,
+  }
+);
+const clearForm = () => {
+  Inertia.get("/dashboard/product_delivery");
+};
+const processTrip = async  () =>
+{
+  if (selectedAgents.value.length == 1) {
+    alert('No Agent has been Addeed')
+  } else if (selectedProducts.value.length == 1) { 
+    alert('No product has been Addeed')
+  } else if (tripDetails.lead == null) { 
+    alert('No Team Lead assigned')
+  }else { 
+
+    selectedProducts.value.pop();
+    selectedAgents.value.pop();
+  
+    let missingQunatities = false
+    selectedProducts.value.forEach(function (item, index)
+    {
+      if (typeof item.productQuantity === "undefined" || typeof item.productQuantity === "") {
+        missingQunatities = true
+      }
+  
+    });
+    let missingAgents = false
+    selectedAgents.value.forEach(function (item, index)
+    {
+      if (typeof item.selectedAgentName === null || typeof item.selectedAgentName === "null") {
+        missingAgents = true
+      }
+  
+    });
+  
+  
+    if (missingQunatities === true || missingAgents == true) {
+      alert("Set Product Quantitie(s) to proceed");
+      addAgentRow()
+      addTableRow()
+    } else { 
+      let productsAgents = selectedProducts.value.concat(selectedAgents.value);
+      let productsAgentsDetails = productsAgents.concat(tripDetails);
+    
+      await Inertia.post("/dashboard/process_delivery", productsAgentsDetails);
+    
+      setTimeout(() => {
+        Inertia.get("/dashboard/product_delivery");
+      }, 3000);
+    }
+
+  }
 
 };
 const setAgent = (agent) => {
@@ -316,7 +367,7 @@ const setAgent = (agent) => {
   if (!selectedAgents.value.includes(agent)) {
     selectedAgents.value[selectedAgentIndex.value].selectedAgentName = agent.name;
     selectedAgents.value[selectedAgentIndex.value].selectedAgentID = agent.id;
-    selectedAgents.value[selectedAgentIndex.value].selectedType = 'agent';
+    selectedAgents.value[selectedAgentIndex.value].selectedType = "agent";
   }
   addAgentRow();
   agentsCollapseValue.value = false;
@@ -342,7 +393,7 @@ const setProduct = (product) => {
     selectedProducts.value[selectedProductIndex.value].selectedproductName =
       product.product_name;
     selectedProducts.value[selectedProductIndex.value].selectedproductID = product.id;
-    selectedProducts.value[selectedProductIndex.value].selectedType = 'product';
+    selectedProducts.value[selectedProductIndex.value].selectedType = "product";
   }
   addTableRow();
   productsCollapseValue.value = false;
@@ -405,8 +456,9 @@ const deleteAgentRow = (index, selectedAgent) => {
             </div>
             <div class="mt-5 md:mt-0 md:col-span-2">
               <div class="grid grid-cols-6 gap-6">
-                <div class="col-span-6 sm:col-span-2">
+                <div class="col-span-6 sm:col-span-1">
                   <label for="first-name" class="block text-sm font-medium text-gray-700">
+                    <i class="fas fa-address-card text-light-green-800 fa-lg mr-1"></i>
                     Trip Team Lead</label
                   >
                   <select
@@ -427,6 +479,9 @@ const deleteAgentRow = (index, selectedAgent) => {
 
                 <div class="col-span-3 sm:col-span-2">
                   <label for="last-name" class="block text-sm font-medium text-gray-700">
+                    <i
+                      class="fas fa-location-crosshairs text-light-green-800 fa-lg mr-1"
+                    ></i>
                     Trip Location</label
                   >
                   <input
@@ -441,6 +496,7 @@ const deleteAgentRow = (index, selectedAgent) => {
 
                 <div class="col-span-3 sm:col-span-1">
                   <label for="last-name" class="block text-sm font-medium text-gray-700">
+                    <i class="fas fa-truck text-light-green-800 fa-lg mr-1"></i>
                     Truck Number Plate</label
                   >
                   <input
@@ -455,6 +511,7 @@ const deleteAgentRow = (index, selectedAgent) => {
 
                 <div class="col-span-3 sm:col-span-1">
                   <label for="last-name" class="block text-sm font-medium text-gray-700">
+                    <i class="fas fa-user-secret text-light-green-800 fa-lg mr-1"></i>
                     Truck Driver</label
                   >
                   <input
@@ -464,6 +521,38 @@ const deleteAgentRow = (index, selectedAgent) => {
                     v-model="tripDetails.driver"
                     autocomplete="family-name"
                     class="mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  />
+                </div>
+
+                <div class="col-span-3 sm:col-span-1">
+                  <label for="last-name" class="block text-sm font-medium text-gray-700"
+                    ><i class="fas fa-boxes-packing text-light-green-800 fa-lg mr-1"></i>
+                    Loaded Products</label
+                  >
+                  <input
+                    disabled
+                    type="number"
+                    name="last-name"
+                    id="last-name"
+                    v-model="tripDetails.loadedProducts"
+                    autocomplete="family-name"
+                    class="bg-gray-100 mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  />
+                </div>
+
+                <div class="col-span-3 sm:col-span-1">
+                  <label for="last-name" class="block text-sm font-medium text-gray-700"
+                    ><i class="fas fa-coins text-light-green-800 fa-lg mr-1"></i> Sold
+                    Products</label
+                  >
+                  <input
+                    disabled
+                    type="number"
+                    name="last-name"
+                    id="last-name"
+                    v-model="tripDetails.soldProducts"
+                    autocomplete="family-name"
+                    class="bg-gray-300 mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
                 </div>
 
@@ -485,22 +574,6 @@ const deleteAgentRow = (index, selectedAgent) => {
 
                 <div class="col-span-3 sm:col-span-2">
                   <label for="last-name" class="block text-sm font-medium text-gray-700"
-                    ><i class="fas fa-square-check text-light-green-800 fa-lg mr-1"></i>
-                    Sold Products</label
-                  >
-                  <input
-                    disabled
-                    type="number"
-                    name="last-name"
-                    id="last-name"
-                    v-model="tripDetails.soldProducts"
-                    autocomplete="family-name"
-                    class="bg-gray-100 mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                  />
-                </div>
-
-                <div class="col-span-3 sm:col-span-2">
-                  <label for="last-name" class="block text-sm font-medium text-gray-700"
                     ><i
                       class="fas fa-rectangle-xmark text-light-green-800 fa-lg mr-1"
                     ></i>
@@ -514,6 +587,24 @@ const deleteAgentRow = (index, selectedAgent) => {
                     v-model="tripDetails.spoiledProducts"
                     autocomplete="family-name"
                     class="bg-gray-100 mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  />
+                </div>
+
+                <div class="col-span-3 sm:col-span-1">
+                  <label for="last-name" class="block text-sm font-medium text-gray-700"
+                    ><i
+                      class="fas fa-rectangle-xmark text-light-green-800 fa-lg mr-1"
+                    ></i>
+                    Missing Products</label
+                  >
+                  <input
+                    disabled
+                    type="number"
+                    name="last-name"
+                    id="last-name"
+                    v-model="tripDetails.missingProducts"
+                    autocomplete="family-name"
+                    class="bg-gray-300 mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
                 </div>
               </div>
