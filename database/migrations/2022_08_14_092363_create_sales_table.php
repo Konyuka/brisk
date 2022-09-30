@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
             $table->string('added_by');
+            $table->integer('trip_batch');
             $table->string('client_id');
             $table->string('product_id');
             $table->string('product_quantity');

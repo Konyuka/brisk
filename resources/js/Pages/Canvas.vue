@@ -205,6 +205,13 @@ watch(
   }
 );
 
+const numberWithCommas = (x) =>
+{ 
+  let number = x;
+  let nf = new Intl.NumberFormat('en-US');
+  return nf.format(number); // "1,234,567,890"
+}
+
 const finishSale = () => {
   // console.log(payload)
   // Inertia.post("/dashboard/finish_sale", payload);
@@ -399,7 +406,7 @@ const addEverything = () => {
         <div class="container-fluid">
           <h5 class="text-md text-black font-semibold" href="#">
             <i class="fa-solid fa-coins"></i> Balance Due KES.
-            <span class="text-md sm:text-2xl">{{ overallTotal }}</span>
+            <span class="text-md sm:text-2xl">{{ numberWithCommas(overallTotal) }}</span>
           </h5>
         </div>
       </div>
@@ -1026,7 +1033,7 @@ const addEverything = () => {
       :overallTax="overallTax"
       :overallTotal="overallTotal"
       :printTrigger="printTrigger"
-      class="hidden"
-    />
+      />
+      <!-- class="hidden" -->
   </div>
 </template>

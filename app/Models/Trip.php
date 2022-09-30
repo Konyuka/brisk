@@ -17,6 +17,7 @@ class Trip extends Model
         'products_sold',
         'products_returned',
         'products_spoiled',
+        'products_missing',
         'trip_location',
         'team_lead',
         'lead_name',

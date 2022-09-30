@@ -293,7 +293,7 @@ watch(
       numberOfItems.push(parseInt(item.productQuantity))
     })
     numberOfItems.pop()
-    console.log(numberOfItems.reduce((a, b) => a + b, 0))
+    tripDetails.loadedProducts = numberOfItems.reduce((a, b) => a + b, 0)
   },
   {
     deep: true,
@@ -536,7 +536,7 @@ const deleteAgentRow = (index, selectedAgent) => {
                     id="last-name"
                     v-model="tripDetails.loadedProducts"
                     autocomplete="family-name"
-                    class="bg-gray-100 mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    class="bg-gray-300 mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
                 </div>
 

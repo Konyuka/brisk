@@ -147,7 +147,7 @@ const setTax = () =>
                     ><i
                       class="fa-solid fa-scale-unbalanced-flip text-light-green-800 fa-lg mr-1"
                     ></i>
-                    SKU (g/mg)</label
+                    SKU (g/mg/ml)</label
                   >
                   <input
                     type="text"

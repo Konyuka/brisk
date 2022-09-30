@@ -296,11 +296,12 @@ class DashboardController extends Controller
              Trip::create([
                 'added_by' => $value->added_by,
                 'number_users' => $value->agentsNumber,
-                'number_product' => 0,
+                'number_products' => $value->loadedProducts,
                 'number_brands' => $value->brandsNumber,
                 'products_sold' => 0,
                 'products_returned' => 0,
                 'products_spoiled' => 0,
+                'products_missing' => 0,
                 'trip_location' => $value->location,
                 'team_lead' => $value->lead,
                 'lead_name' => $leadName->name,
@@ -310,6 +311,7 @@ class DashboardController extends Controller
         }
         foreach($productArray as $key=>$value){
              $remainingStock = $value->remainingProducts - $value->productQuantity;
+             $productTripBatch = Product::where('id', $value->selectedproductID)->select('trip_batch')->get();
              Product::where('id', $value->selectedproductID)
              ->update([
                  'trip_batch' => $tripBatch,
