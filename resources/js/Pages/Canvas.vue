@@ -969,19 +969,19 @@ const addEverything = () => {
                       <h3>
                         Subtotal:
                         <span class="text-gray-800 text-xl"
-                          >KES {{ overallSubtotal }}
+                          >KES {{ numberWithCommas(overallSubtotal) }}
                         </span>
                       </h3>
                       <h3>
                         VAT:
-                        <span class="text-gray-800 text-xl">KES {{ overallTax }}</span>
+                        <span class="text-gray-800 text-xl">KES {{ numberWithCommas(overallTax) }}</span>
                       </h3>
                     </div>
 
                     <div>
                       <h3 class="mt-5">
                         Total:
-                        <span class="text-black text-2xl">KES {{ overallTotal }}</span>
+                        <span class="text-black text-2xl">KES {{ numberWithCommas(overallTotal) }}</span>
                       </h3>
                     </div>
                   </div>
