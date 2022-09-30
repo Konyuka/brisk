@@ -1033,7 +1033,7 @@ const addEverything = () => {
       :overallTax="overallTax"
       :overallTotal="overallTotal"
       :printTrigger="printTrigger"
+      class="hidden"
       />
-      <!-- class="hidden" -->
-  </div>
+    </div>
 </template>

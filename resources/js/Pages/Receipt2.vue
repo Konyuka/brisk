@@ -1,29 +1,37 @@
 <script setup>
-// import { Head, Link } from "@inertiajs/inertia-vue3";
+import { usePage } from "@inertiajs/inertia-vue3";
 import { watch, toRefs, computed, ref } from "vue";
 import moment from "moment";
 
 const props = defineProps({
   selectedProducts: Array,
+  invoiceLog: String,
+  overallSubtotal: String,
+  overallTax: String,
+  overallTotal: String,
+  printTrigger: String,
 });
 
 const { selectedProducts } = toRefs(props);
+const { invoiceLog } = toRefs(props);
+const { overallSubtotal } = toRefs(props);
+const { overallTax } = toRefs(props);
+const { overallTotal } = toRefs(props);
+const { printTrigger } = toRefs(props);
 
-const invoiceNumber = ref(JSON.parse(localStorage.getItem("invoiceNumber")));
-const productName = ref(JSON.parse(localStorage.getItem("productName")));
-const saleQuantity = ref(JSON.parse(localStorage.getItem("saleQuantity")));
-const salePrice = ref(JSON.parse(localStorage.getItem("salePrice")));
-const subTotal = ref(JSON.parse(localStorage.getItem("subTotal")));
-const tax = ref(JSON.parse(localStorage.getItem("tax")));
-const grandTotal = ref(JSON.parse(localStorage.getItem("grandTotal")));
+const salesPerson = computed(() => usePage().props.value.user.name);
+
+const itemNumber = computed(() => {
+  return selectedProducts.value.length - 1;
+});
 
 const invoiceTime = computed(() => {
   return moment().format("MMMM Do YYYY, h:mm:ss a");
 });
 
-watch(selectedProducts, (value) => {
-  // generatePDF();
-  console.log(value);
+watch(printTrigger, (value) => {
+  generatePDF();
+  // console.log(value)
 });
 
 // const printPDF = () => {
@@ -44,177 +52,227 @@ const generatePDF = () => {
     // 'height': "44mm",
     elementHandlers: specialElementHandlers,
   });
-  doc.save(invoiceNumber.value + ".pdf");
+  doc.save(invoiceLog.value + ".pdf");
 };
+
 </script>
 
 <template>
   <div id="htmlContent">
-    
-    
-  <div  id="invoice-POS">
-    
-    <center id="top">
-      <div class="logo"></div>
-      <div class="info"> 
-        <h2>SBISTechs Inc</h2>
-      </div><!--End Info-->
-    </center><!--End InvoiceTop-->
-    
-    <div id="mid">
-      <div class="info">
-        <h2>Contact Info</h2>
-        <p> 
-            Address : street city, state 0000<br>
-            Email   : JohnDoe@gmail.com<br>
-            Phone   : 555-555-5555<br>
-        </p>
-      </div>
-    </div><!--End Invoice Mid-->
-    
-    <div id="bot">
+    <div>
+      <header>
+        <div id="logo" class="media" data-src="logo.png" src="./logo.png"></div>
+      </header>
+      <p>GST Number : 4910487129047124</p>
+      <table class="bill-details">
+        <tbody>
+          <tr>
+            <td>Date : <span>1</span></td>
+            <td>Time : <span>2</span></td>
+          </tr>
+          <tr>
+            <td>Table #: <span>3</span></td>
+            <td>Bill # : <span>4</span></td>
+          </tr>
+          <tr>
+            <th class="center-align" colspan="2">
+              <span class="receipt">Original Receipt</span>
+            </th>
+          </tr>
+        </tbody>
+      </table>
 
-					<div id="table">
-						<table>
-							<tr class="tabletitle">
-								<td class="item"><h2>Item</h2></td>
-								<td class="Hours"><h2>Qty</h2></td>
-								<td class="Rate"><h2>Sub Total</h2></td>
-							</tr>
+      <table class="items">
+        <thead>
+          <tr>
+            <th class="heading name">Item</th>
+            <th class="heading qty">Qty</th>
+            <th class="heading rate">Rate</th>
+            <th class="heading amount">Amount</th>
+          </tr>
+        </thead>
 
-							<tr class="service">
-								<td class="tableitem"><p class="itemtext">Communication</p></td>
-								<td class="tableitem"><p class="itemtext">5</p></td>
-								<td class="tableitem"><p class="itemtext">$375.00</p></td>
-							</tr>
-
-							<tr class="service">
-								<td class="tableitem"><p class="itemtext">Asset Gathering</p></td>
-								<td class="tableitem"><p class="itemtext">3</p></td>
-								<td class="tableitem"><p class="itemtext">$225.00</p></td>
-							</tr>
-
-							<tr class="service">
-								<td class="tableitem"><p class="itemtext">Design Development</p></td>
-								<td class="tableitem"><p class="itemtext">5</p></td>
-								<td class="tableitem"><p class="itemtext">$375.00</p></td>
-							</tr>
-
-							<tr class="service">
-								<td class="tableitem"><p class="itemtext">Animation</p></td>
-								<td class="tableitem"><p class="itemtext">20</p></td>
-								<td class="tableitem"><p class="itemtext">$1500.00</p></td>
-							</tr>
-
-							<tr class="service">
-								<td class="tableitem"><p class="itemtext">Animation Revisions</p></td>
-								<td class="tableitem"><p class="itemtext">10</p></td>
-								<td class="tableitem"><p class="itemtext">$750.00</p></td>
-							</tr>
-
-
-							<tr class="tabletitle">
-								<td></td>
-								<td class="Rate"><h2>tax</h2></td>
-								<td class="payment"><h2>$419.25</h2></td>
-							</tr>
-
-							<tr class="tabletitle">
-								<td></td>
-								<td class="Rate"><h2>Total</h2></td>
-								<td class="payment"><h2>$3,644.25</h2></td>
-							</tr>
-
-						</table>
-					</div><!--End Table-->
-
-					<div id="legalcopy">
-						<p class="legal"><strong>Thank you for your business!</strong>  Payment is expected within 31 days; please process this invoice within that time. There will be a 5% interest charge per month on late invoices. 
-						</p>
-					</div>
-
-				</div><!--End InvoiceBot-->
-  </div><!--End Invoice-->
-
-
-    <button @click="generatePDF" clas="mt-10">Download PDF</button> <br />
-    <!-- <button @click="printPDF" clas="mt-10">Print PDF</button> -->
+        <tbody>
+          <tr>
+            <td>Chocolate milkshake frappe</td>
+            <td>1</td>
+            <td class="price">200.00</td>
+            <td class="price">200.00</td>
+          </tr>
+          <tr>
+            <td>Non-Veg Focaccoa S/W</td>
+            <td>2</td>
+            <td class="price">300.00</td>
+            <td class="price">600.00</td>
+          </tr>
+          <tr>
+            <td>Classic mojito</td>
+            <td>1</td>
+            <td class="price">800.00</td>
+            <td class="price">800.00</td>
+          </tr>
+          <tr>
+            <td>Non-Veg Ciabatta S/W</td>
+            <td>1</td>
+            <td class="price">500.00</td>
+            <td class="price">500.00</td>
+          </tr>
+          <tr>
+            <td colspan="3" class="sum-up line">Subtotal</td>
+            <td class="line price">12112.00</td>
+          </tr>
+          <tr>
+            <td colspan="3" class="sum-up">CGST</td>
+            <td class="price">10.00</td>
+          </tr>
+          <tr>
+            <td colspan="3" class="sum-up">SGST</td>
+            <td class="price">10.00</td>
+          </tr>
+          <tr>
+            <th colspan="3" class="total text">Total</th>
+            <th class="total price">12132.00</th>
+          </tr>
+        </tbody>
+      </table>
+      <section>
+        <p>Paid by : <span>CASH</span></p>
+        <p style="text-align: center">Thank you for your visit!</p>
+      </section>
+      <footer style="text-align: center">
+        <p>Technology Partner Dotworld Technologies</p>
+        <p>www.dotworld.in</p>
+      </footer>
+    </div>
   </div>
+  <button @click="generatePDF" clas="mt-10">Download PDF</button> <br />
 </template>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400|Work+Sans:300,500");
 body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  color: #525252;
-  font-family: "Work Sans", sans-serif;
-  font-weight: 300;
-  line-height: 1.25;
-  background: linear-gradient(to bottom, #00b09b, #96c93d);
+  margin: 0;
+  padding: 0;
+  font-family: "PT Sans", sans-serif;
 }
 
-a {
-  color: #5c7b25;
-  -webkit-text-decoration-skip: ink;
-          text-decoration-skip: ink;
+@page {
+  size: 2.8in 11in;
+  margin-top: 0cm;
+  margin-left: 0cm;
+  margin-right: 0cm;
+}
+
+table {
+  width: 100%;
+}
+
+tr {
+  width: 100%;
+}
+
+h1 {
+  text-align: center;
+  vertical-align: middle;
+}
+
+#logo {
+  width: 60%;
+  text-align: center;
+  -webkit-align-content: center;
+  align-content: center;
+  padding: 5px;
+  margin: 2px;
+  display: block;
+  margin: 0 auto;
+}
+
+header {
+  width: 100%;
+  text-align: center;
+  -webkit-align-content: center;
+  align-content: center;
+  vertical-align: middle;
+}
+
+.items thead {
+  text-align: center;
+}
+
+.center-align {
+  text-align: center;
+}
+
+.bill-details td {
+  font-size: 12px;
 }
 
 .receipt {
-  position: relative;
-  flex: none;
-  padding: 30px 0;
-  background: #fff;
-  -webkit-clip-path: polygon(100% 0, 100% calc(100% - 6px), 98% 100%, 96% calc(100% - 6px), 94% 100%, 92% calc(100% - 6px), 90% 100%, 88% calc(100% - 6px), 86% 100%, 84% calc(100% - 6px), 82% 100%, 80% calc(100% - 6px), 78% 100%, 76% calc(100% - 6px), 74% 100%, 72% calc(100% - 6px), 70% 100%, 68% calc(100% - 6px), 66% 100%, 64% calc(100% - 6px), 62% 100%, 60% calc(100% - 6px), 58% 100%, 56% calc(100% - 6px), 54% 100%, 52% calc(100% - 6px), 50% 100%, 48% calc(100% - 6px), 46% 100%, 44% calc(100% - 6px), 42% 100%, 40% calc(100% - 6px), 38% 100%, 36% calc(100% - 6px), 34% 100%, 32% calc(100% - 6px), 30% 100%, 28% calc(100% - 6px), 26% 100%, 24% calc(100% - 6px), 22% 100%, 20% calc(100% - 6px), 18% 100%, 16% calc(100% - 6px), 14% 100%, 12% calc(100% - 6px), 10% 100%, 8% calc(100% - 6px), 6% 100%, 4% calc(100% - 6px), 2% 100%, 0 calc(100% - 6px), 0 0);
-          clip-path: polygon(100% 0, 100% calc(100% - 6px), 98% 100%, 96% calc(100% - 6px), 94% 100%, 92% calc(100% - 6px), 90% 100%, 88% calc(100% - 6px), 86% 100%, 84% calc(100% - 6px), 82% 100%, 80% calc(100% - 6px), 78% 100%, 76% calc(100% - 6px), 74% 100%, 72% calc(100% - 6px), 70% 100%, 68% calc(100% - 6px), 66% 100%, 64% calc(100% - 6px), 62% 100%, 60% calc(100% - 6px), 58% 100%, 56% calc(100% - 6px), 54% 100%, 52% calc(100% - 6px), 50% 100%, 48% calc(100% - 6px), 46% 100%, 44% calc(100% - 6px), 42% 100%, 40% calc(100% - 6px), 38% 100%, 36% calc(100% - 6px), 34% 100%, 32% calc(100% - 6px), 30% 100%, 28% calc(100% - 6px), 26% 100%, 24% calc(100% - 6px), 22% 100%, 20% calc(100% - 6px), 18% 100%, 16% calc(100% - 6px), 14% 100%, 12% calc(100% - 6px), 10% 100%, 8% calc(100% - 6px), 6% 100%, 4% calc(100% - 6px), 2% 100%, 0 calc(100% - 6px), 0 0);
+  font-size: medium;
 }
-.receipt__title {
-  margin-bottom: 15px;
-  padding: 0 30px;
-  font-family: "Work Sans", sans-serif;
-  font-weight: 500;
-  font-size: 40px;
-  color: #00b09b;
+
+.items .heading {
+  font-size: 12.5px;
+  text-transform: uppercase;
+  border-top: 1px solid black;
+  margin-bottom: 4px;
+  border-bottom: 1px solid black;
+  vertical-align: middle;
 }
-.receipt__subtitle {
-  padding: 0 30px;
-  font-family: "Work Sans", sans-serif;
-  font-weight: 300;
-  font-size: 18px;
+
+.items thead tr th:first-child,
+.items tbody tr td:first-child {
+  width: 47%;
+  min-width: 47%;
+  max-width: 47%;
+  word-break: break-all;
+  text-align: left;
 }
-.receipt__lines {
-  margin-top: 50px;
-  padding: 30px;
-  border-top: 1px dashed #dce2d6;
+
+.items td {
+  font-size: 12px;
+  text-align: right;
+  vertical-align: bottom;
 }
-.receipt__line {
-  display: flex;
-  margin: 20px 0;
-  justify-content: space-between;
-  font-family: "Roboto Condensed", sans-serif;
-  font-size: 18px;
+
+.price::before {
+  content: "\20B9";
+  font-family: Arial;
+  text-align: right;
 }
-.receipt__line__item {
-  font-weight: 300;
+
+.sum-up {
+  text-align: right !important;
 }
-.receipt__line__price {
-  font-weight: 400;
+.total {
+  font-size: 13px;
+  border-top: 1px dashed black !important;
+  border-bottom: 1px dashed black !important;
 }
-.receipt__total {
-  display: flex;
-  margin: 20px 0;
-  padding: 30px;
-  justify-content: space-between;
-  font-family: "Roboto Condensed", sans-serif;
-  font-size: 24px;
-  background-color: #eff7e8;
+.total.text,
+.total.price {
+  text-align: right;
 }
-.receipt__total__item, .receipt__total__price {
-  font-weight: 400;
+.total.price::before {
+  content: "\20B9";
 }
-.receipt__back {
-  text-align: center;
+.line {
+  border-top: 1px solid black !important;
+}
+.heading.rate {
+  width: 20%;
+}
+.heading.amount {
+  width: 25%;
+}
+.heading.qty {
+  width: 5%;
+}
+p {
+  padding: 1px;
+  margin: 0;
+}
+section,
+footer {
+  font-size: 12px;
 }
 </style>

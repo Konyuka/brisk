@@ -2,6 +2,8 @@
 import { usePage  } from "@inertiajs/inertia-vue3";
 import { watch, toRefs, computed, ref } from "vue";
 import moment from 'moment'
+// import jsPDF from "jspdf";
+import autoTable from 'jspdf-autotable';
 
 const props = defineProps({
   selectedProducts: Array,
@@ -32,10 +34,6 @@ watch(printTrigger, (value) => {
   // console.log(value)
 })
 
-// const printPDF = () => {
-//   window.print();
-// };
-
 const generatePDF = () =>
 {
   var doc = new jsPDF();
@@ -48,9 +46,12 @@ const generatePDF = () =>
   doc.setFontSize(24);
   doc.fromHTML($("#htmlContent").html(), 15, 15, {
     width: 170,
-    // 'height': "44mm",
     elementHandlers: specialElementHandlers,
   });
+  // autoTable(doc, {
+  //   html: '#my-table',
+  //   theme: 'plain',
+  // });
   doc.save(invoiceLog.value+".pdf");
 };
 
@@ -127,7 +128,7 @@ const generatePDF = () =>
         </h1>
       </div>
 
-      <table cellspacing="0" cellpadding="0" class="mt-5">
+      <table class="mt-5">
         <thead>
           <tr>
             <th class="description">Name</th>
@@ -143,31 +144,6 @@ const generatePDF = () =>
           </tr>
         </tbody>
       </table>
-
-      <!-- <div style="display: grid; 
-margin-top: 1.25rem;
-margin-bottom: 1.25rem; 
-width: 24rem; 
-grid-template-columns: repeat(4, minmax(0, 1fr)); 
-gap: 1rem; ">
-        <div>Item</div>
-        <div>Quantity</div>
-        <div>Price</div>
-        <div>Total</div>
-      </div> -->
-
-      <!-- <div class="flex flex-row justify-between">
-        <div class="flex flex-cols justify-between">
-          <p>Item</p>
-          <p>Item</p>
-          <p>Item</p>
-        </div>
-        <div class="flex flex-cols justify-between">
-          <p>Items</p>
-          <p>Items</p>
-          <p>Items</p>
-        </div>
-      </div> -->
 
         <p
             style="
@@ -219,22 +195,30 @@ gap: 1rem; ">
     </div>
 
     <button @click="generatePDF" clas="mt-10">Download PDF</button> <br>
-    <!-- <button @click="printPDF" clas="mt-10">Print PDF</button> -->
   </div>
 </template>
 
+<!-- border-collapse: collapse !important;
+  border-spacing: 0px !important;
+  border-style: outset !important; -->
 <style scoped>
+
+  
 td,
 th,
 tr,
 table {
   border: none !important;
+  border: hidden !important;
+  border-style: hidden !important;
+  border-style: none !important;
 }
 
 td.description,
 th.description {
   width: 95px;
   max-width: 95px;
+  
 }
 
 td.quantity,
@@ -242,6 +226,7 @@ th.quantity {
   width: 70px;
   max-width: 70px;
   word-break: break-all;
+  
 }
 
 
@@ -250,16 +235,7 @@ th.price {
   width: 50px;
   max-width: 50px;
   word-break: break-all;
-}
-
-.centered {
-  text-align: center;
-  align-content: center;
-}
-
-.ticket {
-  width: 155px;
-  max-width: 155px;
+  
 }
 
 @media print {

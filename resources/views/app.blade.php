@@ -18,6 +18,12 @@
         <script src="https://unpkg.com/@popperjs/core@2"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js">
+        </script>
+
+        <!-- <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script> -->
+        <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script> -->
 
         <!-- Main Styling -->
         <!-- <link href="../assets/css/styles.css?v=1.0.3" rel="stylesheet" /> -->
