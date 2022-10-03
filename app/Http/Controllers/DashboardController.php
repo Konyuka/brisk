@@ -242,13 +242,6 @@ class DashboardController extends Controller
         $productArray = json_decode($request->getContent());
         $agentArray = json_decode($request->getContent());
         $detailsArray = json_decode($request->getContent());
-
-        // $tripBatch = $detailsArray[1]->tripBatch;
-        // $tripBatch = $detailsArray->tripBatch;
-
-        
-        // return dump($tripBatch);
-
         
         foreach($productArray as $elementKey => $element) {
             foreach($element as $valueKey => $value) {
@@ -311,10 +304,35 @@ class DashboardController extends Controller
         }
         foreach($productArray as $key=>$value){
              $remainingStock = $value->remainingProducts - $value->productQuantity;
-             $productTripBatch = Product::where('id', $value->selectedproductID)->select('trip_batch')->get();
+             $productTripBatch = Product::where('id', $value->selectedproductID)->select('trip_batch')->first();
+             $batchArray = [];
+             $productTripBatchDecoded = json_decode($productTripBatch->trip_batch);
+
+            //  return($productTripBatchDecoded);
+             
+             if(is_null($productTripBatchDecoded)){
+                //  dump('null');
+                $batchObject = new \stdClass();
+                $batchObject->batchNumber = $tripBatch;
+                $batchObject->numberItems = 10;
+                 array_push($batchArray, $batchObject);
+                }else{
+                     foreach ($productTripBatchDecoded as $item) {
+                         $batchObject = new \stdClass();
+                         $batchObject->batchNumber = $item->batchNumber;
+                         $batchObject->numberItems = $item->numberItems;  
+
+                         array_push($batchArray, $batchObject);
+                     }
+                     $batchObject = new \stdClass();
+                     $batchObject->batchNumber = $tripBatch;
+                     $batchObject->numberItems = 10; 
+                     array_push($batchArray, $batchObject);  
+                    }
+
              Product::where('id', $value->selectedproductID)
              ->update([
-                 'trip_batch' => $tripBatch,
+                 'trip_batch' => $batchArray,
                  'in_delivery' => $value->productQuantity,
                  'finished_products' => $remainingStock
              ]);
