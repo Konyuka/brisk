@@ -270,6 +270,15 @@ watch(
     immediate: true,
   }
 );
+
+
+const checkTeamLead = () =>
+{ 
+  if (activeTeamLeads.value.includes(tripDetails.lead)) {
+    tripDetails.lead = null
+    alert('Team Lead Assigned Team Already')
+  }
+}
 const clearForm = () => {
   Inertia.get("/dashboard/product_delivery");
 };
@@ -437,7 +446,7 @@ const deleteAgentRow = (index, selectedAgent) => {
                   >
                   <select
                     v-model="tripDetails.lead"
-                    onchange="checkTeamLead()"
+                    @change="checkTeamLead"
                     id="location"
                     name="location"
                     class="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-green-500 focus:outline-none focus:ring-green-500 sm:text-sm"
