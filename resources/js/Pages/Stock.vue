@@ -1,18 +1,21 @@
 <script setup>
 import { useForm, usePage, Link } from "@inertiajs/inertia-vue3";
-import { ref, computed, reactive, watch, onMounted  } from "vue";
+import { ref, toRefs, computed, reactive, watch, onMounted  } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Canvas from "./Canvas.vue";
 import moment from "moment";
 
-defineProps({
+const props = defineProps({
   products: Array,
   clients: Array,
   sales: Array,
   message: String,
-  invoiceLog: String
+  invoiceLog: String,
+  activeAgents: Array
 });
+
+const { activeAgents } = toRefs(props);
 
 const currentMessage = computed(() => usePage().props.value.flash.success);
 const currentUser = computed(() => usePage().props.value.user.id);
@@ -83,7 +86,11 @@ const payload = reactive({
 const getInvoiceForm = async () =>
 { 
   Inertia.reload({ only: ['invoiceLog'] })
-  bottomCanvas.value = true
+  if (activeAgents.value.includes(currentUser.value)) {
+    bottomCanvas.value = true
+  } else { 
+    alert('You are not a member of any trip')
+  }
 }
 
 const processButtons = (value) => {

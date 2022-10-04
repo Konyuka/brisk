@@ -1,12 +1,12 @@
 <script setup>
 import { useForm, usePage, Link } from "@inertiajs/inertia-vue3";
-import { ref, computed, reactive, watch, onMounted } from "vue";
+import { ref, toRefs, computed, reactive, watch, onMounted } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Canvass from "./Canvass.vue";
 import moment from "moment";
 
-defineProps({
+const props = defineProps({
   products: Array,
   salesAgents: Array,
   teamLead: Array,
@@ -14,7 +14,10 @@ defineProps({
   message: String,
   tripBatch: String,
   trips: Array,
+  activeAgents: Array,
+  activeTeamLeads: Array,
 });
+
 
 const currentMessage = computed(() => usePage().props.value.flash.success);
 const currentUser = computed(() => usePage().props.value.user.id);
@@ -318,6 +321,8 @@ const addProduct = () => {
           :products="products"
           :currentMessage="currentMessage"
           :tripBatch="tripBatch"
+          :activeAgents="activeAgents"
+          :activeTeamLeads="activeTeamLeads"
         />
       </div>
     </div>

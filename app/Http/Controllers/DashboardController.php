@@ -147,6 +147,17 @@ class DashboardController extends Controller
         $clients = Client::latest()->get();
         $invoice = Sale::latest()->get()->first();
 
+        $activeTrips =  Trip::where('trip_complete', 0)->select('user_ids')->get();
+        
+        $agentsArrayPush = [];
+        foreach($activeTrips as $key=>$value){
+            $agentsArray =  json_decode($value->user_ids);
+            foreach($agentsArray as $actual){
+                array_push($agentsArrayPush, $actual);
+            }
+        }
+        
+
         if($invoice != null){
             $invoiceID = $invoice->id;
         }else {
@@ -159,6 +170,7 @@ class DashboardController extends Controller
             'clients' => $clients,
             'invoiceLog' => $invoiceID,
             'sales' => $sales,
+            'activeAgents' => $agentsArrayPush,
         ]);
     }
 
@@ -215,9 +227,28 @@ class DashboardController extends Controller
         $salesAgents = User::where(['admin'=>4])->latest()->get();
         $teamLead = User::where(['admin'=>3])->latest()->get();
         $trip = Trip::latest()->get()->first();  
-        $trips = Trip::latest()->get();  
-
+        $trips = Trip::latest()->get(); 
         
+        $activeTrips =  Trip::where('trip_complete', 0)->select('user_ids')->get();
+        $decodedActiveTrips = json_decode($activeTrips);
+
+        $agentsArrayPush = [];
+        foreach($activeTrips as $key=>$value){
+            $agentsArray =  json_decode($value->user_ids);
+            foreach($agentsArray as $actual){
+                array_push($agentsArrayPush, $actual);
+            }
+        }
+
+        $teamLeadsID =  Trip::select('team_lead')->get();
+        $activeTeamLeads =  json_decode($teamLeadsID, true);
+
+        // return dump($activeTeamLeads);
+        $leadsArrayPush = [];
+        foreach($activeTeamLeads as $value){
+            $teamLeadValue =  $value["team_lead"];
+            array_push($leadsArrayPush, $teamLeadValue);
+        }        
         
         if($trip != null){
             $tripBatch = $trip->id + 1;
@@ -232,6 +263,8 @@ class DashboardController extends Controller
             'teamLead' => $teamLead,
             'tripBatch' => $tripBatch,
             'trips' => $trips,
+            'activeAgents' => $agentsArrayPush,
+            'activeTeamLeads' => $leadsArrayPush,
         ]);
 
     }

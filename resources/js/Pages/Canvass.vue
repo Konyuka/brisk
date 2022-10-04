@@ -12,10 +12,15 @@ const props = defineProps({
   teamLead: Array,
   products: Array,
   trips: Array,
+  activeAgents: Array,
+  activeTeamLeads: Array,
   currentMessage: String,
   tripBatch: String,
 });
+
 const { tripBatch } = toRefs(props);
+const { activeAgents } = toRefs(props);
+const { activeTeamLeads } = toRefs(props);
 
 const vLowerCase = {
   updated: (el) => {
@@ -145,35 +150,17 @@ const date = ref(moment().format("MMMM Do YYYY, h:mm:ss a"));
 watch(
   chosenAgent,
   (value) => {
-    // console.log(value);
     if (value.length != 0) {
-      // alert('twende')
       let allAgents = props.salesAgents;
-      // console.log(allProducts)
       searchedAgent.value = [];
-      // searchedProduct.value = [];
       for (var i = 0; i < allAgents.length; i++) {
-        // console.log(allClients[i].client_name)
-        // console.log(purchasedProduct.value[i].productname)
-        // if (allProducts[i].product_name.startsWith(selectedProducts.value[0].productname) != -1) {
         if (selectedAgents.value != []) {
           if (
             allAgents[i].name.indexOf(
               selectedAgents.value[selectedAgentIndex.value].selectedAgentName
             ) != -1
           ) {
-            // if (allProducts[i].product_name.indexOf(purchasedProduct.value.productname) != -1) {
-            // alert('hi 1')
-
             searchedAgent.value.push(allAgents[i]);
-
-            // if (!searchedProduct.value.includes(allProducts[i])) {
-            //   //  arr.push(str);
-            //   alert('hi 2')
-            //   searchedProduct.value.push(allProducts[i]);
-            // }
-            // console.log(allClients[i].client_name)
-            // alert(allClients.clients[i]);
           }
         }
       }
@@ -187,34 +174,17 @@ watch(
 watch(
   purchasedProduct,
   (value) => {
-    // console.log(value.length);
     if (value.length != 0) {
-      // alert('twende')
       let allProducts = props.products;
-      // console.log(allProducts)
       searchedProduct.value = [];
       for (var i = 0; i < allProducts.length; i++) {
-        // console.log(allClients[i].client_name)
-        // console.log(purchasedProduct.value[i].productname)
-        // if (allProducts[i].product_name.startsWith(selectedProducts.value[0].productname) != -1) {
         if (selectedProducts.value != []) {
           if (
             allProducts[i].product_name.indexOf(
               selectedProducts.value[selectedProductIndex.value].productname
             ) != -1
           ) {
-            // if (allProducts[i].product_name.indexOf(purchasedProduct.value.productname) != -1) {
-            // alert('hi 1')
-
             searchedProduct.value.push(allProducts[i]);
-
-            // if (!searchedProduct.value.includes(allProducts[i])) {
-            //   //  arr.push(str);
-            //   alert('hi 2')
-            //   searchedProduct.value.push(allProducts[i]);
-            // }
-            // console.log(allClients[i].client_name)
-            // alert(allClients.clients[i]);
           }
         }
       }
@@ -352,25 +322,29 @@ const processTrip = async  () =>
   }
 
 };
-const setAgent = (agent) => {
-  // console.log(agent)
-  agentsCollapseValue.value = false;
-  chosenAgent.value = agent.name;
-
-  for (var i = 0; i < selectedAgents.value.length; i++) {
-    if (i > 0) {
-      // console.log(i);
-      // console.log(selectedAgents.value[i].selectedAgentID);
+const setAgent = (agent) =>
+{
+  if (activeAgents.value.includes(agent.id)) {
+    alert('Already a member of another trip')
+  } else { 
+    agentsCollapseValue.value = false;
+    chosenAgent.value = agent.name;
+  
+    for (var i = 0; i < selectedAgents.value.length; i++) {
+      if (i > 0) {
+        // console.log(i);
+        // console.log(selectedAgents.value[i].selectedAgentID);
+      }
     }
+  
+    if (!selectedAgents.value.includes(agent)) {
+      selectedAgents.value[selectedAgentIndex.value].selectedAgentName = agent.name;
+      selectedAgents.value[selectedAgentIndex.value].selectedAgentID = agent.id;
+      selectedAgents.value[selectedAgentIndex.value].selectedType = "agent";
+    }
+    addAgentRow();
+    agentsCollapseValue.value = false;
   }
-
-  if (!selectedAgents.value.includes(agent)) {
-    selectedAgents.value[selectedAgentIndex.value].selectedAgentName = agent.name;
-    selectedAgents.value[selectedAgentIndex.value].selectedAgentID = agent.id;
-    selectedAgents.value[selectedAgentIndex.value].selectedType = "agent";
-  }
-  addAgentRow();
-  agentsCollapseValue.value = false;
 };
 const setProduct = (product) => {
   productsCollapseValue.value = false;
@@ -463,6 +437,7 @@ const deleteAgentRow = (index, selectedAgent) => {
                   >
                   <select
                     v-model="tripDetails.lead"
+                    onchange="checkTeamLead()"
                     id="location"
                     name="location"
                     class="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-green-500 focus:outline-none focus:ring-green-500 sm:text-sm"
