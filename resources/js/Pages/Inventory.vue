@@ -26,12 +26,14 @@ const taxable = ref(true);
 const form = useForm({
   product_name: null,
   product_quantity: null,
-  product_code: "BSK-112",
-  bar_code: 717400099200,
-  sales_price: 300,
-  finished_products: 250,
-  in_delivery: 50,
-  spoiled_products: 50,
+  product_code: null,
+  bar_code: null,
+  sales_price: null,
+  wholesale_price:null,
+  finished_products: null,
+  in_delivery: null,
+  spoiled_products: null,
+  missing_products: null,
   added_by: currentUser,
   tax_exempt: false,
 });
@@ -132,22 +134,23 @@ const setTax = () =>
                     Product name</label
                   >
                   <input
-                    type="text"
-                    name="first-name"
-                    id="first-name"
-                    v-model="form.product_name"
-                    autocomplete="given-name"
-                    v-LowerCase
-                    class="capitalize mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  type="text"
+                  name="first-name"
+                  id="first-name"
+                  v-model="form.product_name"
+                  autocomplete="given-name"
+                  v-LowerCase
+                  class="capitalize mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
+                  <div class="animate-pulse  text-sm font-bold italic text-red-500" v-if="form.errors.product_name">{{ form.errors.product_name }}</div>
                 </div>
 
                 <div class="col-span-3 sm:col-span-1">
                   <label for="last-name" class="block text-sm font-medium text-gray-700"
-                    ><i
+                    ><is
                       class="fa-solid fa-scale-unbalanced-flip text-light-green-800 fa-lg mr-1"
-                    ></i>
-                    SKU (g/mg/ml)</label
+                    ></is>
+                    SKU (G/ML/L)</label
                   >
                   <input
                     type="text"
@@ -161,7 +164,7 @@ const setTax = () =>
 
                 <div class="col-span-3 sm:col-span-1">
                   <label for="last-name" class="block text-sm font-medium text-gray-700"
-                    ><i class="fa-solid fa-signature text-light-green-800 fa-lg mr-1"></i>
+                    ><i class="fa-solid fa-barcode text-light-green-800 fa-lg mr-1"></i>
                     Product Code</label
                   >
                   <input
@@ -174,7 +177,7 @@ const setTax = () =>
                   />
                 </div>
 
-                <div class="col-span-3 sm:col-span-1">
+                <!-- <div class="col-span-3 sm:col-span-1">
                   <label for="last-name" class="block text-sm font-medium text-gray-700"
                     ><i class="fa-solid fa-barcode text-light-green-800 fa-lg mr-1"></i>
                     Bar Code</label
@@ -187,6 +190,23 @@ const setTax = () =>
                     autocomplete="family-name"
                     class="mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
+                </div> -->
+
+                <div class="col-span-3 sm:col-span-1">
+                  <label for="last-name" class="block text-sm font-medium text-gray-700"
+                    ><i
+                      class="fa-solid fa-money-bill-trend-up text-light-green-800 fa-lg mr-1"
+                    ></i>
+                    Retail Price (ksh.)</label
+                  >
+                  <input
+                    type="number"
+                    name="last-name"
+                    id="last-name"
+                    v-model="form.sales_price"
+                    autocomplete="family-name"
+                    class="mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  />
                 </div>
 
                 <div class="col-span-3 sm:col-span-1">
@@ -194,13 +214,13 @@ const setTax = () =>
                     ><i
                       class="fa-solid fa-money-bill-trend-up text-light-green-800 fa-lg mr-1"
                     ></i>
-                    Sales Price (ksh.)</label
+                    Wholesales Price (ksh.)</label
                   >
                   <input
                     type="number"
                     name="last-name"
                     id="last-name"
-                    v-model="form.sales_price"
+                    v-model="form.wholesale_price"
                     autocomplete="family-name"
                     class="mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
@@ -227,12 +247,13 @@ const setTax = () =>
                     Available Products</label
                   >
                   <input
+                    disabled
                     type="number"
                     name="last-name"
                     id="last-name"
                     v-model="available_products"
                     autocomplete="family-name"
-                    class="mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    class="bg-gray-300 mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
                 </div>
 
@@ -244,29 +265,49 @@ const setTax = () =>
                     In Delivery</label
                   >
                   <input
+                    disabled
                     type="number"
                     name="last-name"
                     id="last-name"
                     v-model="form.in_delivery"
                     autocomplete="family-name"
-                    class="mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    class="bg-gray-300 mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
                 </div>
 
-                <div class="col-span-3 sm:col-span-2">
+                <div class="col-span-3 sm:col-span-1">
                   <label for="last-name" class="block text-sm font-medium text-gray-700"
                     ><i
-                      class="fas fa-rectangle-xmark text-light-green-800 fa-lg mr-1"
+                      class="fas fa-triangle-exclamation text-light-green-800 fa-lg mr-1"
                     ></i>
                     Spoiled Products</label
                   >
                   <input
+                    disabled
                     type="number"
                     name="last-name"
                     id="last-name"
                     v-model="form.spoiled_products"
                     autocomplete="family-name"
-                    class="mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    class="bg-gray-300 mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                  />
+                </div>
+
+                <div class="col-span-3 sm:col-span-1">
+                  <label for="last-name" class="block text-sm font-medium text-gray-700"
+                    ><i
+                      class="fas fa-rectangle-xmark text-red-800 fa-lg mr-1"
+                    ></i>
+                    Missing Products</label
+                  >
+                  <input
+                    disabled
+                    type="number"
+                    name="last-name"
+                    id="last-name"
+                    v-model="form.missing_products"
+                    autocomplete="family-name"
+                    class="bg-gray-300 mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
                 </div>
 

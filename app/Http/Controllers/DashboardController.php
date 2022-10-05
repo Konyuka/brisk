@@ -17,17 +17,25 @@ class DashboardController extends Controller
     
     public function addProduct(Request $request)
     {
-        // return dd($request);
-        // return dd(json_decode($request));
+
+        $request->validate([
+                'product_name' => 'required',
+                'product_quantity' => 'required',
+                'sales_price' => 'required',
+                'wholesale_price' => 'required'
+        ]);
+
         $product = new Product();
         $product->product_name = $request->product_name;
         $product->product_quantity = $request->product_quantity;
         $product->product_code = $request->product_code;
         $product->bar_code = $request->bar_code;
         $product->sales_price = $request->sales_price;
+        $product->wholesale_price = $request->wholesale_price;
         $product->finished_products = $request->finished_products;
         $product->in_delivery = $request->in_delivery;
         $product->spoiled_products = $request->spoiled_products;
+        $product->missing_products = $request->missing_products;
         $product->added_by = $request->added_by;
         $product->tax_exempt = $request->tax_exempt;
         $product->save();

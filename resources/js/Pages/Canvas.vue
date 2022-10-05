@@ -231,12 +231,6 @@ const setProduct = (product) => {
       console.log(i);
       console.log(selectedProducts.value[i].selectedproductID);
     }
-    // if (!product.includes(selectedProducts.value[i])) {
-    //   alert('haiko')
-    // } else {
-    //   alert('iko')
-    //   // return false
-    // }
   }
 
   if (!selectedProducts.value.includes(product)) {
@@ -405,7 +399,7 @@ const addEverything = () => {
         v-if="anonymousSale"
         @click="anonymousSale = false"
         for="exampleFormControlInput1"
-        class="bg-blue-700 hover:bg-blue-900 form-label font-bold rounded-md text-xs px-2 py-2 inline-block mb-2 text-white"
+        class="bg-green-700 hover:bg-green-900 form-label font-bold rounded-md text-xs px-2 py-2 inline-block mb-2 text-white"
       >
         Add Client Details
       </button>
@@ -798,7 +792,7 @@ const addEverything = () => {
                         scope="col"
                         class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
                       >
-                        Sale Rate Per Unit
+                        <div class="flex flex-row justify-between">Sale Rate</div>
                       </th>
                       <th
                         scope="col"
@@ -882,20 +876,32 @@ const addEverything = () => {
                         </div>
                       </td>
                       <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                        <div class="mt-1 flex rounded-md shadow-sm">
-                          <span
-                            class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-200 px-1 text-gray-500 text-xs"
-                            >{{ selectedProduct.fixedPrice }} KES</span
-                          >
+                        <div class="flex justify-between">
+                          <span class="mt-3 text-green-500">
+                            ws
+                          </span>
                           <input
-                            v-model="selectedProduct.productPrice"
-                            @change="checkSaleChanges(index)"
-                            type="text"
-                            name="username"
-                            id="username"
-                            autocomplete="username"
-                            class="text-black font-bold block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-green-800 focus:ring-green-800 sm:text-sm"
-                          />
+                              id="default-checkbox"
+                              type="checkbox"
+                              value=""
+                              class="ml-1 mr-2 mt-4 w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            />
+                          <div class="mt-1 flex jusify-between rounded-md shadow-sm">
+                            <span
+                              class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-200 px-1 text-gray-500 text-xs"
+                              >{{ selectedProduct.fixedPrice }} KES</span
+                            >
+                            <input
+                              v-model="selectedProduct.productPrice"
+                              @change="checkSaleChanges(index)"
+                              type="text"
+                              name="username"
+                              id="username"
+                              autocomplete="username"
+                              class="text-black font-bold block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-green-800 focus:ring-green-800 sm:text-sm"
+                            />
+                            
+                          </div>
                         </div>
                       </td>
                       <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">

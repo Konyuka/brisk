@@ -15,9 +15,11 @@ class Product extends Model
         'product_code',
         'bar_code',
         'sales_price',
+        'wholesale_price',
         'finished_products',
         'in_delivery',
         'spoiled_products',
+        'missing_products',
         'added_by',
         'tax_exempt',
     ];
