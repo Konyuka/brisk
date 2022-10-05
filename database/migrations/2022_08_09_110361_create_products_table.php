@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('product_code')->default(0);
             $table->bigInteger('bar_code')->default(0);
             $table->integer('sales_price')->default(0);
+            $table->integer('wholesale_price')->default(0);
             $table->integer('finished_products')->default(0);
             $table->integer('in_delivery')->default(0);
             $table->json('trip_batch')->nullable();

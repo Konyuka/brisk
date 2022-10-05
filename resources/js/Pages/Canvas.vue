@@ -115,57 +115,40 @@ watch(purchasingClient, (value) => {
 
 watch(purchasingClient, (value) => {
   if (value) {
-    // selectedProducts.value.length - 1
-    // alert('twende')
+    
 
     let allClients = clients.value;
-    // console.log(clients.value)
     for (var i = 0; i < allClients.length; i++) {
-      // console.log(allClients[i].client_name)
       if (allClients[i].client_name.indexOf(purchasingClient.value) != -1) {
         if (!searchedClient.value.includes(allClients[i])) {
-          //  arr.push(str);
           searchedClient.value.push(allClients[i]);
         }
-        // console.log(allClients[i].client_name)
-        // alert(allClients.clients[i]);
+       
       }
     }
   }
 });
 watch(
   purchasedProduct,
-  (value) =>
-  {
-    // console.log(value.length);
+  (value) => {
     if (value.length != 0) {
-      // alert('hi')
-      // alert('twende')
+      
       let allProducts = props.products;
-      // console.log(allProducts)
       searchedProduct.value = [];
       for (var i = 0; i < allProducts.length; i++) {
-        // console.log(allClients[i].client_name)
-        // console.log(purchasedProduct.value[i].productname)
-        // if (allProducts[i].product_name.startsWith(selectedProducts.value[0].productname) != -1) {
+        console.log(allProducts[i].trip_batch)
         if (selectedProducts.value != []) {
           if (
             allProducts[i].product_name.indexOf(
               selectedProducts.value[selectedProductIndex.value].productname
             ) != -1
+            &&
+            allProducts[i].trip_batch != null
           ) {
-            // if (allProducts[i].product_name.indexOf(purchasedProduct.value.productname) != -1) {
-            // alert('hi 1')
 
             searchedProduct.value.push(allProducts[i]);
 
-            // if (!searchedProduct.value.includes(allProducts[i])) {
-            //   //  arr.push(str);
-            //   alert('hi 2')
-            //   searchedProduct.value.push(allProducts[i]);
-            // }
-            // console.log(allClients[i].client_name)
-            // alert(allClients.clients[i]);
+
           }
         }
       }
@@ -179,9 +162,7 @@ watch(
 watch(
   purchasedProduct,
   (value) => {
-    // console.log(value[0].productname)
     if (value.length != 0 && value[0].productname == "") {
-      // alert('hi')
       searchedProduct.value = [];
       // selectedProducts.value = [];
       searchedProductsArray.value = null;
@@ -205,12 +186,11 @@ watch(
   }
 );
 
-const numberWithCommas = (x) =>
-{ 
+const numberWithCommas = (x) => {
   let number = x;
-  let nf = new Intl.NumberFormat('en-US');
+  let nf = new Intl.NumberFormat("en-US");
   return nf.format(number); // "1,234,567,890"
-}
+};
 
 const finishSale = () => {
   // console.log(payload)
@@ -974,14 +954,18 @@ const addEverything = () => {
                       </h3>
                       <h3>
                         VAT:
-                        <span class="text-gray-800 text-xl">KES {{ numberWithCommas(overallTax) }}</span>
+                        <span class="text-gray-800 text-xl"
+                          >KES {{ numberWithCommas(overallTax) }}</span
+                        >
                       </h3>
                     </div>
 
                     <div>
                       <h3 class="mt-5">
                         Total:
-                        <span class="text-black text-2xl">KES {{ numberWithCommas(overallTotal) }}</span>
+                        <span class="text-black text-2xl"
+                          >KES {{ numberWithCommas(overallTotal) }}</span
+                        >
                       </h3>
                     </div>
                   </div>
@@ -1034,6 +1018,6 @@ const addEverything = () => {
       :overallTotal="overallTotal"
       :printTrigger="printTrigger"
       class="hidden"
-      />
-    </div>
+    />
+  </div>
 </template>

@@ -884,7 +884,7 @@ const deleteAgentRow = (index, selectedAgent) => {
       <div
         class="mt-4 container-fluid w-full flex flex-wrap items-center justify-between px-6"
       >
-        <div class="mb-2 container-fluid">
+        <!-- <div class="mb-2 container-fluid">
           <button
             @click="clearForm"
             type="button"
@@ -892,7 +892,7 @@ const deleteAgentRow = (index, selectedAgent) => {
           >
             <i class="fas fa-broom mr-2"></i> Clear
           </button>
-        </div>
+        </div> -->
         <div class="container-fluid">
           <button
             @click="processTrip"
