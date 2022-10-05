@@ -232,6 +232,8 @@ class DashboardController extends Controller
         $activeTrips =  Trip::where('trip_complete', 0)->select('user_ids')->get();
         $decodedActiveTrips = json_decode($activeTrips);
 
+        // return dd($activeTrips);
+
         $agentsArrayPush = [];
         foreach($activeTrips as $key=>$value){
             $agentsArray =  json_decode($value->user_ids);
@@ -319,9 +321,22 @@ class DashboardController extends Controller
         foreach($detailsArray as $key=>$value){
              $leadName = User::where('id', $value->lead)->get()->first();
             //  return dd($leadName->name);
-             Trip::create([
+            // $agentsArray = [];
+            // foreach($agentArray as $key=>$value){
+            //     User::where('id', $value->selectedAgentID)
+            //     ->update([
+            //         'trip_batch' => $tripBatch
+            //     ]);
+
+            //     $idsArray = []; 
+            //     array_push($agentsArray, $value->selectedAgentID);
+
+            // }
+
+            $createdTrip =  Trip::create([
                 'added_by' => $value->added_by,
                 'number_users' => $value->agentsNumber,
+                // 'user_ids' => $agentsArray,
                 'number_products' => $value->loadedProducts,
                 'number_brands' => $value->brandsNumber,
                 'products_sold' => 0,
@@ -335,6 +350,8 @@ class DashboardController extends Controller
                 'driver_name' => $value->driver,
             ]);
         }
+
+        // return dd($createdTrip);
         foreach($productArray as $key=>$value){
             // return dd($value);
              $remainingStock = $value->remainingProducts - $value->productQuantity;
@@ -348,18 +365,22 @@ class DashboardController extends Controller
                 $batchObject = new \stdClass();
                 $batchObject->batchNumber = $tripBatch;
                 $batchObject->numberItems = $productQuantity;
+                $batchObject->itemsSold = 0;
+
                  array_push($batchArray, $batchObject);
                 }else{
                      foreach ($productTripBatchDecoded as $item) {
                          $batchObject = new \stdClass();
                          $batchObject->batchNumber = $item->batchNumber;
-                         $batchObject->numberItems = $item->numberItems;  
+                         $batchObject->numberItems = $item->numberItems; 
+                         $batchObject->itemsSold = $item->itemsSold; 
 
                          array_push($batchArray, $batchObject);
                      }
                      $batchObject = new \stdClass();
                      $batchObject->batchNumber = $tripBatch;
                      $batchObject->numberItems = $productQuantity; 
+                     $batchObject->itemsSold = 0;
                      array_push($batchArray, $batchObject);  
                     }
 
@@ -381,11 +402,15 @@ class DashboardController extends Controller
             array_push($agentsArray, $value->selectedAgentID);
 
         }
-        // return ($agentsArray);
-        Trip::where('id', $tripBatch)
+
+        Trip::where('id', $createdTrip->id)
         ->update([
             'user_ids' => $agentsArray,
         ]);
+        // Trip::where('id', $tripBatch)
+        // ->update([
+        //     'user_ids' => $agentsArray,
+        // ]);
 
 
         // return dd($productArray, $agentArray, $detailsArray);

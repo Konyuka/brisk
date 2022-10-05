@@ -12,6 +12,7 @@ class Trip extends Model
     protected $fillable = [ 
         'added_by',
         'number_users',
+        'user_ids',
         'number_products',
         'number_brands',
         'products_sold',

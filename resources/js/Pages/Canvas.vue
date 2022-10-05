@@ -1,6 +1,6 @@
 <script setup>
 import { useForm, usePage } from "@inertiajs/inertia-vue3";
-import { ref, computed, watch, toRef, reactive } from "vue";
+import { ref, toRefs, computed, watch, toRef, reactive } from "vue";
 // import { Inertia } from "@inertiajs/inertia";
 // import AppLayout from "@/Layouts/AppLayout.vue";
 // import { Calendar, DatePicker } from "v-calendar";
@@ -13,6 +13,8 @@ const props = defineProps({
   currentMessage: String,
   invoiceLog: String,
 });
+
+// const invoiceLog = toRefs(props)
 
 const vLowerCase = {
   updated: (el) => {
@@ -115,15 +117,12 @@ watch(purchasingClient, (value) => {
 
 watch(purchasingClient, (value) => {
   if (value) {
-    
-
     let allClients = clients.value;
     for (var i = 0; i < allClients.length; i++) {
       if (allClients[i].client_name.indexOf(purchasingClient.value) != -1) {
         if (!searchedClient.value.includes(allClients[i])) {
           searchedClient.value.push(allClients[i]);
         }
-       
       }
     }
   }
@@ -132,23 +131,18 @@ watch(
   purchasedProduct,
   (value) => {
     if (value.length != 0) {
-      
       let allProducts = props.products;
       searchedProduct.value = [];
       for (var i = 0; i < allProducts.length; i++) {
-        console.log(allProducts[i].trip_batch)
+        // console.log(allProducts[i].trip_batch)
         if (selectedProducts.value != []) {
           if (
             allProducts[i].product_name.indexOf(
               selectedProducts.value[selectedProductIndex.value].productname
-            ) != -1
-            &&
+            ) != -1 &&
             allProducts[i].trip_batch != null
           ) {
-
             searchedProduct.value.push(allProducts[i]);
-
-
           }
         }
       }
@@ -219,12 +213,17 @@ const setClient = (client) => {
   selectedClient.value = client;
 };
 const setProduct = (product) => {
-  // alert('yess')
-  console.log(product);
+  // console.log(product);
 
   // console.log(selectedProducts.value[selectedProductIndex.value].productQuantity * selectedProducts.value[selectedProductIndex.value].productPrice)
   productsCollapseValue.value = false;
   purchasedProduct.value = product.product_name;
+
+  let batchDetails = JSON.parse(product.trip_batch);
+  let tripObject = batchDetails.find((obj) => obj.batchNumber == props.invoiceLog);
+  let itemsLoaded = tripObject.numberItems;
+  let itemsSold = tripObject.itemsSold;
+  let itemsAvailable = itemsLoaded - itemsSold;
 
   // var checkDuplicate
   for (var i = 0; i < selectedProducts.value.length; i++) {
@@ -247,8 +246,9 @@ const setProduct = (product) => {
     selectedProducts.value[selectedProductIndex.value].productPrice = product.sales_price;
     selectedProducts.value[selectedProductIndex.value].fixedPrice = product.sales_price;
     selectedProducts.value[selectedProductIndex.value].productQuantity = 1;
-    selectedProducts.value[selectedProductIndex.value].remainingProducts =
-      product.stock_quantity;
+    selectedProducts.value[selectedProductIndex.value].remainingProducts = itemsAvailable;
+    // selectedProducts.value[selectedProductIndex.value].remainingProducts =
+    //   product.stock_quantity;
     selectedProducts.value[selectedProductIndex.value].productSKU =
       product.product_quantity;
     selectedProducts.value[selectedProductIndex.value].selectedproductName =
@@ -294,7 +294,7 @@ const deleteTableRow = (index, selectedProduct) => {
   addEverything();
 };
 const checkSaleChanges = (index) => {
-  const availableStock = selectedProducts.value[index].inDelivery;
+  const availableStock = selectedProducts.value[index].remainingProducts;
   const leastPrice = selectedProducts.value[index].fixedPrice;
   if (selectedProducts.value[index].productQuantity > availableStock) {
     alert("Check Available Stock");
@@ -868,7 +868,7 @@ const addEverything = () => {
                         <div class="mt-1 flex rounded-md shadow-sm">
                           <span
                             class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-200 px-1 text-gray-500 text-xs"
-                            >{{ selectedProduct.inDelivery }} Items</span
+                            >{{ selectedProduct.remainingProducts }} Items</span
                           >
                           <input
                             v-model="selectedProduct.productQuantity"
