@@ -45,8 +45,10 @@ const clientsCollapse = computed(() => {
     return false;
   }
 });
-const productsCollapse = computed(() => {
-  if (selectedProducts.value[0].productname != "") {
+const productsCollapse = computed(() =>
+{
+  let lastProductIndex = productsNumber.value + 1
+  if (selectedProducts.value[0].productname != null) {
     // if (purchasedProduct.value != "") {
     return true;
   } else {
@@ -113,10 +115,10 @@ const chosenAgent = ref("");
 const selectedProducts = ref([
   {
     selectedproductID: null,
-    productname: "",
-    selectedproductName: "",
-    productSKU: "",
-    productQuantity: "",
+    productname: null,
+    selectedproductName: null,
+    productSKU: null,
+    productQuantity: null,
     remainingProducts: null,
     selectedType: null,
   },
@@ -355,7 +357,10 @@ const setAgent = (agent) =>
     agentsCollapseValue.value = false;
   }
 };
-const setProduct = (product) => {
+const setProduct = (product) =>
+{
+  
+
   productsCollapseValue.value = false;
   purchasedProduct.value = product.product_name;
 
@@ -380,6 +385,10 @@ const setProduct = (product) => {
   }
   addTableRow();
   productsCollapseValue.value = false;
+
+  // let lastProductIndex = productsNumber.value - 1
+  // console.log(lastProductIndex)
+
 };
 const addAgentRow = () => {
   selectedAgents.value.push({
@@ -678,7 +687,7 @@ const deleteAgentRow = (index, selectedAgent) => {
                           disabled
                           v-model="selectedAgent.selectedAgentName"
                           type="text"
-                          class="form-control block w-full sm:px-3 sm:py-1.5 text-xs sm:text-base font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          class="capitalize form-control block w-full sm:px-3 sm:py-1.5 text-xs sm:text-base font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                           id="exampleFormControlInput1"
                           placeholder=""
                         />
@@ -800,7 +809,7 @@ const deleteAgentRow = (index, selectedAgent) => {
                           disabled
                           v-model="selectedProduct.selectedproductName"
                           type="text"
-                          class="form-control block w-full sm:px-3 sm:py-1.5 text-xs sm:text-base font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          class="capitalize form-control block w-full sm:px-3 sm:py-1.5 text-xs sm:text-base font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                           id="exampleFormControlInput1"
                           placeholder=""
                         />
@@ -810,7 +819,7 @@ const deleteAgentRow = (index, selectedAgent) => {
                           disabled
                           v-model="selectedProduct.productSKU"
                           type="text"
-                          class="form-control block w-full sm:px-3 sm:py-1.5 text-xs sm:text-base font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          class="uppercase form-control block w-full sm:px-3 sm:py-1.5 text-xs sm:text-base font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                           id="exampleFormControlInput1"
                           placeholder=""
                         />

@@ -15,6 +15,7 @@ const vLowerCase = {
   },
 };
 
+
 const currentUser = computed(() => usePage().props.value.user.id);
 const available_products = computed(() => {
   return form.finished_products - form.in_delivery - form.spoiled_products;
@@ -160,6 +161,7 @@ const setTax = () =>
                     autocomplete="family-name"
                     class="uppercase mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
+                  <div class="animate-pulse  text-sm font-bold italic text-red-500" v-if="form.errors.product_quantity">{{ form.errors.product_quantity }}</div>
                 </div>
 
                 <div class="col-span-3 sm:col-span-1">
@@ -207,6 +209,7 @@ const setTax = () =>
                     autocomplete="family-name"
                     class="mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
+                  <div class="animate-pulse  text-sm font-bold italic text-red-500" v-if="form.errors.sales_price">{{ form.errors.sales_price }}</div>
                 </div>
 
                 <div class="col-span-3 sm:col-span-1">
@@ -224,6 +227,7 @@ const setTax = () =>
                     autocomplete="family-name"
                     class="mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
+                  <div class="animate-pulse  text-sm font-bold italic text-red-500" v-if="form.errors.wholesale_price">{{ form.errors.wholesale_price }}</div>
                 </div>
 
                 <div class="col-span-3 sm:col-span-2">
@@ -239,6 +243,7 @@ const setTax = () =>
                     autocomplete="family-name"
                     class="mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
+                  <div class="animate-pulse  text-sm font-bold italic text-red-500" v-if="form.errors.finished_products">{{ form.errors.finished_products }}</div>
                 </div>
 
                 <div class="col-span-3 sm:col-span-1">

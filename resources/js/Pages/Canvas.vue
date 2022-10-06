@@ -48,13 +48,6 @@ const selectedProductIndex = computed(() => {
   return selectedProducts.value.length - 1;
 });
 
-// const payload = reactive({
-//   amount_paid: amountPaid.value,
-//   payment_method: paymentMethod.value,
-//   sale_id: props.sale.id,
-//   product_id: props.product.id,
-// });
-
 const printTrigger = ref(false);
 const searchedProductsArray = ref(null);
 const clients = computed(() => props.clients);
@@ -92,6 +85,8 @@ const selectedProducts = ref([
     productQuantity: "",
     remainingProducts: null,
     productPrice: null,
+    wholesalePrice: null,
+    wholesaleProductPrice: null,
     fixedPrice: null,
     total: null,
     vat: null,
@@ -101,6 +96,7 @@ const selectedProducts = ref([
     finishedProduct: null,
     inDelivery: null,
     spoiledProduct: null,
+    wholesaleCheck: false,
   },
 ]);
 
@@ -180,6 +176,20 @@ watch(
   }
 );
 
+const checkwholeSaleChanges = (index) =>
+{ 
+    setCalculations(index);
+    addEverything();
+}
+
+const wholeSale = (index) =>
+{
+  if (selectedProducts.value[index].wholesaleCheck == false) { 
+    return false
+  } else { 
+    return true
+  }
+};
 const numberWithCommas = (x) => {
   let number = x;
   let nf = new Intl.NumberFormat("en-US");
@@ -213,14 +223,15 @@ const setClient = (client) => {
   selectedClient.value = client;
 };
 const setProduct = (product) => {
-  // console.log(product);
-
-  // console.log(selectedProducts.value[selectedProductIndex.value].productQuantity * selectedProducts.value[selectedProductIndex.value].productPrice)
   productsCollapseValue.value = false;
   purchasedProduct.value = product.product_name;
-
+  
   let batchDetails = JSON.parse(product.trip_batch);
   let tripObject = batchDetails.find((obj) => obj.batchNumber == props.invoiceLog);
+  // console.log(tripObject);
+  if (tripObject == undefined) { 
+    alert("Item is not in your Trip")
+  }
   let itemsLoaded = tripObject.numberItems;
   let itemsSold = tripObject.itemsSold;
   let itemsAvailable = itemsLoaded - itemsSold;
@@ -239,6 +250,8 @@ const setProduct = (product) => {
       product.product_description;
     selectedProducts.value[selectedProductIndex.value].productPrice = product.sales_price;
     selectedProducts.value[selectedProductIndex.value].fixedPrice = product.sales_price;
+    selectedProducts.value[selectedProductIndex.value].wholesalePrice = product.wholesale_price;
+    selectedProducts.value[selectedProductIndex.value].wholesaleProductPrice = product.wholesale_price;
     selectedProducts.value[selectedProductIndex.value].productQuantity = 1;
     selectedProducts.value[selectedProductIndex.value].remainingProducts = itemsAvailable;
     // selectedProducts.value[selectedProductIndex.value].remainingProducts =
@@ -290,6 +303,8 @@ const deleteTableRow = (index, selectedProduct) => {
 const checkSaleChanges = (index) => {
   const availableStock = selectedProducts.value[index].remainingProducts;
   const leastPrice = selectedProducts.value[index].fixedPrice;
+  const wholesalePrice = selectedProducts.value[index].wholesalePrice;
+
   if (selectedProducts.value[index].productQuantity > availableStock) {
     alert("Check Available Stock");
     selectedProducts.value[index].productQuantity = availableStock;
@@ -300,23 +315,46 @@ const checkSaleChanges = (index) => {
     addEverything();
   }
 
-  if (selectedProducts.value[index].productPrice < leastPrice) {
-    alert("Check Product Price");
-    selectedProducts.value[index].productPrice = leastPrice;
-    setCalculations(index);
-    addEverything();
-  } else {
-    setCalculations(index);
-    addEverything();
+  if (selectedProducts.value[index].wholesaleCheck == false) {
+
+    if (selectedProducts.value[index].productPrice < leastPrice) {
+      alert("Check Product Price");
+      selectedProducts.value[index].productPrice = leastPrice;
+      setCalculations(index);
+      addEverything();
+    } else {
+      setCalculations(index);
+      addEverything();
+    }
+
+  } else { 
+
+    if (selectedProducts.value[index].wholesaleProductPrice < wholesalePrice) {
+      alert("Check Product Price");
+      selectedProducts.value[index].wholesaleProductPrice = wholesalePrice;
+      setCalculations(index);
+      addEverything();
+    } else {
+      setCalculations(index);
+      addEverything();
+    }
+
   }
+
 };
 const setCalculations = (index) => {
   // alert(index)
   // console.log(selectedProducts.value[index].total);
+  if (selectedProducts.value[index].wholesaleCheck == false) {
+      selectedProducts.value[index].total =
+      selectedProducts.value[index].productQuantity *
+      selectedProducts.value[index].productPrice;
+    } else { 
+      selectedProducts.value[index].total =
+      selectedProducts.value[index].productQuantity *
+      selectedProducts.value[index].wholesalePrice;
+  }
 
-  selectedProducts.value[index].total =
-    selectedProducts.value[index].productQuantity *
-    selectedProducts.value[index].productPrice;
   selectedProducts.value[index].vat = Math.round(
     selectedProducts.value[index].total * 0.16
   );
@@ -338,6 +376,9 @@ const addEverything = () => {
   overallTax.value = sumTax;
   overallTotal.value = sumSubtotal;
 };
+
+
+
 </script>
 
 <template>
@@ -881,12 +922,30 @@ const addEverything = () => {
                             ws
                           </span>
                           <input
+                              v-model="selectedProduct.wholesaleCheck"
+                              @change="checkwholeSaleChanges(index)"
                               id="default-checkbox"
                               type="checkbox"
                               value=""
                               class="ml-1 mr-2 mt-4 w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                             />
-                          <div class="mt-1 flex jusify-between rounded-md shadow-sm">
+                          <div v-if="wholeSale(index)" class="mt-1 flex jusify-between rounded-md shadow-sm">
+                            <span
+                              class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-200 px-1 text-gray-500 text-xs"
+                              >{{ selectedProduct.wholesalePrice }} KES</span
+                            >
+                            <input
+                              v-model="selectedProduct.wholesaleProductPrice"
+                              @change="checkSaleChanges(index)"
+                              type="text"
+                              name="username"
+                              id="username"
+                              autocomplete="username"
+                              class="text-black font-bold block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-green-800 focus:ring-green-800 sm:text-sm"
+                            />
+                            
+                          </div>
+                          <div v-else class="mt-1 flex jusify-between rounded-md shadow-sm">
                             <span
                               class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-200 px-1 text-gray-500 text-xs"
                               >{{ selectedProduct.fixedPrice }} KES</span

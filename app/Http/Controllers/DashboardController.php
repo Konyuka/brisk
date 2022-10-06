@@ -22,7 +22,8 @@ class DashboardController extends Controller
                 'product_name' => 'required',
                 'product_quantity' => 'required',
                 'sales_price' => 'required',
-                'wholesale_price' => 'required'
+                'wholesale_price' => 'required',
+                'finished_products' => 'required'
         ]);
 
         $product = new Product();
@@ -415,6 +416,13 @@ class DashboardController extends Controller
         ->update([
             'user_ids' => $agentsArray,
         ]);
+
+        if($tripBatch == 1){
+            Trip::where('id', $createdTrip->id)
+            ->update([
+                'id' => 1,
+            ]);
+        }
         // Trip::where('id', $tripBatch)
         // ->update([
         //     'user_ids' => $agentsArray,
