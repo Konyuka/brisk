@@ -1,7 +1,7 @@
 <script setup>
 import { useForm, usePage } from "@inertiajs/inertia-vue3";
 import { ref, toRefs, computed, watch, toRef, reactive } from "vue";
-// import { Inertia } from "@inertiajs/inertia";
+import { Inertia } from "@inertiajs/inertia";
 // import AppLayout from "@/Layouts/AppLayout.vue";
 // import { Calendar, DatePicker } from "v-calendar";
 import moment from "moment";
@@ -62,6 +62,9 @@ const form = useForm({
   added_by: currentUser,
   tax_exempt: false,
 });
+
+const mpesaDialogue = ref(false);
+const paymentModal = ref(false);
 const clientsCollapseValue = ref("");
 const productsCollapseValue = ref("");
 const searchedClient = ref([]);
@@ -176,18 +179,32 @@ watch(
   }
 );
 
-const checkwholeSaleChanges = (index) =>
-{ 
-    setCalculations(index);
-    addEverything();
-}
-
-const wholeSale = (index) =>
+const finishSale = () =>
 {
-  if (selectedProducts.value[index].wholesaleCheck == false) { 
-    return false
-  } else { 
-    return true
+  
+  selectedProducts.value.pop()
+  // console.log(selectedProducts.value)
+  Inertia.post("/dashboard/finish_sale", selectedProducts.value);
+  
+};
+
+const stkPush = () => {
+  // console.log(payload)
+  // Inertia.post("/dashboard/finish_sale", payload);
+};
+
+const checkwholeSaleChanges = (index) => {
+  setCalculations(index);
+  addEverything();
+  selectedProducts.value[index].wholesaleProductPrice =
+    selectedProducts.value[index].wholesalePrice;
+};
+
+const wholeSale = (index) => {
+  if (selectedProducts.value[index].wholesaleCheck == false) {
+    return false;
+  } else {
+    return true;
   }
 };
 const numberWithCommas = (x) => {
@@ -196,10 +213,6 @@ const numberWithCommas = (x) => {
   return nf.format(number); // "1,234,567,890"
 };
 
-const finishSale = () => {
-  // console.log(payload)
-  // Inertia.post("/dashboard/finish_sale", payload);
-};
 const printInvoice = () => {
   printTrigger.value = !printTrigger.value;
 };
@@ -225,12 +238,12 @@ const setClient = (client) => {
 const setProduct = (product) => {
   productsCollapseValue.value = false;
   purchasedProduct.value = product.product_name;
-  
+
   let batchDetails = JSON.parse(product.trip_batch);
   let tripObject = batchDetails.find((obj) => obj.batchNumber == props.invoiceLog);
   // console.log(tripObject);
-  if (tripObject == undefined) { 
-    alert("Item is not in your Trip")
+  if (tripObject == undefined) {
+    alert("Item is not in your Trip");
   }
   let itemsLoaded = tripObject.numberItems;
   let itemsSold = tripObject.itemsSold;
@@ -250,8 +263,10 @@ const setProduct = (product) => {
       product.product_description;
     selectedProducts.value[selectedProductIndex.value].productPrice = product.sales_price;
     selectedProducts.value[selectedProductIndex.value].fixedPrice = product.sales_price;
-    selectedProducts.value[selectedProductIndex.value].wholesalePrice = product.wholesale_price;
-    selectedProducts.value[selectedProductIndex.value].wholesaleProductPrice = product.wholesale_price;
+    selectedProducts.value[selectedProductIndex.value].wholesalePrice =
+      product.wholesale_price;
+    selectedProducts.value[selectedProductIndex.value].wholesaleProductPrice =
+      product.wholesale_price;
     selectedProducts.value[selectedProductIndex.value].productQuantity = 1;
     selectedProducts.value[selectedProductIndex.value].remainingProducts = itemsAvailable;
     // selectedProducts.value[selectedProductIndex.value].remainingProducts =
@@ -303,7 +318,7 @@ const deleteTableRow = (index, selectedProduct) => {
 const checkSaleChanges = (index) => {
   const availableStock = selectedProducts.value[index].remainingProducts;
   const leastPrice = selectedProducts.value[index].fixedPrice;
-  const wholesalePrice = selectedProducts.value[index].wholesalePrice;
+  const wholesalePricing = selectedProducts.value[index].wholesalePrice;
 
   if (selectedProducts.value[index].productQuantity > availableStock) {
     alert("Check Available Stock");
@@ -316,7 +331,6 @@ const checkSaleChanges = (index) => {
   }
 
   if (selectedProducts.value[index].wholesaleCheck == false) {
-
     if (selectedProducts.value[index].productPrice < leastPrice) {
       alert("Check Product Price");
       selectedProducts.value[index].productPrice = leastPrice;
@@ -326,33 +340,29 @@ const checkSaleChanges = (index) => {
       setCalculations(index);
       addEverything();
     }
-
-  } else { 
-
-    if (selectedProducts.value[index].wholesaleProductPrice < wholesalePrice) {
+  } else {
+    if (selectedProducts.value[index].wholesaleProductPrice < wholesalePricing) {
       alert("Check Product Price");
-      selectedProducts.value[index].wholesaleProductPrice = wholesalePrice;
+      selectedProducts.value[index].wholesaleProductPrice = wholesalePricing;
       setCalculations(index);
       addEverything();
     } else {
       setCalculations(index);
       addEverything();
     }
-
   }
-
 };
 const setCalculations = (index) => {
   // alert(index)
   // console.log(selectedProducts.value[index].total);
   if (selectedProducts.value[index].wholesaleCheck == false) {
-      selectedProducts.value[index].total =
+    selectedProducts.value[index].total =
       selectedProducts.value[index].productQuantity *
       selectedProducts.value[index].productPrice;
-    } else { 
-      selectedProducts.value[index].total =
+  } else {
+    selectedProducts.value[index].total =
       selectedProducts.value[index].productQuantity *
-      selectedProducts.value[index].wholesalePrice;
+      selectedProducts.value[index].wholesaleProductPrice;
   }
 
   selectedProducts.value[index].vat = Math.round(
@@ -376,9 +386,6 @@ const addEverything = () => {
   overallTax.value = sumTax;
   overallTotal.value = sumSubtotal;
 };
-
-
-
 </script>
 
 <template>
@@ -918,18 +925,19 @@ const addEverything = () => {
                       </td>
                       <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
                         <div class="flex justify-between">
-                          <span class="mt-3 text-green-500">
-                            ws
-                          </span>
+                          <span class="mt-3 text-green-500"> ws </span>
                           <input
-                              v-model="selectedProduct.wholesaleCheck"
-                              @change="checkwholeSaleChanges(index)"
-                              id="default-checkbox"
-                              type="checkbox"
-                              value=""
-                              class="ml-1 mr-2 mt-4 w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                          <div v-if="wholeSale(index)" class="mt-1 flex jusify-between rounded-md shadow-sm">
+                            v-model="selectedProduct.wholesaleCheck"
+                            @change="checkwholeSaleChanges(index)"
+                            id="default-checkbox"
+                            type="checkbox"
+                            value=""
+                            class="ml-1 mr-2 mt-4 w-4 h-4 text-green-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          />
+                          <div
+                            v-if="wholeSale(index)"
+                            class="mt-1 flex jusify-between rounded-md shadow-sm"
+                          >
                             <span
                               class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-200 px-1 text-gray-500 text-xs"
                               >{{ selectedProduct.wholesalePrice }} KES</span
@@ -943,9 +951,11 @@ const addEverything = () => {
                               autocomplete="username"
                               class="text-black font-bold block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-green-800 focus:ring-green-800 sm:text-sm"
                             />
-                            
                           </div>
-                          <div v-else class="mt-1 flex jusify-between rounded-md shadow-sm">
+                          <div
+                            v-else
+                            class="mt-1 flex jusify-between rounded-md shadow-sm"
+                          >
                             <span
                               class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-200 px-1 text-gray-500 text-xs"
                               >{{ selectedProduct.fixedPrice }} KES</span
@@ -959,7 +969,6 @@ const addEverything = () => {
                               autocomplete="username"
                               class="text-black font-bold block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-green-800 focus:ring-green-800 sm:text-sm"
                             />
-                            
                           </div>
                         </div>
                       </td>
@@ -1048,14 +1057,6 @@ const addEverything = () => {
       <div
         class="mt-4 container-fluid w-full flex flex-wrap items-center justify-between px-6"
       >
-        <div class="mb-2 container-fluid">
-          <button
-            type="button"
-            class="inline-block px-2 py-2 sm:px-6 sm:py-2.5 bg-red-300 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
-          >
-            <i class="fas fa-broom mr-2"></i> Clear
-          </button>
-        </div>
         <div class="container-fluid">
           <button
             @click="printInvoice"
@@ -1065,15 +1066,123 @@ const addEverything = () => {
             <i class="fas fa-print mr-2"></i> Print Invoice
           </button>
           <button
-            @click="finishSale"
+            @click="paymentModal = true"
             type="button"
             class="mb-2 inline-block px-2 py-2 sm:px-6 sm:py-2.5 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
           >
-            <i class="fas fa-check-double mr-2"></i> Register Sale
+            <i class="fas fa-money-bill-trend-up mr-2"></i> Process Payment
           </button>
         </div>
       </div>
     </nav>
+
+    <div
+      v-if="paymentModal"
+      class="relative z-10"
+      aria-labelledby="modal-title"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+      <div class="fixed inset-0 z-10 overflow-y-auto">
+        <div
+          class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
+        >
+          <div
+            class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
+          >
+            <div>
+              <button
+                @click="paymentModal = false"
+                class="group mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-red-100 hover:bg-red-500"
+              >
+                <i class="group-hover:text-white fas fa-xmark text-black"></i>
+              </button>
+
+              <div class="mt-3 text-center sm:mt-5">
+                <h3 v-if="!mpesaDialogue" class="text-lg font-bold leading-6 text-gray-600" id="modal-title">
+                  Choose Payment Mode
+                </h3>
+                <h3 v-if="mpesaDialogue" class="text-lg font-bold leading-6 text-gray-600" id="modal-title">
+                  M-Pesa Payment 
+                </h3>
+              </div>
+            </div>
+
+            <div v-if="mpesaDialogue">
+              <div class="px-5 py-5">
+                <label for="phone-number" class="mb-2 block text-sm font-medium text-gray-700"
+                  >Enter Mpesa Payment Number</label
+                >
+                <div class="relative mt-1 rounded-md shadow-sm">
+                  <div class="absolute inset-y-0 left-0 flex items-center">
+                    <label for="country" class="sr-only">Country</label>
+                    <select
+                      disabled
+                      id="country"
+                      name="country"
+                      autocomplete="country"
+                      class="h-full rounded-md border-transparent bg-transparent py-0 pl-3 pr-7 text-gray-500 focus:border-green-500 focus:ring-green-500 sm:text-sm"
+                    >
+                      <option selected>KE</option>
+                    </select>
+                  </div>
+                  <input
+                    type="number"
+                    name="phone-number"
+                    id="phone-number"
+                    class="text-black font-bold block w-full rounded-md border-gray-300 pl-16 focus:border-green-500 focus:ring-green-500 sm:text-sm"
+                    placeholder="254 716 202 298"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div
+              v-if="!mpesaDialogue"
+              class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3"
+            >
+              
+              <button
+                @click="mpesaDialogue = true"
+                type="button"
+                class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-light-green-600 px-4 py-2 text-base font-bold text-white shadow-sm hover:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm"
+              >
+                Mpesa
+              </button>
+              <button
+                @click="finishSale"
+                type="button"
+                class="inline-flex w-full justify-center rounded-md border border-transparent bg-light-green-600 px-4 py-2 text-base font-bold text-white shadow-sm hover:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm"
+              >
+                Cash
+              </button>
+            </div>
+
+            <div
+              v-if="mpesaDialogue"
+              class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3"
+            >
+              <button
+                @click="stkPush"
+                type="button"
+                class="inline-flex w-full justify-center rounded-md border border-transparent bg-light-green-600 px-4 py-2 text-base font-bold text-white shadow-sm hover:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm"
+              >
+                Send Mpesa Prompt
+              </button>
+              <button
+                @click="mpesaDialogue = false"
+                type="button"
+                class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-red-600 px-4 py-2 text-base font-bold text-white shadow-sm hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm"
+              >
+                Back
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <Receipt
       :selectedProducts="selectedProducts"

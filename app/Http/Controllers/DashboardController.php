@@ -112,6 +112,9 @@ class DashboardController extends Controller
 
     public function finishSale(Request $request)
     {
+        return dd($request);
+
+
         $sale = Sale::where(['id'=>$request->sale_id])->first();
         $product = Product::where(['id'=>$request->product_id])->first();
 
