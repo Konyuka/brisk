@@ -112,7 +112,10 @@ class DashboardController extends Controller
 
     public function finishSale(Request $request)
     {
-        return dd($request);
+        $saledetailsArray = json_decode($request->getContent());
+        $firstproduct = array_values($saledetailsArray)[0];
+        $tripID = User::where(['id'=>$firstproduct->agentID])->first()->select("trip_batch");
+        return dd($tripID);
 
 
         $sale = Sale::where(['id'=>$request->sale_id])->first();

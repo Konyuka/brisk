@@ -52,6 +52,7 @@ const printTrigger = ref(false);
 const searchedProductsArray = ref(null);
 const clients = computed(() => props.clients);
 const currentUser = computed(() => usePage().props.value.user.id);
+const currentBatch = computed(() => usePage().props.value.user.trip_batch);
 
 const form = useForm({
   client_name: "",
@@ -100,6 +101,8 @@ const selectedProducts = ref([
     inDelivery: null,
     spoiledProduct: null,
     wholesaleCheck: false,
+    agentID: currentUser.value,
+    anonymousSale: anonymousSale.value,
   },
 ]);
 
@@ -240,7 +243,7 @@ const setProduct = (product) => {
   purchasedProduct.value = product.product_name;
 
   let batchDetails = JSON.parse(product.trip_batch);
-  let tripObject = batchDetails.find((obj) => obj.batchNumber == props.invoiceLog);
+  let tripObject = batchDetails.find((obj) => obj.batchNumber == currentBatch.value);
   // console.log(tripObject);
   if (tripObject == undefined) {
     alert("Item is not in your Trip");
@@ -427,8 +430,9 @@ const addEverything = () => {
         </div>
         <div class="container-fluid">
           <h5 class="text-md text-black font-semibold" href="#">
-            <i class="fa-solid fa-coins"></i> Balance Due KES.
-            <span class="text-md sm:text-2xl">{{ numberWithCommas(overallTotal) }}</span>
+            <i class="fa-solid fa-truck"></i> Trip Batch Number:
+            <span class="text-md sm:text-2xl">{{ currentBatch }}</span>
+            <!-- <span class="text-md sm:text-2xl">{{ numberWithCommas(overallTotal) }}</span> -->
           </h5>
         </div>
       </div>
