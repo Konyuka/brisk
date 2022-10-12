@@ -114,8 +114,61 @@ class DashboardController extends Controller
     {
         $saledetailsArray = json_decode($request->getContent());
         $firstproduct = array_values($saledetailsArray)[0];
-        $tripID = User::where(['id'=>$firstproduct->agentID])->first()->select("trip_batch");
-        return dd($tripID);
+        $agent = User::where(['id'=>$firstproduct->agentID])->first();
+        $trip = Trip::where(['id'=>$agent->trip_batch])->first();
+
+        
+        if(count((array)$firstproduct->client)){
+            $client = Client::where(['id'=>$firstproduct->client->id])->first();
+        }
+
+        if(count((array)$firstproduct->client)){
+            $client_id = $client->id;
+        }else{
+            $client_id = null;
+        }
+
+        
+        $string= \json_encode($saledetailsArray);
+    
+        $createdSale =  Sale::create([
+            'added_by' => $agent->id,
+            'trip_batch' => $trip->id,
+            'client_id' => $client_id,
+            'products' => $string,
+            'sale_amount' => $firstproduct->overallTotal,
+            'payment_method' => $firstproduct->mpesaPayment,
+            'invoice_number' => $firstproduct->invoice_number,
+            'mpesa_ref' => 0,
+        ]);
+
+
+        // $link = new Sale();
+        // $link->added_by = $agent->id;
+        // $link->trip_batch = $trip->id;
+
+        // if(count((array)$firstproduct->client)){
+        //     $link->client_id = $client->id;
+        // }
+        // $link->products = $saledetailsArray;
+        // $link->sale_amount = $firstproduct->overallTotal;
+        // $link->payment_method = $firstproduct->mpesaPayment;
+
+        // // if($firstproduct->mpesaPayment = 0){
+        // //     $link->payment_method = 'cash';
+        // // }else{
+        // //     $link->payment_method = 'mpesa';
+        // // }
+        // $link->invoice_number = $firstproduct->invoice_number;
+        // $link->mpesa_ref = 0;
+        // $link->save();
+        return dd($createdSale);
+        return redirect()->back();
+        
+        // return dd('saved');
+        // return dd($link);
+
+
 
 
         $sale = Sale::where(['id'=>$request->sale_id])->first();
@@ -417,7 +470,7 @@ class DashboardController extends Controller
             array_push($agentsArray, $value->selectedAgentID);
 
         }
-
+        // return dd($agentsArray);
         Trip::where('id', $createdTrip->id)
         ->update([
             'user_ids' => $agentsArray,

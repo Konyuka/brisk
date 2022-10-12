@@ -335,6 +335,8 @@ const processTrip = async  () =>
 };
 const setAgent = (agent) =>
 {
+  // console.log(agent) 
+  // return
   if (activeAgents.value.includes(agent.id)) {
     alert('Already a member of another trip')
   } else { 

@@ -15,16 +15,14 @@ return new class extends Migration
     {
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
-            $table->string('added_by');
+            $table->integer('added_by');
             $table->integer('trip_batch');
-            $table->string('client_id');
-            $table->string('product_id');
-            $table->string('product_quantity');
+            $table->integer('client_id')->nullable();
+            $table->json('products')->nullable();
             $table->string('sale_amount');
-            $table->string('amount_paid')->nullable();
-            $table->string('payment_status')->default(false);
-            $table->string('payment_method')->default(null);
+            $table->string('payment_method')->nullable();
             $table->string('invoice_number')->nullable();
+            $table->string('mpesa_ref')->nullable();
             $table->timestamps();
         });
     }

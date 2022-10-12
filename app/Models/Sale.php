@@ -11,11 +11,12 @@ class Sale extends Model
 
     protected $fillable = [ 
         'added_by',
+        'trip_batch',
         'client_id',
-        'product_id',
+        'products',
         'sale_amount',
-        'payment_status',
+        'payment_method',
         'invoice_number',
-        'product_quantity',
+        'mpesa_ref',
     ];
 }

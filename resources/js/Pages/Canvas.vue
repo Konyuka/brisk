@@ -74,6 +74,7 @@ const purchasingClient = ref("");
 const purchasedProduct = ref("");
 const selectedClient = ref({});
 const anonymousSale = ref(false);
+const mpesaPayment = ref(false);
 
 const overallSubtotal = ref(null);
 const overallTax = ref(null);
@@ -103,6 +104,10 @@ const selectedProducts = ref([
     wholesaleCheck: false,
     agentID: currentUser.value,
     anonymousSale: anonymousSale.value,
+    client: selectedClient,
+    mpesaPayment: mpesaPayment,
+    overallTotal: overallTotal,
+    invoice_number: props.invoiceLog,
   },
 ]);
 
@@ -182,11 +187,10 @@ watch(
   }
 );
 
-const finishSale = () =>
+const cashSale = () =>
 {
   
   selectedProducts.value.pop()
-  // console.log(selectedProducts.value)
   Inertia.post("/dashboard/finish_sale", selectedProducts.value);
   
 };
@@ -1156,7 +1160,7 @@ const addEverything = () => {
                 Mpesa
               </button>
               <button
-                @click="finishSale"
+                @click="cashSale"
                 type="button"
                 class="inline-flex w-full justify-center rounded-md border border-transparent bg-light-green-600 px-4 py-2 text-base font-bold text-white shadow-sm hover:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm"
               >
