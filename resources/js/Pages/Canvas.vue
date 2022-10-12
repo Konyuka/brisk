@@ -1,5 +1,5 @@
 <script setup>
-import { useForm, usePage } from "@inertiajs/inertia-vue3";
+import { useForm, usePage, Link } from "@inertiajs/inertia-vue3";
 import { ref, toRefs, computed, watch, toRef, reactive } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 // import AppLayout from "@/Layouts/AppLayout.vue";
@@ -64,6 +64,7 @@ const form = useForm({
   tax_exempt: false,
 });
 
+const saleSuccess = ref(false);
 const mpesaDialogue = ref(false);
 const paymentModal = ref(false);
 const clientsCollapseValue = ref("");
@@ -113,6 +114,15 @@ const selectedProducts = ref([
 
 const addClientCollapse = ref(false);
 const date = ref(moment().format("MMMM Do YYYY, h:mm:ss a"));
+
+// watch(props.currentMessage, (value) => {
+//   if (value == "Sale Registered Successfully") {
+//     alert('Molio')
+//     paymentModal.value = false;
+//     saleSuccess.value = true;
+
+//   }
+// });
 
 watch(purchasingClient, (value) => {
   if (value == "") {
@@ -187,11 +197,13 @@ watch(
   }
 );
 
-const cashSale = () =>
+const cashSale = async () =>
 {
   
   selectedProducts.value.pop()
-  Inertia.post("/dashboard/finish_sale", selectedProducts.value);
+  await Inertia.post("/dashboard/finish_sale", selectedProducts.value);
+  paymentModal.value = false;
+  saleSuccess.value = true;
   
 };
 
@@ -1186,6 +1198,41 @@ const addEverything = () => {
               >
                 Back
               </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      v-if="saleSuccess"
+      class="relative z-10"
+      aria-labelledby="modal-title"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+      <div class="fixed inset-0 z-10 overflow-y-auto">
+        <div
+          class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
+        >
+          <div
+            class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
+          >
+            <div>
+              <Link
+                href="/dashboard"
+                class="group mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-red-100 hover:bg-red-500"
+              >
+                <i class="group-hover:text-white fas fa-xmark text-black"></i>
+              </Link>
+
+              <div class="mt-3 text-center sm:mt-5">
+                <h3 class="text-xl font-bold leading-6 text-green-600" id="modal-title">
+                  Sale was Registered Successfully
+                </h3>
+              </div>
             </div>
           </div>
         </div>

@@ -116,6 +116,7 @@ class DashboardController extends Controller
         $firstproduct = array_values($saledetailsArray)[0];
         $agent = User::where(['id'=>$firstproduct->agentID])->first();
         $trip = Trip::where(['id'=>$agent->trip_batch])->first();
+       
 
         
         if(count((array)$firstproduct->client)){
@@ -142,71 +143,31 @@ class DashboardController extends Controller
             'mpesa_ref' => 0,
         ]);
 
+        foreach($saledetailsArray as $key=>$value){
+             $product = Product::where('id', $value->selectedproductID)->first();
+             $tripFigures = json_decode($product->trip_batch);
+             $tripBatch = $agent->trip_batch;
+             $tripObjectDetails = null;
 
-        // $link = new Sale();
-        // $link->added_by = $agent->id;
-        // $link->trip_batch = $trip->id;
+            $newTripFigures = [];
+            foreach($tripFigures as $figure) {
+                if($figure->batchNumber == $tripBatch){
+                    $figure->itemsSold = $value->productQuantity;
+                    $figure->numberItems = $figure->numberItems - $value->productQuantity;
+                    
+                }
+            }
+            Product::where('id', $value->selectedproductID)
+            ->update([
+                'trip_batch' => $tripFigures
+            ]);
+        }
 
-        // if(count((array)$firstproduct->client)){
-        //     $link->client_id = $client->id;
-        // }
-        // $link->products = $saledetailsArray;
-        // $link->sale_amount = $firstproduct->overallTotal;
-        // $link->payment_method = $firstproduct->mpesaPayment;
+        // $this->stock();
 
-        // // if($firstproduct->mpesaPayment = 0){
-        // //     $link->payment_method = 'cash';
-        // // }else{
-        // //     $link->payment_method = 'mpesa';
-        // // }
-        // $link->invoice_number = $firstproduct->invoice_number;
-        // $link->mpesa_ref = 0;
-        // $link->save();
-        return dd($createdSale);
-        return redirect()->back();
         
-        // return dd('saved');
-        // return dd($link);
-
-
-
-
-        $sale = Sale::where(['id'=>$request->sale_id])->first();
-        $product = Product::where(['id'=>$request->product_id])->first();
-
-        $itemsToDeduct = $sale->product_quantity;
-        $initialStock = $product->stock_quantity;
-        $finalStock = $initialStock - $itemsToDeduct; 
-
-        // return dd($finalStock);
-
-        $product->update(
-            [
-                'stock_quantity' => $finalStock
-            ]
-        );;
-        $sale->update(
-            [
-                'amount_paid' => $request->amount_paid,
-                'payment_method' => $request->payment_method
-            ]
-        );;
-
-        // return redirect()->back()->with('message', 'Sale success!');
-        // return redirect()->back();
-
-        $products = Product::latest()->get();
-        $clients = Client::latest()->get();
-
-        return Inertia::render('Stock', [
-            'products' => $products,
-            'clients' => $clients,
-            'message' => 'Sale Made',
-        ]);
-
-        // return Inertia::render('Order', [
-        //     // 'clients' => $clients
-        // ]);
+        return redirect()->back()->with('success', 'Sale Registered Successfully');
+        
     }
     
     public function stock()
