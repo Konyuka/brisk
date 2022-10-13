@@ -255,14 +255,21 @@ const setClient = (client) => {
   selectedClient.value = client;
 };
 const setProduct = (product) => {
+  // console.log(product);
+  // return
   productsCollapseValue.value = false;
   purchasedProduct.value = product.product_name;
 
   let batchDetails = JSON.parse(product.trip_batch);
   let tripObject = batchDetails.find((obj) => obj.batchNumber == currentBatch.value);
-  // console.log(tripObject);
+  console.log(tripObject);
+  // return
   if (tripObject == undefined) {
     alert("Item is not in your Trip");
+  }
+  if (tripObject.numberItems==0) {
+    alert("Items finished for this trip");
+    return
   }
   let itemsLoaded = tripObject.numberItems;
   let itemsSold = tripObject.itemsSold;

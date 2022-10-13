@@ -175,6 +175,10 @@ class DashboardController extends Controller
         $products = Product::latest()->get();
         $clients = Client::latest()->get();
         $invoice = Sale::latest()->get()->first();
+        $userId = auth()->user()->id;
+        $sales = Sale::where('added_by', $userId)->latest()->get();
+
+        // return dd($sales);
 
         $activeTrips =  Trip::where('trip_complete', 0)->select('user_ids')->get();
         
@@ -192,8 +196,6 @@ class DashboardController extends Controller
         }else {
             $invoiceID = 1;
         }
-        // return dd($invoice);
-        $sales = Sale::latest()->get();
         return Inertia::render('Stock', [
             'products' => $products,
             'clients' => $clients,

@@ -1,6 +1,6 @@
 <script setup>
 import { useForm, usePage, Link } from "@inertiajs/inertia-vue3";
-import { ref, toRefs, computed, reactive, watch, onMounted  } from "vue";
+import { ref, toRefs, computed, reactive, watch, onMounted } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Canvas from "./Canvas.vue";
@@ -12,7 +12,7 @@ const props = defineProps({
   sales: Array,
   message: String,
   invoiceLog: String,
-  activeAgents: Array
+  activeAgents: Array,
 });
 
 const { activeAgents } = toRefs(props);
@@ -31,6 +31,8 @@ const form = useForm({
   added_by: currentUser,
 });
 
+const agentSales = ref([]);
+
 const selectedItem = ref({});
 watch(selectedItem, (newX) => {
   payload.product_id = newX.id;
@@ -46,25 +48,27 @@ const purchasingPrice = ref(200);
 
 const bottomCanvas = ref(false);
 onMounted(() => {
-      console.log('check')
-  console.log(currentMessage.value)
   if (currentMessage.value != null) {
-    bottomCanvas.value = true
-  } else { 
-    bottomCanvas.value = false
+    bottomCanvas.value = true;
+  } else {
+    bottomCanvas.value = false;
   }
-      // watch(currentMessage.value, (value) =>
-      // { 
-      //   if (value != null) {
-      //     bottomCanvas.value = true
-      //     console.log('check true')
-      //   } else { 
-      //     bottomCanvas.value = false
-      //     console.log('check false')
-      //   }
-      // })
-      
-})
+
+  // console.log(props.sales)
+  // let saleItems = props.sales.find(obj => obj.products);
+  let saleItems = props.sales.map(({ products }) => products);
+  //   for (var i = 0; len = saleItems.length; i < len; i++){
+    //   myArray.push(dataset.towns[i][2];
+    // }
+  var myArray = [];
+  for (let i = 0; i < saleItems.length; i++) {
+      myArray.push(saleItems[i]);
+  }
+  agentSales.value = myArray
+  // console.log(myArray);
+
+  // console.log(saleItems);
+});
 const addModal = ref(false);
 const saleModal = ref(false);
 const showInvoice = ref(false);
@@ -83,15 +87,35 @@ const payload = reactive({
   invoice_number: 1,
 });
 
-const getInvoiceForm = async () =>
+const getProductNameDetails = (sale) =>
 { 
-  Inertia.reload({ only: ['invoiceLog'] })
-  if (activeAgents.value.includes(currentUser.value)) {
-    bottomCanvas.value = true
-  } else { 
-    alert('You are not a member of any trip')
-  }
+  let result = JSON.parse(sale).map(a => a.selectedproductName);
+  return result[0] 
 }
+const getProductQuantityDetails = (sale) =>
+{ 
+  let result = JSON.parse(sale).map(a => a.productSKU);
+  return result[0] 
+}
+const getProductStockQuantityDetails = (sale) =>
+{ 
+  let result = JSON.parse(sale).map(a => a.productQuantity);
+  return result[0] 
+}
+const getProductPriceDetails = (sale) =>
+{ 
+  let result = JSON.parse(sale).map(a => a.salePrice);
+  return result[0] 
+}
+
+const getInvoiceForm = async () => {
+  Inertia.reload({ only: ["invoiceLog"] });
+  if (activeAgents.value.includes(currentUser.value)) {
+    bottomCanvas.value = true;
+  } else {
+    alert("You are not a member of any trip");
+  }
+};
 
 const processButtons = (value) => {
   if (value == "existing") {
@@ -164,7 +188,7 @@ const addProduct = () => {
             </span>
           </h2>
         </div>
-       
+
         <div class="text-center">
           <!-- <button
             @click="addModal = true"
@@ -208,12 +232,13 @@ const addProduct = () => {
                 </div>
               </div>
             </div>
+
             <div class="bg-white py-4 md:py-7 px-4 md:px-8 xl:px-10">
               <div class="overflow-x-auto">
                 <table class="w-full whitespace-nowrap">
                   <tbody>
                     <tr
-                      v-for="(product, index) in products"
+                      v-for="(sale, index) in agentSales"
                       :key="index"
                       tabindex="0"
                       class="focus:outline-none h-16 border border-gray-100 rounded"
@@ -232,7 +257,8 @@ const addProduct = () => {
                           <p
                             class="hover:font-extrabold cursor-help text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
                           >
-                            {{ product.product_name }}
+                            <!-- {{ sale[0].selectedproductName }} -->
+                            {{ getProductNameDetails(sale) }}
                           </p>
                         </div>
                       </td>
@@ -242,7 +268,8 @@ const addProduct = () => {
                           <p
                             class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
                           >
-                            {{ product.product_quantity }} Grams
+                            <!-- {{ product.product_quantity }} Grams -->
+                            {{ getProductQuantityDetails(sale) }}
                           </p>
                         </div>
                       </td>
@@ -252,7 +279,8 @@ const addProduct = () => {
                           <p
                             class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
                           >
-                            {{ product.stock_quantity }} items
+                            <!-- {{ product.stock_quantity }} items -->
+                            {{ getProductStockQuantityDetails(sale) }} items
                           </p>
                         </div>
                       </td>
@@ -262,22 +290,21 @@ const addProduct = () => {
                           <p
                             class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
                           >
-                            {{ product.sales_price }} KES
+                            <!-- {{ product.sales_price }} KES -->
+                            {{ getProductPriceDetails(sale) }} KES
                           </p>
                         </div>
                       </td>
-                      <!-- <td>
-                        <div class="relative px-5 pt-2">
-                          <button
-                            @click="saleItem(product)"
-                            class="font-bold py-2 px-2 text-sm focus:outline-none leading-none text-white bg-light-green-900 hover:bg-green-900 rounded"
-                          >
-                            Sell <i class="ml-1 sm:ml-2 fas fa-handshake"></i>
-                          </button>
+                      <td class="pl-2">
+                        
+                        <div class="flex items-center">
+                          <i class="transform translate hover:scale-150 duration-600 fas fa-pen hover:text-green-900 text-gray-500"></i>
                         </div>
-                      </td> -->
+                      </td>
                     </tr>
-                    <tr class="h-3"></tr>
+                    <tr class="h-3">
+                      <i class="fas fa-user"></i>
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -1063,17 +1090,30 @@ const addProduct = () => {
       </div>
     </div>
 
-    <div v-if="bottomCanvas" class="offcanvas offcanvas-bottom fixed bottom-0 flex flex-col max-w-full bg-gray-100 bg-clip-padding shadow-sm outline-none transition duration-300 ease-in-out text-gray-700 left-0 right-0 border-none h-screen max-h-full" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+    <div
+      v-if="bottomCanvas"
+      class="offcanvas offcanvas-bottom fixed bottom-0 flex flex-col max-w-full bg-gray-100 bg-clip-padding shadow-sm outline-none transition duration-300 ease-in-out text-gray-700 left-0 right-0 border-none h-screen max-h-full"
+      tabindex="-1"
+      id="offcanvasBottom"
+      aria-labelledby="offcanvasBottomLabel"
+    >
       <div class="offcanvas-header flex items-center justify-between p-4">
         <!-- <h5 class="offcanvas-title mb-0 leading-normal font-extrabold text-gray-700 text-xl" id="offcanvasBottomLabel">Process Invoice</h5> -->
-        <i @click="bottomCanvas=false" class="fas fa-xmark fa-2x hover:cursor-pointer"></i>
+        <i
+          @click="bottomCanvas = false"
+          class="fas fa-xmark fa-2x hover:cursor-pointer"
+        ></i>
         <!-- <button type="button" class="btn-close box-content w-4 h-4 p-2 -my-5 -mr-2 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline" data-bs-dismiss="offcanvas" aria-label="Close"></button> -->
       </div>
       <div class="h-screen offcanvas-body flex-grow p-4 overflow-y-auto small">
-        <Canvas :clients="clients" :products="products" :currentMessage="currentMessage" :invoiceLog="invoiceLog"/>
+        <Canvas
+          :clients="clients"
+          :products="products"
+          :currentMessage="currentMessage"
+          :invoiceLog="invoiceLog"
+        />
       </div>
     </div>
-
   </AppLayout>
 </template>
 
