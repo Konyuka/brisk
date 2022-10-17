@@ -310,6 +310,8 @@ class DashboardController extends Controller
         $detailsArray = json_decode($request->getContent());
 
         
+
+        
         foreach($productArray as $elementKey => $element) {
             foreach($element as $valueKey => $value) {
                 if($valueKey == 'selectedType' && $value == 'agent'){
@@ -322,6 +324,7 @@ class DashboardController extends Controller
                 } 
             }
         }
+        // return dd($productArray);
         foreach($agentArray as $elementKey => $element) {
             foreach($element as $valueKey => $value) {
                 if($valueKey == 'selectedType' && $value == 'product'){
@@ -422,6 +425,7 @@ class DashboardController extends Controller
                  'finished_products' => $remainingStock
              ]);
         }
+        // return dd($batchArray);
         $agentsArray = [];
         foreach($agentArray as $key=>$value){
              User::where('id', $value->selectedAgentID)
@@ -433,10 +437,18 @@ class DashboardController extends Controller
             array_push($agentsArray, $value->selectedAgentID);
 
         }
-        // return dd($agentsArray);
         Trip::where('id', $createdTrip->id)
         ->update([
             'user_ids' => $agentsArray,
+        ]);
+
+        $productIDsArray = [];
+        foreach($productArray as $key=>$value){
+           array_push($productIDsArray, $value->selectedproductID);  
+        }
+        Trip::where('id', $createdTrip->id)
+        ->update([
+            'products_ids' => $productIDsArray,
         ]);
 
         if($tripBatch == 1){
@@ -445,15 +457,6 @@ class DashboardController extends Controller
                 'id' => 1,
             ]);
         }
-        // Trip::where('id', $tripBatch)
-        // ->update([
-        //     'user_ids' => $agentsArray,
-        // ]);
-
-
-        // return dd($productArray, $agentArray, $detailsArray);
-        // return dd($productArray);
-
         
         return redirect()->back()->with('success', 'Delivery Registered Successfully');
 

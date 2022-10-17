@@ -197,19 +197,24 @@ watch(
   }
 );
 
-const cashSale = async () =>
-{
-  
-  selectedProducts.value.pop()
+const processPayment = () => {
+  if (overallTotal.value == null) {
+    alert("No products have been selected");
+  } else {
+    paymentModal.value = true;
+  }
+};
+const cashSale = async () => {
+  selectedProducts.value.pop();
   await Inertia.post("/dashboard/finish_sale", selectedProducts.value);
   paymentModal.value = false;
   saleSuccess.value = true;
-  
 };
 
 const stkPush = () => {
   // console.log(payload)
   // Inertia.post("/dashboard/finish_sale", payload);
+  alert("API Endpoint Authentication Error");
 };
 
 const checkwholeSaleChanges = (index) => {
@@ -262,14 +267,14 @@ const setProduct = (product) => {
 
   let batchDetails = JSON.parse(product.trip_batch);
   let tripObject = batchDetails.find((obj) => obj.batchNumber == currentBatch.value);
-  console.log(tripObject);
+  // console.log(tripObject);
   // return
   if (tripObject == undefined) {
     alert("Item is not in your Trip");
   }
-  if (tripObject.numberItems==0) {
+  if (tripObject.numberItems == 0) {
     alert("Items finished for this trip");
-    return
+    return;
   }
   let itemsLoaded = tripObject.numberItems;
   let itemsSold = tripObject.itemsSold;
@@ -1093,7 +1098,7 @@ const addEverything = () => {
             <i class="fas fa-print mr-2"></i> Print Invoice
           </button>
           <button
-            @click="paymentModal = true"
+            @click="processPayment"
             type="button"
             class="mb-2 inline-block px-2 py-2 sm:px-6 sm:py-2.5 bg-green-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg transition duration-150 ease-in-out"
           >
@@ -1128,18 +1133,28 @@ const addEverything = () => {
               </button>
 
               <div class="mt-3 text-center sm:mt-5">
-                <h3 v-if="!mpesaDialogue" class="text-lg font-bold leading-6 text-gray-600" id="modal-title">
+                <h3
+                  v-if="!mpesaDialogue"
+                  class="text-lg font-bold leading-6 text-gray-600"
+                  id="modal-title"
+                >
                   Choose Payment Mode
                 </h3>
-                <h3 v-if="mpesaDialogue" class="text-lg font-bold leading-6 text-gray-600" id="modal-title">
-                  M-Pesa Payment 
+                <h3
+                  v-if="mpesaDialogue"
+                  class="text-lg font-bold leading-6 text-gray-600"
+                  id="modal-title"
+                >
+                  M-Pesa Payment
                 </h3>
               </div>
             </div>
 
             <div v-if="mpesaDialogue">
               <div class="px-5 py-5">
-                <label for="phone-number" class="mb-2 block text-sm font-medium text-gray-700"
+                <label
+                  for="phone-number"
+                  class="mb-2 block text-sm font-medium text-gray-700"
                   >Enter Mpesa Payment Number</label
                 >
                 <div class="relative mt-1 rounded-md shadow-sm">
@@ -1170,7 +1185,6 @@ const addEverything = () => {
               v-if="!mpesaDialogue"
               class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3"
             >
-              
               <button
                 @click="mpesaDialogue = true"
                 type="button"

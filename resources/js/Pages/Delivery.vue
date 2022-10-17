@@ -18,7 +18,6 @@ const props = defineProps({
   activeTeamLeads: Array,
 });
 
-
 const currentMessage = computed(() => usePage().props.value.flash.success);
 const currentUser = computed(() => usePage().props.value.user.id);
 const currentTime = computed(() => moment().format("LLL"));
@@ -33,6 +32,9 @@ const form = useForm({
   added_by: currentUser,
 });
 
+const selectedTripID = ref(null);
+const tripProducts = ref([]);
+const closingTripModal = ref(false);
 const selectedItem = ref({});
 watch(selectedItem, (newX) => {
   payload.product_id = newX.id;
@@ -54,9 +56,8 @@ onMounted(() => {
     bottomCanvas.value = false;
   }
 });
-const addModal = ref(false);
-const saleModal = ref(false);
-const showInvoice = ref(false);
+
+const spoiledProducts = ref(null);
 const defaultClientButtons = ref(true);
 const selectClientButtons = ref(false);
 const clientTypeModal = ref(false);
@@ -72,10 +73,38 @@ const payload = reactive({
   invoice_number: 1,
 });
 
-const formatTime = (value) =>
-{ 
-  return moment(value).format('MMMM Do YYYY, h:mm:ss a');
-}
+const checkExpectedItems = (value) => {
+  let parseJson = JSON.parse(value);
+  return parseJson[0].numberItems - parseJson[0].itemsSold;
+};
+const checkSoldItems = (value) => {
+  let parseJson = JSON.parse(value);
+  return parseJson[0].itemsSold;
+};
+const checkMissingItems = (value) => {
+  let parseJson = JSON.parse(value);
+  let expectedItems = parseJson[0].numberItems - parseJson[0].itemsSold;
+  let missingItems = expectedItems - spoiledProducts.value;
+  if (missingItems == expectedItems) {
+    return 0;
+  } else {
+    return missingItems;
+  }
+};
+
+const loadTripItems = (trip) => {
+  selectedTripID.value = trip.id;
+  let productIDS = JSON.parse(trip.products_ids);
+  for (let index = 0; index < productIDS.length; index++) {
+    let found = props.products.find((item) => item.id === productIDS[index]);
+    tripProducts.value.push(found);
+  }
+  closingTripModal.value = true;
+};
+
+const formatTime = (value) => {
+  return moment(value).format("MMMM Do YYYY, h:mm:ss a");
+};
 
 const getInvoiceForm = async () => {
   Inertia.reload({ only: ["tripBatch"] });
@@ -197,7 +226,6 @@ const addProduct = () => {
         </div>
       </div>
 
-
       <div>
         <div class="flex items-center justify-center py-1 px-2">
           <div class="sm:px-6 w-full">
@@ -249,7 +277,7 @@ const addProduct = () => {
                           <p
                             class="hover:font-extrabold cursor-help text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
                           >
-                           <span class="capitalize">{{ trip.lead_name }}'s</span> Group
+                            <span class="capitalize">{{ trip.lead_name }}'s</span> Group
                           </p>
                         </div>
                       </td>
@@ -285,7 +313,20 @@ const addProduct = () => {
                       </td>
                       <td class="pl-2">
                         <div class="flex items-center">
-                          <i class="fas fa-eye text-green-900"></i>
+                          <i
+                            class="transform translate hover:scale-150 duration-600 fas fa-eye text-green-900"
+                          ></i>
+                        </div>
+                      </td>
+                      <td class="pl-2">
+                        <div class="flex items-center">
+                          <button
+                            @click="loadTripItems(trip)"
+                            type="button"
+                            class="inline-flex items-center rounded border border-transparent bg-green-900 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-light-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                          >
+                            Finish Trip <i class="ml-2 fas fa-flag-checkered"></i>
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -324,6 +365,131 @@ const addProduct = () => {
           :activeAgents="activeAgents"
           :activeTeamLeads="activeTeamLeads"
         />
+      </div>
+    </div>
+
+    <div
+      v-if="closingTripModal"
+      class="relative z-10"
+      aria-labelledby="modal-title"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+      <div class="fixed inset-0 z-10 overflow-y-auto">
+        <div
+          class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
+        >
+          <div
+            class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6"
+          >
+            <div class="sm:flex sm:items-start">
+              <div
+                class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10"
+              >
+                <i class="fas fa-chart-pie"></i>
+              </div>
+              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">
+                  Finish Trip #{{ selectedTripID }}
+                </h3>
+                <div class="mt-2">
+                  <div class="mb-4" v-for="product in tripProducts">
+                    <div
+                      class="sm:grid sm:grid-cols-4 sm:items-start sm:gap-1 sm:border-t sm:border-gray-200 sm:pt-5"
+                    >
+                      <div class="flex flex-row justify-around">
+                        <label
+                          for="first-name"
+                          class="block text-xs font-medium text-gray-700 sm:mt-px sm:pt-2"
+                          >{{ product.product_name }}</label
+                        >
+                        <label
+                          for="first-name"
+                          class="block text-xs font-medium text-gray-700 sm:mt-px sm:pt-2"
+                          >{{ product.product_quantity }}</label
+                        >
+                      </div>
+                      <div class="mt-1 sm:col-span-1 sm:mt-0">
+                        <input
+                          disabled
+                          type="text"
+                          name="first-name"
+                          id="first-name"
+                          autocomplete="given-name"
+                          class="bg-gray-300 font-bold italic text-xs block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:max-w-xs sm:text-sm"
+                          :placeholder="'Sold:' + checkSoldItems(product.trip_batch)"
+                        />
+                      </div>
+                      <div class="mt-1 sm:col-span-1 sm:mt-0">
+                        <input
+                          disabled
+                          type="text"
+                          name="first-name"
+                          id="first-name"
+                          autocomplete="given-name"
+                          class="bg-gray-300 font-bold italic block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:max-w-xs sm:text-sm"
+                          :placeholder="
+                            'Expected Stock: ' + checkExpectedItems(product.trip_batch)
+                          "
+                        />
+                      </div>
+                      <div class="mt-1 sm:col-span-1 sm:mt-0">
+                        <input
+                          type="text"
+                          name="first-name"
+                          id="first-name"
+                          autocomplete="given-name"
+                          class="font-bold italic text-xs block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:max-w-xs sm:text-sm"
+                          :placeholder="'Restocked:'"
+                        />
+                      </div>
+                      <div class="mt-1 sm:col-span-1 sm:mt-0">
+                        <input
+                          v-model="spoiledProducts"
+                          type="text"
+                          name="first-name"
+                          id="first-name"
+                          autocomplete="given-name"
+                          class="font-bold italic text-xs block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:max-w-xs sm:text-sm"
+                          :placeholder="'Spolled:'"
+                        />
+                      </div>
+                      <div class="mt-1 sm:col-span-1 sm:mt-0">
+                        <input
+                          disabled
+                          type="text"
+                          name="first-name"
+                          id="first-name"
+                          autocomplete="given-name"
+                          class="font-bold italic text-xs bg-gray-300 block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:max-w-xs sm:text-sm"
+                          :placeholder="
+                            'Missing:' + checkMissingItems(product.trip_batch)
+                          "
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mt-5 sm:mt-4 sm:ml-10 sm:flex sm:pl-4">
+              <button
+                type="button"
+                class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-800 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-light-green-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
+              >
+                Finish Trip
+              </button>
+              <button
+                type="button"
+                class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white hover:bg-red-600 px-4 py-2 text-base font-medium text-gray-700 hover:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </AppLayout>

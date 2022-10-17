@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('added_by');
             $table->integer('number_users')->default(0);
             $table->json('user_ids')->nullable();
+            $table->json('products_ids')->nullable();
             $table->integer('number_products')->default(0);
             $table->integer('number_brands')->default(0);
             $table->integer('products_sold')->default(0);
@@ -30,6 +31,7 @@ return new class extends Migration
             $table->string('lead_name')->nullable();
             $table->string('vehicle_number')->nullable();
             $table->string('driver_name')->nullable();
+            $table->boolean('trip_finished')->default(false);
             $table->timestamps();
         });
     }

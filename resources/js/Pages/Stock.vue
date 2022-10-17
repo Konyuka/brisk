@@ -89,8 +89,18 @@ const payload = reactive({
 
 const getProductNameDetails = (sale) =>
 { 
-  let result = JSON.parse(sale).map(a => a.selectedproductName);
-  return result[0] 
+  // console.log(JSON.parse(sale))
+  let result = JSON.parse(sale).map(a =>
+  { 
+    return a.selectedproductName
+  });
+    console.log(result.length)
+  let index = result.length
+  for (let i = 0; i < result.length; i++) { 
+    // console.log(i)
+  }
+  // console.log(result[index] )
+  // return result[index] 
 }
 const getProductQuantityDetails = (sale) =>
 { 
@@ -303,7 +313,7 @@ const addProduct = () => {
                       </td>
                     </tr>
                     <tr class="h-3">
-                      <i class="fas fa-user"></i>
+                      <!-- <i class="fas fa-user"></i> -->
                     </tr>
                   </tbody>
                 </table>
