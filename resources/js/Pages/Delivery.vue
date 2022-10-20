@@ -32,8 +32,27 @@ const form = useForm({
   added_by: currentUser,
 });
 
+const currentProduct = ref([]);
 const selectedTripID = ref(null);
 const tripProducts = ref([]);
+watch(
+  tripProducts,
+  (newX) => {
+    for (let index = 0; index < newX.length; index++) {
+      let object = {
+        productID: newX[index].id,
+        restocked: null,
+        spoiledProducts: null,
+        expectedProducts: null,
+      };
+      currentProduct.value.push(object);
+    }
+  },
+  {
+    deep: true,
+    immediate: true,
+  }
+);
 const closingTripModal = ref(false);
 const selectedItem = ref({});
 watch(selectedItem, (newX) => {
@@ -73,9 +92,35 @@ const payload = reactive({
   invoice_number: 1,
 });
 
-const checkExpectedItems = (value) => {
+const setExpected = (value) => {
+  let objIndex = currentProduct.value.findIndex((obj) => obj.productID == value);
+  let itemsToDeduct =
+    parseInt(currentProduct.value[objIndex].restocked) +
+    parseInt(currentProduct.value[objIndex].spoiledProducts);
+  let losItems =
+    parseInt(currentProduct.value[objIndex].expectedProducts) - itemsToDeduct;
+  currentProduct.value[objIndex].spoiledProducts = losItems;
+  console.log(losItems);
+};
+const checkLoadedItems = (value) => {
   let parseJson = JSON.parse(value);
-  return parseJson[0].numberItems - parseJson[0].itemsSold;
+  let expectedItems = parseJson[0].numberItems - parseJson[0].itemsSold;
+  let soldItems = parseJson[0].itemsSold;
+  return parseInt(expectedItems) + parseInt(soldItems);
+};
+const checkExpectedItems = (value, value2) => {
+  let parseJson = JSON.parse(value);
+  let expectedItems = parseJson[0].numberItems - parseJson[0].itemsSold;
+  let objIndex = currentProduct.value.findIndex((obj) => obj.productID == value2);
+  currentProduct.value[objIndex].expectedProducts = expectedItems;
+  // console.log(currentProduct.value[objIndex].restocked);
+  // return;
+
+  // for (let index = 0; index < parseJson.length; index++) {
+  //   return;
+  // }
+  // return;
+  return expectedItems;
 };
 const checkSoldItems = (value) => {
   let parseJson = JSON.parse(value);
@@ -395,7 +440,11 @@ const addProduct = () => {
                   Finish Trip #{{ selectedTripID }}
                 </h3>
                 <div class="mt-2">
-                  <div class="mb-4" v-for="product in tripProducts">
+                  <div
+                    class="mb-4"
+                    v-for="(product, i) in tripProducts"
+                    :key="product.id"
+                  >
                     <div
                       class="sm:grid sm:grid-cols-4 sm:items-start sm:gap-1 sm:border-t sm:border-gray-200 sm:pt-5"
                     >
@@ -419,6 +468,17 @@ const addProduct = () => {
                           id="first-name"
                           autocomplete="given-name"
                           class="bg-gray-300 font-bold italic text-xs block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:max-w-xs sm:text-sm"
+                          :placeholder="'Loaded:' + checkLoadedItems(product.trip_batch)"
+                        />
+                      </div>
+                      <div class="mt-1 sm:col-span-1 sm:mt-0">
+                        <input
+                          disabled
+                          type="text"
+                          name="first-name"
+                          id="first-name"
+                          autocomplete="given-name"
+                          class="bg-gray-300 font-bold italic text-xs block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:max-w-xs sm:text-sm"
                           :placeholder="'Sold:' + checkSoldItems(product.trip_batch)"
                         />
                       </div>
@@ -431,12 +491,16 @@ const addProduct = () => {
                           autocomplete="given-name"
                           class="bg-gray-300 font-bold italic block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:max-w-xs sm:text-sm"
                           :placeholder="
-                            'Expected Stock: ' + checkExpectedItems(product.trip_batch)
+                            'Expected Stock: ' +
+                            checkExpectedItems(product.trip_batch, product.id)
                           "
                         />
                       </div>
+                      <div class="mt-1 sm:col-span-1 sm:mt-0"></div>
                       <div class="mt-1 sm:col-span-1 sm:mt-0">
                         <input
+                          @change="setExpected(product.id)"
+                          v-model="currentProduct[i].restocked"
                           type="text"
                           name="first-name"
                           id="first-name"
@@ -446,8 +510,11 @@ const addProduct = () => {
                         />
                       </div>
                       <div class="mt-1 sm:col-span-1 sm:mt-0">
+                        <!-- v-model="spoiledProducts[i]" -->
+                        <!-- v-model="spoiledProducts[getIndex(tripProducts, product.id)]" -->
                         <input
-                          v-model="spoiledProducts"
+                          @change="setExpected(product.id)"
+                          v-model="currentProduct[i].spoiledProducts"
                           type="text"
                           name="first-name"
                           id="first-name"
@@ -474,7 +541,7 @@ const addProduct = () => {
                 </div>
               </div>
             </div>
-            <div class="mt-5 sm:mt-4 sm:ml-10 sm:flex sm:pl-4">
+            <div class="mt-5 sm:mt-4 sm:ml-10 sm:flex justify-between sm:pl-4">
               <button
                 type="button"
                 class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-800 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-light-green-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
