@@ -467,7 +467,7 @@ class DashboardController extends Controller
         
         $tripdetailsArray = json_decode($request->getContent());
 
-        
+
 
         foreach($tripdetailsArray as $key=>$value){
             $trip = Trip::where('id', $value->currentBatch)->first();
@@ -486,6 +486,15 @@ class DashboardController extends Controller
             $inDelivery = Product::where('id', $value->productID)->select("in_delivery")->first();
             $spoiledProducts = Product::where('id', $value->productID)->select("spoiled_products")->first();
             $missingProducts = Product::where('id', $value->productID)->select("missing_products")->first();
+            $tripBatch = Product::where('id', $value->productID)->select("trip_batch")->first();
+            $tripBatchDecoded = json_decode($tripBatch->trip_batch);
+            // return dd($tripBatchDecoded);
+            $newTripBatch = [];
+            foreach($tripBatchDecoded as $key=>$value){
+                if($value->batchNumber != $tripdetailsArray[0]->currentBatch) {
+                    array_push($newTripBatch, $value);
+                }
+            }
 
             $newFinished = intval(json_decode($finishedProduct->finished_products)) + intval($value->restocked);
             $newSpolied = intval(json_decode($finishedProduct->spoiled_products)) + intval($value->spoiledProducts);
@@ -496,7 +505,8 @@ class DashboardController extends Controller
                  'finished_products' => $newFinished,
                  'in_delivery' => 0,
                  'spoiled_products' => $newSpolied,
-                 'missing_products' => $newMissing
+                 'missing_products' => $newMissing,
+                 'trip_batch' => $newTripBatch
              ]);
             //  return dd($newMissing);
         }
