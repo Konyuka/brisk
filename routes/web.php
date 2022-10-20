@@ -50,6 +50,8 @@ Route::middleware([
     ->name('display_receipt');
     Route::post('/dashboard/finish_sale', [DashboardController::class, 'finishSale'])
     ->name('finish_sale');
+    Route::post('/dashboard/finish_trip', [DashboardController::class, 'finishTrip'])
+    ->name('finish_trip');
 
     
 });

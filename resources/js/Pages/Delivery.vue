@@ -44,6 +44,9 @@ watch(
         restocked: null,
         spoiledProducts: null,
         expectedProducts: null,
+        missingProducts: 0,
+        itemsMissing: false,
+        currentBatch: selectedTripID,
       };
       currentProduct.value.push(object);
     }
@@ -77,10 +80,7 @@ onMounted(() => {
 });
 
 const spoiledProducts = ref(null);
-const defaultClientButtons = ref(true);
-const selectClientButtons = ref(false);
-const clientTypeModal = ref(false);
-const saleDetails = ref(false);
+const itemsAreMissing = ref(false);
 
 const payload = reactive({
   added_by: currentUser,
@@ -92,6 +92,10 @@ const payload = reactive({
   invoice_number: 1,
 });
 
+const finishTrip = () => {
+  Inertia.post("/dashboard/finish_trip", currentProduct.value);
+};
+
 const setExpected = (value) => {
   let objIndex = currentProduct.value.findIndex((obj) => obj.productID == value);
   let itemsToDeduct =
@@ -99,11 +103,12 @@ const setExpected = (value) => {
     parseInt(currentProduct.value[objIndex].spoiledProducts);
   let losItems =
     parseInt(currentProduct.value[objIndex].expectedProducts) - itemsToDeduct;
-  console.log(losItems);
   if (isNaN(losItems)) {
-    currentProduct.value[objIndex].spoiledProducts = null;
+    currentProduct.value[objIndex].missingProducts = 0;
+    currentProduct.value[objIndex].itemsMissing = false;
   } else {
-    currentProduct.value[objIndex].spoiledProducts = losItems;
+    currentProduct.value[objIndex].missingProducts = losItems;
+    currentProduct.value[objIndex].itemsMissing = true;
   }
 };
 const checkLoadedItems = (value) => {
@@ -117,28 +122,12 @@ const checkExpectedItems = (value, value2) => {
   let expectedItems = parseJson[0].numberItems - parseJson[0].itemsSold;
   let objIndex = currentProduct.value.findIndex((obj) => obj.productID == value2);
   currentProduct.value[objIndex].expectedProducts = expectedItems;
-  // console.log(currentProduct.value[objIndex].restocked);
-  // return;
 
-  // for (let index = 0; index < parseJson.length; index++) {
-  //   return;
-  // }
-  // return;
   return expectedItems;
 };
 const checkSoldItems = (value) => {
   let parseJson = JSON.parse(value);
   return parseJson[0].itemsSold;
-};
-const checkMissingItems = (value) => {
-  let parseJson = JSON.parse(value);
-  let expectedItems = parseJson[0].numberItems - parseJson[0].itemsSold;
-  let missingItems = expectedItems - spoiledProducts.value;
-  if (missingItems == expectedItems) {
-    return 0;
-  } else {
-    return missingItems;
-  }
 };
 
 const loadTripItems = (trip) => {
@@ -158,39 +147,6 @@ const formatTime = (value) => {
 const getInvoiceForm = async () => {
   Inertia.reload({ only: ["tripBatch"] });
   bottomCanvas.value = true;
-};
-
-const processButtons = (value) => {
-  if (value == "existing") {
-    defaultClientButtons.value = false;
-    selectClientButtons.value = true;
-  } else if (value == "previous") {
-    selectClientButtons.value = false;
-    defaultClientButtons.value = true;
-  } else if (value == "selectedClient") {
-    selectClientButtons.value = false;
-    saleDetails.value = true;
-  }
-};
-
-const saleItem = (product) => {
-  clientTypeModal.value = true;
-  selectedItem.value = product;
-};
-
-const processSale = () => {
-  Inertia.post("/dashboard/register_sale", payload);
-};
-
-const addProduct = () => {
-  form.post("/add_product", {
-    preserveScroll: true,
-    onSuccess: () => {
-      form.reset();
-      // addModal = false
-      alert("Product Added");
-    },
-  });
 };
 </script>
 
@@ -472,7 +428,7 @@ const addProduct = () => {
                           id="first-name"
                           autocomplete="given-name"
                           class="bg-gray-300 font-bold italic text-xs block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:max-w-xs sm:text-sm"
-                          :placeholder="'Loaded:' + checkLoadedItems(product.trip_batch)"
+                          :placeholder="'Loaded: ' + checkLoadedItems(product.trip_batch)"
                         />
                       </div>
                       <div class="mt-1 sm:col-span-1 sm:mt-0">
@@ -483,7 +439,7 @@ const addProduct = () => {
                           id="first-name"
                           autocomplete="given-name"
                           class="bg-gray-300 font-bold italic text-xs block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:max-w-xs sm:text-sm"
-                          :placeholder="'Sold:' + checkSoldItems(product.trip_batch)"
+                          :placeholder="'Sold: ' + checkSoldItems(product.trip_batch)"
                         />
                       </div>
                       <div class="mt-1 sm:col-span-1 sm:mt-0">
@@ -505,12 +461,12 @@ const addProduct = () => {
                         <input
                           @change="setExpected(product.id)"
                           v-model="currentProduct[i].restocked"
-                          type="text"
+                          type="number"
                           name="first-name"
                           id="first-name"
                           autocomplete="given-name"
-                          class="font-bold italic text-xs block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:max-w-xs sm:text-sm"
-                          :placeholder="'Restocked:'"
+                          class="font-medium text-xs block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:max-w-xs sm:text-xs"
+                          :placeholder="'Restocked'"
                         />
                       </div>
                       <div class="mt-1 sm:col-span-1 sm:mt-0">
@@ -519,12 +475,12 @@ const addProduct = () => {
                         <input
                           @change="setExpected(product.id)"
                           v-model="currentProduct[i].spoiledProducts"
-                          type="text"
+                          type="number"
                           name="first-name"
                           id="first-name"
                           autocomplete="given-name"
-                          class="font-bold italic text-xs block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:max-w-xs sm:text-sm"
-                          :placeholder="'Spolled:'"
+                          class="font-medium text-xs block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:max-w-xs sm:text-xs"
+                          :placeholder="'Spolled'"
                         />
                       </div>
                       <div class="mt-1 sm:col-span-1 sm:mt-0">
@@ -534,10 +490,13 @@ const addProduct = () => {
                           name="first-name"
                           id="first-name"
                           autocomplete="given-name"
-                          class="font-bold italic text-xs bg-gray-300 block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:max-w-xs sm:text-sm"
-                          :placeholder="
-                            'Missing:' + checkMissingItems(product.trip_batch)
+                          :class="
+                            currentProduct[i].itemsMissing == false
+                              ? 'bg-gray-300'
+                              : 'bg-red-100 text-white'
                           "
+                          class="font-bold italic text-xs block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:max-w-xs sm:text-sm"
+                          :placeholder="'Missing: ' + currentProduct[i].missingProducts"
                         />
                       </div>
                     </div>
@@ -547,17 +506,19 @@ const addProduct = () => {
             </div>
             <div class="mt-5 sm:mt-4 sm:ml-10 sm:flex justify-between sm:pl-4">
               <button
+                @click="finishTrip"
                 type="button"
-                class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-800 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-light-green-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
+                class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-800 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-light-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
               >
                 Finish Trip
               </button>
-              <button
+              <Link
+                href="/dashboard/product_delivery"
                 type="button"
                 class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white hover:bg-red-600 px-4 py-2 text-base font-medium text-gray-700 hover:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
               >
                 Cancel
-              </button>
+              </Link>
             </div>
           </div>
         </div>

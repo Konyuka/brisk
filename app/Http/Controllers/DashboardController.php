@@ -462,9 +462,46 @@ class DashboardController extends Controller
 
     }
    
-    public function update(Request $request, $id)
+    public function finishTrip(Request $request)
     {
-        //
+        
+        $tripdetailsArray = json_decode($request->getContent());
+
+        
+
+        foreach($tripdetailsArray as $key=>$value){
+            $trip = Trip::where('id', $value->currentBatch)->first();
+            $tripAgents = json_decode($trip->user_ids);
+
+            foreach($tripAgents as $key=>$value){
+                User::where('id', $value)
+                ->update([
+                    'trip_batch' => 0,
+                ]);
+            }
+        }
+
+        foreach($tripdetailsArray as $key=>$value){
+            $finishedProduct = Product::where('id', $value->productID)->select("finished_products")->first();
+            $inDelivery = Product::where('id', $value->productID)->select("in_delivery")->first();
+            $spoiledProducts = Product::where('id', $value->productID)->select("spoiled_products")->first();
+            $missingProducts = Product::where('id', $value->productID)->select("missing_products")->first();
+
+            $newFinished = intval(json_decode($finishedProduct->finished_products)) + intval($value->restocked);
+            $newSpolied = intval(json_decode($finishedProduct->spoiled_products)) + intval($value->spoiledProducts);
+            $newMissing = intval(json_decode($finishedProduct->missing_products)) + intval($value->missingProducts);
+
+            Product::where('id', $value->productID)
+             ->update([
+                 'finished_products' => $newFinished,
+                 'in_delivery' => 0,
+                 'spoiled_products' => $newSpolied,
+                 'missing_products' => $newMissing
+             ]);
+            //  return dd($newMissing);
+        }
+
+        
     }
 
     public function destroy($id)

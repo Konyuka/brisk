@@ -21,9 +21,9 @@ return new class extends Migration
             $table->bigInteger('bar_code')->nullable();
             $table->integer('sales_price')->default(0);
             $table->integer('wholesale_price')->default(0);
+            $table->json('trip_batch')->nullable();
             $table->integer('finished_products')->nullable();
             $table->integer('in_delivery')->nullable();
-            $table->json('trip_batch')->nullable();
             $table->integer('spoiled_products')->nullable();
             $table->integer('missing_products')->nullable();
             $table->integer('added_by');

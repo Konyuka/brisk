@@ -22,10 +22,10 @@ return new class extends Migration
             $table->json('products_ids')->nullable();
             $table->integer('number_products')->default(0);
             $table->integer('number_brands')->default(0);
-            $table->integer('products_sold')->default(0);
-            $table->integer('products_returned')->default(0);
-            $table->integer('products_spoiled')->default(0);
-            $table->integer('products_missing')->default(0);
+            $table->json('products_sold')->nullable();
+            $table->json('products_returned')->nullable();
+            $table->json('products_spoiled')->nullable();
+            $table->json('products_missing')->nullable();
             $table->string('trip_location')->nullable();
             $table->integer('team_lead')->nullable();
             $table->string('lead_name')->nullable();
