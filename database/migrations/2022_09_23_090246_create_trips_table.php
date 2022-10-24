@@ -26,12 +26,12 @@ return new class extends Migration
             $table->json('products_returned')->nullable();
             $table->json('products_spoiled')->nullable();
             $table->json('products_missing')->nullable();
+            $table->json('products_summary')->nullable();
             $table->string('trip_location')->nullable();
             $table->integer('team_lead')->nullable();
             $table->string('lead_name')->nullable();
             $table->string('vehicle_number')->nullable();
             $table->string('driver_name')->nullable();
-            $table->boolean('trip_finished')->default(false);
             $table->timestamps();
         });
     }

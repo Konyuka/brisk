@@ -458,7 +458,7 @@ class DashboardController extends Controller
             ]);
         }
         
-        return redirect()->back()->with('success', 'Delivery Registered Successfully');
+        return redirect()->back()->with('success', 'Trip Registered Successfully');
 
     }
    
@@ -467,6 +467,7 @@ class DashboardController extends Controller
         
         $tripdetailsArray = json_decode($request->getContent());
 
+        // return dd($tripdetailsArray)
 
 
         foreach($tripdetailsArray as $key=>$value){
@@ -490,15 +491,23 @@ class DashboardController extends Controller
             $tripBatchDecoded = json_decode($tripBatch->trip_batch);
             // return dd($tripBatchDecoded);
             $newTripBatch = [];
-            foreach($tripBatchDecoded as $key=>$value){
-                if($value->batchNumber != $tripdetailsArray[0]->currentBatch) {
-                    array_push($newTripBatch, $value);
+            $recordedTripBatch = [];
+
+            foreach($tripBatchDecoded as $key=>$value2){
+                if($value2->batchNumber != $tripdetailsArray[0]->currentBatch) {
+                    array_push($newTripBatch, $value2);
+                }
+                if($value2->batchNumber == $tripdetailsArray[0]->currentBatch) {
+                    array_push($recordedTripBatch, $value2);
                 }
             }
 
+            
             $newFinished = intval(json_decode($finishedProduct->finished_products)) + intval($value->restocked);
             $newSpolied = intval(json_decode($finishedProduct->spoiled_products)) + intval($value->spoiledProducts);
             $newMissing = intval(json_decode($finishedProduct->missing_products)) + intval($value->missingProducts);
+            
+            // return dd($newFinished);
 
             Product::where('id', $value->productID)
              ->update([
@@ -508,8 +517,16 @@ class DashboardController extends Controller
                  'missing_products' => $newMissing,
                  'trip_batch' => $newTripBatch
              ]);
+
+             return redirect()->back()->with('success', 'Trip Finished Successfully');
             //  return dd($newMissing);
         }
+
+        Trip::where('id', $tripdetailsArray[0]->currentBatch)
+             ->update([
+                 'products_summary' => $tripdetailsArray,
+                 'trip_complete' => true,
+             ]);
 
         
     }

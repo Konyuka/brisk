@@ -19,6 +19,11 @@ const props = defineProps({
 });
 
 const currentMessage = computed(() => usePage().props.value.flash.success);
+watch(currentMessage, (newX) => {
+  if (newX == "Trip Finished Successfully") {
+    closingTripModal.value = false;
+  }
+});
 const currentUser = computed(() => usePage().props.value.user.id);
 const currentTime = computed(() => moment().format("LLL"));
 
@@ -72,7 +77,7 @@ const purchasingPrice = ref(200);
 
 const bottomCanvas = ref(false);
 onMounted(() => {
-  if (currentMessage.value != null) {
+  if (currentMessage.value == "Trip Registered Successfully") {
     bottomCanvas.value = true;
   } else {
     bottomCanvas.value = false;
@@ -92,8 +97,8 @@ const payload = reactive({
   invoice_number: 1,
 });
 
-const finishTrip = () => {
-  Inertia.post("/dashboard/finish_trip", currentProduct.value);
+const finishTrip = async () => {
+  await Inertia.post("/dashboard/finish_trip", currentProduct.value);
 };
 
 const setExpected = (value) => {
