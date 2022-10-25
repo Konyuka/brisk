@@ -113,6 +113,8 @@ class DashboardController extends Controller
     public function finishSale(Request $request)
     {
         $saledetailsArray = json_decode($request->getContent());
+        return dd($saledetailsArray);
+        
         $firstproduct = array_values($saledetailsArray)[0];
         $agent = User::where(['id'=>$firstproduct->agentID])->first();
         $trip = Trip::where(['id'=>$agent->trip_batch])->first();
@@ -474,6 +476,14 @@ class DashboardController extends Controller
             $trip = Trip::where('id', $value->currentBatch)->first();
             $tripAgents = json_decode($trip->user_ids);
 
+            if($value->itemsMissing == true){
+                Trip::where('id', $tripdetailsArray[0]->currentBatch)
+                 ->update([
+                     'products_missing' => true,
+                 ]);
+            }
+
+
             foreach($tripAgents as $key=>$value){
                 User::where('id', $value)
                 ->update([
@@ -518,15 +528,17 @@ class DashboardController extends Controller
                  'trip_batch' => $newTripBatch
              ]);
 
-             return redirect()->back()->with('success', 'Trip Finished Successfully');
-            //  return dd($newMissing);
-        }
+            }
+            
 
-        Trip::where('id', $tripdetailsArray[0]->currentBatch)
-             ->update([
-                 'products_summary' => $tripdetailsArray,
-                 'trip_complete' => true,
-             ]);
+            Trip::where('id', $tripdetailsArray[0]->currentBatch)
+                ->update([
+                    'products_summary' => $tripdetailsArray,
+                    'trip_complete' => true,
+                    'products_missing' => true,
+                ]);
+
+             return redirect()->back()->with('success', 'Trip Finished Successfully');
 
         
     }

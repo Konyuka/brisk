@@ -64,6 +64,7 @@ const form = useForm({
   tax_exempt: false,
 });
 
+const mpesaNumber = ref(254716202298);
 const saleSuccess = ref(false);
 const mpesaDialogue = ref(false);
 const paymentModal = ref(false);
@@ -211,10 +212,68 @@ const cashSale = async () => {
   saleSuccess.value = true;
 };
 
-const stkPush = () => {
-  // console.log(payload)
-  // Inertia.post("/dashboard/finish_sale", payload);
-  alert("API Endpoint Authentication Error");
+const removeSpaces = (value) => {
+  let noSpace = value.replace(/\s/g, "");
+  return noSpace;
+};
+
+const stkPush = async () => {
+  selectedProducts.value.pop();
+  paymentModal.value = false;
+  saleSuccess.value = true;
+
+  var strFirstThree = mpesaNumber.value.toString().substring(0, 3);
+  if (strFirstThree == 254 && mpesaNumber.value.length == 12) {
+    // this.paymentModal = true;
+    // setTimeout(() => {
+    //   this.timeout = true;
+    //   this.pauseTimer();
+    // }, 60000);
+    const requestBody = {
+      amount: 1,
+      account: this.invoiceNumber,
+      phone: parseInt(removeSpaces(mpesaNumber.value)),
+      products: selectedProducts.value,
+      user_phone: mpesaNumber.value,
+      // restartTrans: this.transactionRestart,
+    };
+    await Inertia.post("/dashboard/finish_sale", requestBody);
+
+    // axios
+    //   .post(`/invoice/payment/stkPush/`, requestBody)
+    //   .then((response) => {
+    //     console.log(response);
+    //     if (this.status != "Cancelled") {
+    //       if (this.status == "Success") {
+    //         alert("stop");
+    //         const myInterval = window
+    //           .setInterval(() => {
+    //             this.confirm();
+    //           }, 3000)
+    //           .then((result) => {
+    //             alert("clear");
+    //             return clearInterval(myInterval);
+    //           })
+    //           .catch((err) => {});
+    //       }
+    //       const myInterval = window.setInterval(() => {
+    //         this.confirm();
+    //       }, 2000);
+    //       if (this.status == "Success") {
+    //         // alert("stop");
+    //         const myInterval = window.setInterval(() => {
+    //           this.confirm();
+    //         }, 3000);
+    //         return clearInterval(myInterval);
+    //       }
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+  } else {
+    alert("Your Number Format Should be 254 7XX XXX XXX");
+  }
 };
 
 const checkwholeSaleChanges = (index) => {
@@ -1171,6 +1230,7 @@ const addEverything = () => {
                     </select>
                   </div>
                   <input
+                    v-model="mpesaNumber"
                     type="number"
                     name="phone-number"
                     id="phone-number"

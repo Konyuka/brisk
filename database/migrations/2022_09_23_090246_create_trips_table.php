@@ -25,8 +25,8 @@ return new class extends Migration
             $table->json('products_sold')->nullable();
             $table->json('products_returned')->nullable();
             $table->json('products_spoiled')->nullable();
-            $table->json('products_missing')->nullable();
             $table->json('products_summary')->nullable();
+            $table->boolean('products_missing')->default(false);
             $table->string('trip_location')->nullable();
             $table->integer('team_lead')->nullable();
             $table->string('lead_name')->nullable();

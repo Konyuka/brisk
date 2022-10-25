@@ -97,6 +97,25 @@ const payload = reactive({
   invoice_number: 1,
 });
 
+const missingProducts = (value) =>
+{ 
+  if (value == 1) {
+    return false
+  } else { 
+    return true
+  }
+}
+
+const closedTrip = (trip) =>
+{
+  if (trip.trip_complete == 1) {
+    return false
+  } else {
+    return true
+  }
+  
+};
+
 const finishTrip = async () => {
   await Inertia.post("/dashboard/finish_trip", currentProduct.value);
 };
@@ -136,6 +155,8 @@ const checkSoldItems = (value) => {
 };
 
 const loadTripItems = (trip) => {
+  // console.log(trip);
+  // return;
   selectedTripID.value = trip.id;
   let productIDS = JSON.parse(trip.products_ids);
   for (let index = 0; index < productIDS.length; index++) {
@@ -324,18 +345,31 @@ const getInvoiceForm = async () => {
                       <td class="pl-2">
                         <div class="flex items-center">
                           <i
+                            v-if="missingProducts(trip.products_missing)"
                             class="transform translate hover:scale-150 duration-600 fas fa-eye text-green-900"
+                          ></i>
+                          <i
+                            v-else
+                            class="transform translate hover:scale-150 duration-600 fas fa-eye text-red-600"
                           ></i>
                         </div>
                       </td>
                       <td class="pl-2">
                         <div class="flex items-center">
                           <button
+                           v-if="closedTrip(trip)"
                             @click="loadTripItems(trip)"
                             type="button"
-                            class="inline-flex items-center rounded border border-transparent bg-green-900 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-light-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                            class="mr-2 inline-flex items-center rounded border border-transparent bg-green-900 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-light-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                           >
                             Finish Trip <i class="ml-2 fas fa-flag-checkered"></i>
+                          </button>
+                          <button
+                            v-else
+                            type="button"
+                            class="inline-flex items-center rounded border border-transparent bg-blue-900 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-light-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                          >
+                            Trip Closed <i class="ml-2 fas fa-lock"></i>
                           </button>
                         </div>
                       </td>

@@ -94,7 +94,7 @@ const getProductNameDetails = (sale) =>
   { 
     return a.selectedproductName
   });
-    console.log(result.length)
+    // console.log(result.length)
   let index = result.length
   for (let i = 0; i < result.length; i++) { 
     // console.log(i)
