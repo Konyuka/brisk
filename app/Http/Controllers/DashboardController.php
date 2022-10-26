@@ -149,7 +149,7 @@ class DashboardController extends Controller
             // return dd($result_code);
             if (isset($result_code) and $result_code == "0") {
                 $trans_id = $stkPushSimulation->MerchantRequestID;
-                dump($trans_id);
+                // dump($trans_id);
             }
             // Log::info('STK Push Loading');
         }

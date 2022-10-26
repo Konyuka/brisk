@@ -55,8 +55,8 @@ class MpesaResponseController extends Controller
         $mpesa = new Mpesa();
         $callBackData = $mpesa->getDataFromCallback();
         $object = json_decode($callBackData);
-        $trans_id = $object->Body->stkCallback->MerchantRequestID;
         $result_code = $object->Body->stkCallback->ResultCode;
+        $trans_id = $object->Body->stkCallback->MerchantRequestID;
         $result_description = $object->Body->stkCallback->ResultDesc;
 
         // Log::info($object);
