@@ -65,6 +65,7 @@ const form = useForm({
 });
 
 const mpesaNumber = ref(254716202298);
+const mpesaSent = ref(false);
 const saleSuccess = ref(false);
 const mpesaDialogue = ref(false);
 const paymentModal = ref(false);
@@ -75,7 +76,7 @@ const searchedProduct = ref([]);
 const purchasingClient = ref("");
 const purchasedProduct = ref("");
 const selectedClient = ref({});
-const anonymousSale = ref(false);
+const anonymousSale = ref(true);
 const mpesaPayment = ref(false);
 
 const overallSubtotal = ref(null);
@@ -213,17 +214,18 @@ const cashSale = async () => {
 };
 
 const removeSpaces = (value) => {
-  let noSpace = value.replace(/\s/g, "");
+  let noSpace = value.toString().replace(/\s/g, "");
   return noSpace;
 };
 
 const stkPush = async () => {
   selectedProducts.value.pop();
   paymentModal.value = false;
-  saleSuccess.value = true;
+  mpesaSent.value = true;
 
   var strFirstThree = mpesaNumber.value.toString().substring(0, 3);
-  if (strFirstThree == 254 && mpesaNumber.value.length == 12) {
+  if (parseInt(strFirstThree) == 254 && mpesaNumber.value.toString().length == 12) {
+  // if (parseInt(strFirstThree) == 254) {
     // this.paymentModal = true;
     // setTimeout(() => {
     //   this.timeout = true;
@@ -231,10 +233,9 @@ const stkPush = async () => {
     // }, 60000);
     const requestBody = {
       amount: 1,
-      account: this.invoiceNumber,
+      account: 'Brisk POS',
       phone: parseInt(removeSpaces(mpesaNumber.value)),
       products: selectedProducts.value,
-      user_phone: mpesaNumber.value,
       // restartTrans: this.transactionRestart,
     };
     await Inertia.post("/dashboard/finish_sale", requestBody);
@@ -1312,6 +1313,41 @@ const addEverything = () => {
               <div class="mt-3 text-center sm:mt-5">
                 <h3 class="text-xl font-bold leading-6 text-green-600" id="modal-title">
                   Sale was Registered Successfully
+                </h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      v-if="mpesaSent"
+      class="relative z-10"
+      aria-labelledby="modal-title"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+      <div class="fixed inset-0 z-10 overflow-y-auto">
+        <div
+          class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
+        >
+          <div
+            class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
+          >
+            <div>
+              <Link
+                href="/dashboard"
+                class="group mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-red-100 hover:bg-red-500"
+              >
+                <i class="group-hover:text-white fas fa-xmark text-black"></i>
+              </Link>
+
+              <div class="mt-3 text-center sm:mt-5">
+                <h3 class="text-xl font-bold leading-6 text-green-600" id="modal-title">
+                  Mpesa Prompt Sent to Client Phone
                 </h3>
               </div>
             </div>

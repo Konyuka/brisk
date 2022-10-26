@@ -11,6 +11,10 @@ use App\Models\User;
 use App\Models\Sale;
 use App\Models\Trip;
 use Illuminate\Support\Facades\Hash;
+use Safaricom\Mpesa\Mpesa;
+use Illuminate\Support\Facades\Log;
+
+
 
 class DashboardController extends Controller
 {
@@ -113,8 +117,47 @@ class DashboardController extends Controller
     public function finishSale(Request $request)
     {
         $saledetailsArray = json_decode($request->getContent());
-        return dd($saledetailsArray);
-        
+
+        if (is_array($saledetailsArray)) {
+            return dd('Cash');
+        } else {
+            $phone = $request->phone;
+            $amount = $request->amount;
+            $account = $request->account;
+
+            $mpesa = new Mpesa();
+            $BusinessShortCode = env('MPESA_STK_SHORTCODE');
+            // $LipaNaMpesaPasskey=$this->lipaNaMpesaPassword();
+            $LipaNaMpesaPasskey = env('MPESA_PASSKEY');
+            $TransactionType = "CustomerPayBillOnline";
+            $Amount = $amount;
+            $PartyA = $phone;
+            // $PartyA='254722326662';
+            $PartyB = env('MPESA_STK_SHORTCODE');
+            // $PhoneNumber='254722326662';
+            $PhoneNumber = $phone;
+            $CallBackURL = 'https://16b1-105-160-101-135.in.ngrok.io/api/stkpush';
+            // $CallBackURL = env('MPESA_TEST_URL') . '/api/stkpush';
+            // $CallBackURL="https://tenderske.herokuapp.com/api/stkpush";
+            $AccountReference = $account;
+            $TransactionDesc = "Brisk POS Account";
+            $Remarks = "Brisk International";
+
+            $stkPushSimulation = $mpesa->STKPushSimulation($BusinessShortCode, $LipaNaMpesaPasskey, $TransactionType, $Amount, $PartyA, $PartyB, $PhoneNumber, $CallBackURL, $AccountReference, $TransactionDesc, $Remarks);
+            $stkPushSimulation = json_decode($stkPushSimulation);
+            $result_code = $stkPushSimulation->ResponseCode ?? null;
+            // return dd($result_code);
+            if (isset($result_code) and $result_code == "0") {
+                $trans_id = $stkPushSimulation->MerchantRequestID;
+                dump($trans_id);
+            }
+            // Log::info('STK Push Loading');
+        }
+
+        return;
+
+        // return dd($saledetailsArray);
+
         $firstproduct = array_values($saledetailsArray)[0];
         $agent = User::where(['id'=>$firstproduct->agentID])->first();
         $trip = Trip::where(['id'=>$agent->trip_batch])->first();
