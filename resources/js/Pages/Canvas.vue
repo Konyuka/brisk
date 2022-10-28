@@ -232,7 +232,7 @@ const stkPush = async () => {
     //   this.pauseTimer();
     // }, 60000);
     const requestBody = {
-      amount: 1,
+      amount: overallTotal.value,
       account: 'Brisk POS',
       phone: parseInt(removeSpaces(mpesaNumber.value)),
       products: selectedProducts.value,
@@ -1179,10 +1179,10 @@ const addEverything = () => {
 
       <div class="fixed inset-0 z-10 overflow-y-auto">
         <div
-          class="flex min-h-full min-w-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
+          class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
         >
           <div
-            class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-full sm:p-6"
+            class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 w-full sm:w-full sm:max-w-md sm:p-6"
           >
             <div>
               <button
@@ -1236,7 +1236,7 @@ const addEverything = () => {
                     name="phone-number"
                     id="phone-number"
                     class="text-black font-bold block w-full rounded-md border-gray-300 pl-16 focus:border-green-500 focus:ring-green-500 sm:text-sm"
-                    placeholder="254 716 202 298"
+                    placeholder="254 XXX XXX XXX"
                   />
                 </div>
               </div>
