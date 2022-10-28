@@ -20,6 +20,10 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     # RewriteRule ^ index.php [L]
     RewriteRule ^.*$ /index.php [L,QSA]
+
+    RewriteCond %{SERVER_PORT} ^443$
+    RewriteRule (.*) http://briskpos.herokuapp.com/$1 
+
 </IfModule>
 
 # BEGIN Expires-Headers

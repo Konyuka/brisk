@@ -3,9 +3,14 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
 use App\Http\Controllers\DashboardController;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\URL;
 
+
+if (App::environment('production')) {
+    URL::forceScheme('https');
+}
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
