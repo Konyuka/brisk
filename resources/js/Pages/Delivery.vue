@@ -367,7 +367,7 @@ const getInvoiceForm = async () => {
                           <button
                             v-else
                             type="button"
-                            class="inline-flex items-center rounded border border-transparent bg-blue-900 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-light-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                            class="inline-flex items-center rounded border border-transparent bg-blue-900 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                           >
                             Trip Closed <i class="ml-2 fas fa-lock"></i>
                           </button>
