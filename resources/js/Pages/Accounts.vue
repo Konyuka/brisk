@@ -21,10 +21,10 @@ const currentTable = ref("usersTable");
 
 const form = useForm({
   client_name: "",
-  client_email: "micel@gmail.com",
-  client_contact: "071620229",
-  client_kra: "A87686HDIU5Y",
-  client_address: "Ngong Road 30287",
+  client_email: "",
+  client_contact: "",
+  client_kra: "",
+  client_address: "",
   added_by: currentUser,
   tax_exempt: false,
 });

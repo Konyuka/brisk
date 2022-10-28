@@ -56,15 +56,15 @@ const currentBatch = computed(() => usePage().props.value.user.trip_batch);
 
 const form = useForm({
   client_name: "",
-  client_email: "michael@gmail.com",
-  client_contact: "0716202297",
-  client_kra: "A87686HDIU5Y",
-  client_address: "Ngong Road 30287",
+  client_email: "",
+  client_contact: "",
+  client_kra: "",
+  client_address: "",
   added_by: currentUser,
   tax_exempt: false,
 });
 
-const mpesaNumber = ref(254716202298);
+const mpesaNumber = ref(null);
 const mpesaSent = ref(false);
 const saleSuccess = ref(false);
 const mpesaDialogue = ref(false);

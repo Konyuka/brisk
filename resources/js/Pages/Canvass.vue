@@ -94,10 +94,10 @@ const currentUser = computed(() => usePage().props.value.user.id);
 
 const form = useForm({
   client_name: "",
-  client_email: "michael@gmail.com",
-  client_contact: "0716202297",
-  client_kra: "A87686HDIU5Y",
-  client_address: "Ngong Road 30287",
+  client_email: "",
+  client_contact: "",
+  client_kra: "",
+  client_address: "",
   added_by: currentUser,
   tax_exempt: false,
 });
@@ -519,7 +519,7 @@ const deleteAgentRow = (index, selectedAgent) => {
                   />
                 </div>
 
-                <div class="col-span-3 sm:col-span-1">
+                <!-- <div class="col-span-3 sm:col-span-1">
                   <label for="last-name" class="block text-sm font-medium text-gray-700"
                     ><i class="fas fa-boxes-packing text-light-green-800 fa-lg mr-1"></i>
                     Loaded Products</label
@@ -601,7 +601,7 @@ const deleteAgentRow = (index, selectedAgent) => {
                     autocomplete="family-name"
                     class="bg-gray-300 mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
-                </div>
+                </div> -->
               </div>
             </div>
           </div>

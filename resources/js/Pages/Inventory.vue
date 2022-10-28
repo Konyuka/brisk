@@ -164,7 +164,7 @@ const setTax = () =>
                   <div class="animate-pulse  text-sm font-bold italic text-red-500" v-if="form.errors.product_quantity">{{ form.errors.product_quantity }}</div>
                 </div>
 
-                <div class="col-span-3 sm:col-span-1">
+                <!-- <div class="col-span-3 sm:col-span-1">
                   <label for="last-name" class="block text-sm font-medium text-gray-700"
                     ><i class="fa-solid fa-barcode text-light-green-800 fa-lg mr-1"></i>
                     Product Code</label
@@ -177,7 +177,7 @@ const setTax = () =>
                     autocomplete="family-name"
                     class="mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
-                </div>
+                </div> -->
 
                 <!-- <div class="col-span-3 sm:col-span-1">
                   <label for="last-name" class="block text-sm font-medium text-gray-700"

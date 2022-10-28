@@ -119,7 +119,57 @@ class DashboardController extends Controller
         $saledetailsArray = json_decode($request->getContent());
 
         if (is_array($saledetailsArray)) {
-            return dd('Cash');
+            // return dd('Cash');
+            $firstproduct = array_values($saledetailsArray)[0];
+            $agent = User::where(['id' => $firstproduct->agentID])->first();
+            $trip = Trip::where(['id' => $agent->trip_batch])->first();
+
+
+
+            if (count((array)$firstproduct->client)) {
+                $client = Client::where(['id' => $firstproduct->client->id])->first();
+            }
+
+            if (count((array)$firstproduct->client)) {
+                $client_id = $client->id;
+            } else {
+                $client_id = null;
+            }
+
+
+            $string = \json_encode($saledetailsArray);
+
+            $createdSale =  Sale::create([
+                'added_by' => $agent->id,
+                'trip_batch' => $trip->id,
+                'client_id' => $client_id,
+                'products' => $string,
+                'sale_amount' => $firstproduct->overallTotal,
+                'payment_method' => $firstproduct->mpesaPayment,
+                'invoice_number' => $firstproduct->invoice_number,
+                'mpesa_ref' => 0,
+            ]);
+
+            foreach ($saledetailsArray as $key => $value) {
+                $product = Product::where('id', $value->selectedproductID)->first();
+                $tripFigures = json_decode($product->trip_batch);
+                $tripBatch = $agent->trip_batch;
+                $tripObjectDetails = null;
+
+                $newTripFigures = [];
+                foreach ($tripFigures as $figure) {
+                    if ($figure->batchNumber == $tripBatch) {
+                        $figure->itemsSold = $value->productQuantity;
+                        $figure->numberItems = $figure->numberItems - $value->productQuantity;
+                    }
+                }
+                Product::where('id', $value->selectedproductID)
+                    ->update([
+                        'trip_batch' => $tripFigures
+                    ]);
+            }
+
+            return redirect()->back()->with('success', 'Sale Registered Successfully');
         } else {
             $phone = $request->phone;
             $amount = $request->amount;
@@ -154,64 +204,7 @@ class DashboardController extends Controller
             // Log::info('STK Push Loading');
         }
 
-        return;
-
-        // return dd($saledetailsArray);
-
-        $firstproduct = array_values($saledetailsArray)[0];
-        $agent = User::where(['id'=>$firstproduct->agentID])->first();
-        $trip = Trip::where(['id'=>$agent->trip_batch])->first();
-       
-
-        
-        if(count((array)$firstproduct->client)){
-            $client = Client::where(['id'=>$firstproduct->client->id])->first();
-        }
-
-        if(count((array)$firstproduct->client)){
-            $client_id = $client->id;
-        }else{
-            $client_id = null;
-        }
-
-        
-        $string= \json_encode($saledetailsArray);
-    
-        $createdSale =  Sale::create([
-            'added_by' => $agent->id,
-            'trip_batch' => $trip->id,
-            'client_id' => $client_id,
-            'products' => $string,
-            'sale_amount' => $firstproduct->overallTotal,
-            'payment_method' => $firstproduct->mpesaPayment,
-            'invoice_number' => $firstproduct->invoice_number,
-            'mpesa_ref' => 0,
-        ]);
-
-        foreach($saledetailsArray as $key=>$value){
-             $product = Product::where('id', $value->selectedproductID)->first();
-             $tripFigures = json_decode($product->trip_batch);
-             $tripBatch = $agent->trip_batch;
-             $tripObjectDetails = null;
-
-            $newTripFigures = [];
-            foreach($tripFigures as $figure) {
-                if($figure->batchNumber == $tripBatch){
-                    $figure->itemsSold = $value->productQuantity;
-                    $figure->numberItems = $figure->numberItems - $value->productQuantity;
-                    
-                }
-            }
-            Product::where('id', $value->selectedproductID)
-            ->update([
-                'trip_batch' => $tripFigures
-            ]);
-        }
-
-        // $this->stock();
-
-        
-        return redirect()->back()->with('success', 'Sale Registered Successfully');
+        // return;        
         
     }
     
