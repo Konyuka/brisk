@@ -230,7 +230,7 @@ const setTax = () =>
                   <div class="animate-pulse  text-sm font-bold italic text-red-500" v-if="form.errors.wholesale_price">{{ form.errors.wholesale_price }}</div>
                 </div>
 
-                <div class="col-span-3 sm:col-span-2">
+                <div class="col-span-3 sm:col-span-1">
                   <label for="last-name" class="block text-sm font-medium text-gray-700"
                     ><i class="fas fa-square-check text-light-green-800 fa-lg mr-1"></i>
                     Finished Products</label
@@ -246,7 +246,7 @@ const setTax = () =>
                   <div class="animate-pulse  text-sm font-bold italic text-red-500" v-if="form.errors.finished_products">{{ form.errors.finished_products }}</div>
                 </div>
 
-                <div class="col-span-3 sm:col-span-1">
+                <!-- <div class="col-span-3 sm:col-span-1">
                   <label for="last-name" class="block text-sm font-medium text-gray-700"
                     ><i class="fas fa-check-double text-light-green-800 fa-lg mr-1"></i>
                     Available Products</label
@@ -314,7 +314,7 @@ const setTax = () =>
                     autocomplete="family-name"
                     class="bg-gray-300 mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
-                </div>
+                </div> -->
 
                 <div>
                   <!-- This example requires Tailwind CSS v2.0+ -->

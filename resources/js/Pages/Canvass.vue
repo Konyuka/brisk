@@ -132,9 +132,9 @@ const selectedAgents = ref([
 ]);
 const tripDetails = useForm({
   lead: null,
-  location: "nairobi",
-  truckPlate: "KBA 1765T",
-  driver: "driver X",
+  location: null,
+  truckPlate: null,
+  driver: null,
   loadedProducts: null,
   returnedProducts: null,
   soldProducts: null,
@@ -500,7 +500,7 @@ const deleteAgentRow = (index, selectedAgent) => {
                     id="last-name"
                     v-model="tripDetails.truckPlate"
                     autocomplete="family-name"
-                    class="mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                    class="uppercase mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                   />
                 </div>
 

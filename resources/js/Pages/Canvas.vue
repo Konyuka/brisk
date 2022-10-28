@@ -968,7 +968,7 @@ const addEverything = () => {
                         {{ index + 1 }}
                       </td>
 
-                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                      <td class="whitespace-nowrap py-2 text-sm text-gray-500">
                         <input
                           disabled
                           v-model="selectedProduct.selectedproductName"
@@ -978,7 +978,7 @@ const addEverything = () => {
                           placeholder=""
                         />
                       </td>
-                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                      <td class="whitespace-nowrap py-2 text-sm text-gray-500">
                         <input
                           disabled
                           v-model="selectedProduct.productSKU"
@@ -998,7 +998,7 @@ const addEverything = () => {
                           placeholder=""
                         />
                       </td> -->
-                      <td class="flex whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                      <td class="flex whitespace-nowrap py-2 text-sm text-gray-500">
                         <div class="mt-1 flex rounded-md shadow-sm">
                           <span
                             class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-200 px-1 text-gray-500 text-xs"
@@ -1015,7 +1015,7 @@ const addEverything = () => {
                           />
                         </div>
                       </td>
-                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                      <td class="whitespace-nowrap py-2 text-sm text-gray-500">
                         <div class="flex justify-between">
                           <span class="mt-3 text-green-500"> ws </span>
                           <input
@@ -1028,7 +1028,7 @@ const addEverything = () => {
                           />
                           <div
                             v-if="wholeSale(index)"
-                            class="mt-1 flex jusify-between rounded-md shadow-sm"
+                            class="min-w-98 mt-1 flex jusify-between rounded-md shadow-sm"
                           >
                             <span
                               class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-200 px-1 text-gray-500 text-xs"
@@ -1041,12 +1041,12 @@ const addEverything = () => {
                               name="username"
                               id="username"
                               autocomplete="username"
-                              class="text-black font-bold block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-green-800 focus:ring-green-800 sm:text-sm"
+                              class="text-black  font-bold block w-12 min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-green-800 focus:ring-green-800 sm:text-sm"
                             />
                           </div>
                           <div
                             v-else
-                            class="mt-1 flex jusify-between rounded-md shadow-sm"
+                            class="min-w-98 mt-1 flex jusify-between rounded-md shadow-sm"
                           >
                             <span
                               class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-200 px-1 text-gray-500 text-xs"
@@ -1059,12 +1059,12 @@ const addEverything = () => {
                               name="username"
                               id="username"
                               autocomplete="username"
-                              class="text-black font-bold block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-green-800 focus:ring-green-800 sm:text-sm"
+                              class="text-black  font-bold block w-12 min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-green-800 focus:ring-green-800 sm:text-sm"
                             />
                           </div>
                         </div>
                       </td>
-                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                      <td class="whitespace-nowrap text-sm text-gray-500">
                         <input
                           disabled
                           :value="selectedProduct.total"
@@ -1074,7 +1074,7 @@ const addEverything = () => {
                           placeholder=""
                         />
                       </td>
-                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                      <td class="whitespace-nowrap text-sm text-gray-500">
                         <input
                           disabled
                           v-model="selectedProduct.vat"
@@ -1084,7 +1084,7 @@ const addEverything = () => {
                           placeholder=""
                         />
                       </td>
-                      <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
+                      <td class="whitespace-nowrap text-sm text-gray-500">
                         <input
                           disabled
                           v-model="selectedProduct.salePrice"
@@ -1095,7 +1095,7 @@ const addEverything = () => {
                         />
                       </td>
                       <td
-                        class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
+                        class="relative whitespace-nowrap pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
                       >
                         <a
                           @click.prevent="deleteTableRow(index, selectedProduct)"
@@ -1179,10 +1179,10 @@ const addEverything = () => {
 
       <div class="fixed inset-0 z-10 overflow-y-auto">
         <div
-          class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
+          class="flex min-h-full min-w-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
         >
           <div
-            class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
+            class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-full sm:p-6"
           >
             <div>
               <button
@@ -1249,7 +1249,7 @@ const addEverything = () => {
               <button
                 @click="mpesaDialogue = true"
                 type="button"
-                class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-light-green-600 px-4 py-2 text-base font-bold text-white shadow-sm hover:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm"
+                class="mb-2 sm:mb-0 sm mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-light-green-600 px-4 py-2 text-base font-bold text-white shadow-sm hover:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm"
               >
                 Mpesa
               </button>
