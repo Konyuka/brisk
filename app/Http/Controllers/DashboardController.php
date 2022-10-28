@@ -201,7 +201,7 @@ class DashboardController extends Controller
                 $trans_id = $stkPushSimulation->MerchantRequestID;
                 // dump($trans_id);
             }
-            // Log::info('STK Push Loading');
+            return redirect()->back();
         }
 
         // return;        
