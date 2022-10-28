@@ -426,7 +426,7 @@ const getInvoiceForm = async () => {
           class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
         >
           <div
-            class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6"
+            class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 w-full sm:w-full sm:max-w-3xl sm:p-6"
           >
             <div class="sm:flex sm:items-start">
               <div
@@ -440,22 +440,22 @@ const getInvoiceForm = async () => {
                 </h3>
                 <div class="mt-2">
                   <div
-                    class="mb-4"
+                    class="mb-8 border-2 border-gray-200 sm:border-0"
                     v-for="(product, i) in tripProducts"
                     :key="product.id"
                   >
                     <div
-                      class="sm:grid sm:grid-cols-4 sm:items-start sm:gap-1 sm:border-t sm:border-gray-200 sm:pt-5"
+                      class="m-2 sm:grid sm:grid-cols-4 sm:items-start sm:gap-1 sm:border-t sm:border-gray-200 sm:pt-5"
                     >
-                      <div class="flex flex-row justify-around">
+                      <div class="flex flex-row justify-between sm:justify-around">
                         <label
                           for="first-name"
-                          class="block text-xs font-medium text-gray-700 sm:mt-px sm:pt-2"
+                          class="block text-xs font-bold sm:font-medium text-gray-700 sm:mt-px sm:pt-2"
                           >{{ product.product_name }}</label
                         >
                         <label
                           for="first-name"
-                          class="block text-xs font-medium text-gray-700 sm:mt-px sm:pt-2"
+                          class="block text-xs font-bold sm:font-medium text-gray-700 sm:mt-px sm:pt-2"
                           >{{ product.product_quantity }}</label
                         >
                       </div>

@@ -1028,7 +1028,7 @@ const addEverything = () => {
                           />
                           <div
                             v-if="wholeSale(index)"
-                            class="min-w-98 mt-1 flex jusify-between rounded-md shadow-sm"
+                            class="min-w-98 flex jusify-between rounded-md shadow-sm"
                           >
                             <span
                               class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-200 px-1 text-gray-500 text-xs"
@@ -1046,7 +1046,7 @@ const addEverything = () => {
                           </div>
                           <div
                             v-else
-                            class="min-w-98 mt-1 flex jusify-between rounded-md shadow-sm"
+                            class="min-w-98 flex jusify-between rounded-md shadow-sm"
                           >
                             <span
                               class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-200 px-1 text-gray-500 text-xs"

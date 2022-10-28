@@ -110,7 +110,7 @@ const setCurrentMenu = (value) => {
         <div class="text-center">
           <button
             @click="addUserModal = true"
-            class="mr-2 inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md md:w-auto bg-light-green-900 hover:bg-white hover:text-light-green-900 focus:shadow-outline focus:outline-none"
+            class="mb-2 sm:mb-0 mr-2 inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md md:w-auto bg-light-green-900 hover:bg-white hover:text-light-green-900 focus:shadow-outline focus:outline-none"
           >
             Add User
           </button>
@@ -140,7 +140,7 @@ const setCurrentMenu = (value) => {
                           ? 'bg-light-green-900 text-white'
                           : 'text-gray-600'
                       "
-                      class="py-2 px-8 hover:bg-light-green-900 hover:text-white font-bold rounded-md"
+                      class="py-2 px-8 hover:bg-light-green-900 hover:text-white font-bold rounded-md text-xs"
                     >
                       <p>User Accounts</p>
                     </div>
