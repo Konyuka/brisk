@@ -560,21 +560,11 @@ const setTax = () =>
                     </td>
                     <td class="pl-2">
                       <div class="flex items-center">
-                        <i class="fas fa-signature text-green-900"></i>
+                        <i class="fas fa-box-open text-green-900"></i>
                         <p
                           class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
                         >
-                          {{ product.product_code }}
-                        </p>
-                      </div>
-                    </td>
-                    <td class="pl-2">
-                      <div class="flex items-center">
-                        <i class="fas fa-barcode text-green-900"></i>
-                        <p
-                          class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
-                        >
-                          {{ product.bar_code }}
+                          {{ product.finished_products }}
                         </p>
                       </div>
                     </td>
