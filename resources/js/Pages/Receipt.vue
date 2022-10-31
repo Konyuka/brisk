@@ -72,7 +72,7 @@ const generatePDF = () =>
             margin: 0pt;
           "
         >
-          Brisk International <br />
+          Brisk International LTD.<br />
           <p
             style="
               color: black;
@@ -132,6 +132,7 @@ const generatePDF = () =>
         <thead>
           <tr>
             <th class="description">Name</th>
+            <th class="quantity">SKU</th>
             <th class="quantity">Items</th>
             <th class="price">Price</th>
           </tr>
@@ -139,8 +140,9 @@ const generatePDF = () =>
         <tbody>
           <tr v-for="(product, index) in selectedProducts.slice(0, itemNumber)" :key="index">
             <td  style="font-size: 9.5pt;" class="description">{{ product.selectedproductName}}</td>
+            <td  class="quantity">{{ product.productSKU }} </td>
             <td  class="quantity">{{ product.productQuantity}} </td>
-            <td  class="price">KES. {{ product.productPrice }}</td>
+            <td  class="price">KES. {{ product.salePrice }}</td>
           </tr>
         </tbody>
       </table>
@@ -156,7 +158,7 @@ const generatePDF = () =>
               margin: 0pt;
             "
           >
-            Subtotal: KES. {{ overallSubtotal }} 
+            <!-- Subtotal: KES. {{ overallSubtotal }}  -->
           </p>
         <p
             style="
