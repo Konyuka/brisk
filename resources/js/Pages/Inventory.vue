@@ -21,7 +21,9 @@ const available_products = computed(() => {
   return form.finished_products - form.in_delivery - form.spoiled_products;
 });
 
+const formEdit = ref(false);
 const productAddNotification = ref(false);
+const productUpdateNotification = ref(false);
 const taxable = ref(true);
 
 const form = useForm({
@@ -37,14 +39,42 @@ const form = useForm({
   missing_products: null,
   added_by: currentUser,
   tax_exempt: false,
+  product_id: null,
 });
 
+const editProduct = (product) =>
+{ 
+  formEdit.value = true
+  form.product_name = product.product_name 
+  form.product_quantity = product.product_quantity 
+  form.product_code = product.product_code 
+  form.bar_code = product.bar_code 
+  form.sales_price = product.sales_price 
+  form.wholesale_price = product.wholesale_price 
+  form.finished_products = product.finished_products 
+  form.in_delivery = product.in_delivery 
+  form.spoiled_products = product.spoiled_products 
+  form.missing_products = product.missing_products 
+  form.product_id = product.id 
+  // console.log(product)
+}
+const updateProduct = () => {
+  form.post("/dashboard/update_product", {
+    preserveScroll: true,
+    onSuccess: () => {
+      productUpdateNotification.value = true;
+      form.reset();
+      // form.reset();
+      // alert("Product Added");
+    },
+  });
+};
 const addProduct = () => {
   form.post("/dashboard/add_product", {
     preserveScroll: true,
     onSuccess: () => {
       productAddNotification.value = true;
-      // form.reset();
+      form.reset();
       // alert("Product Added");
     },
   });
@@ -359,11 +389,20 @@ const setTax = () =>
       </button>
 
       <button
+        v-if="!formEdit"
         type="button"
         @click="addProduct"
         class="inline-block px-6 py-2.5 bg-light-green-900 text-white font-bold text-xs leading-tight uppercase rounded shadow-md hover:bg-green-900 hover:shadow-lg focus:bg-green-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-1"
       >
         <i class="fas fa-plus fa-xl mr-1"></i> Add Product
+      </button>
+      <button
+        v-else
+        type="button"
+        @click="updateProduct"
+        class="inline-block px-6 py-2.5 bg-light-green-900 text-white font-bold text-xs leading-tight uppercase rounded shadow-md hover:bg-green-900 hover:shadow-lg focus:bg-green-900 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-1"
+      >
+        <i class="fas fa-pencil fa-xl mr-1"></i> Update Product
       </button>
     </div>
 
@@ -398,15 +437,53 @@ const setTax = () =>
             <div class="mt-4">
               <div class="-mx-2 -my-1.5 flex">
                 <button
-                  type="button"
-                  class="rounded-md bg-green-50 px-2 py-1.5 text-sm font-medium text-green-800 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50"
-                >
-                  View status
-                </button>
-                <button
                   @click="productAddNotification = false"
                   type="button"
-                  class="ml-3 rounded-md bg-green-50 px-2 py-1.5 text-sm font-medium text-green-800 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50"
+                  class="ml-3 rounded-md bg-green-50 px-2 py-1.5 text-sm font-medium text-red-800 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="productUpdateNotification" class="px-20 py-10">
+      <!-- This example requires Tailwind CSS v2.0+ -->
+      <div class="rounded-md bg-green-50 p-4">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <!-- Heroicon name: mini/check-circle -->
+            <svg
+              class="h-5 w-5 text-green-400"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+          <div class="ml-3">
+            <h3 class="text-sm font-medium text-green-800">Product Updated Successfully</h3>
+            <div class="mt-2 text-sm text-green-700">
+              <!-- <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid pariatur,
+                ipsum similique veniam.
+              </p> -->
+            </div>
+            <div class="mt-4">
+              <div class="-mx-2 -my-1.5 flex">
+                <button
+                  @click="productUpdateNotification = false"
+                  type="button"
+                  class="ml-3 rounded-md bg-green-50 px-2 py-1.5 text-sm font-medium text-red-600 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50"
                 >
                   Dismiss
                 </button>
@@ -465,7 +542,7 @@ const setTax = () =>
                     <td class="">
                       <div class="flex items-center pl-1 sm:pl-3">
                         <p
-                          class="hover:font-extrabold cursor-help text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
+                          class="capitalize hover:font-extrabold cursor-help text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
                         >
                           {{ product.product_name }}
                         </p>
@@ -514,6 +591,7 @@ const setTax = () =>
                     <td>
                       <div class="relative px-5">
                         <i
+                          @click="editProduct(product)"
                           class="text-blue-600 fas fa-edit fa-md transform translate hover:scale-150 duration-300 hover:cursor-pointer mr-3"
                         ></i>
                         <i

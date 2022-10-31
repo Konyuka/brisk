@@ -33,6 +33,8 @@ Route::middleware([
     ->name('dashboard');
     Route::post('/dashboard/add_product', [DashboardController::class, 'addProduct'])
     ->name('add_product');
+    Route::post('/dashboard/update_product', [DashboardController::class, 'updateProduct'])
+    ->name('add_product');
     Route::get('/dashboard/users_clients', [DashboardController::class, 'usersClients'])
     ->name('users_clients');
     Route::post('/dashboard/user_register', [DashboardController::class, 'registerUser'])
