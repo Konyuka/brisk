@@ -372,12 +372,19 @@ const setProduct = (product) => {
     selectedProducts.value[selectedProductIndex.value].total =
       selectedProducts.value[selectedProductIndex.value].productQuantity *
       selectedProducts.value[selectedProductIndex.value].productPrice;
-    selectedProducts.value[selectedProductIndex.value].vat = Math.round(
-      selectedProducts.value[selectedProductIndex.value].total * 0.16
-    );
-    selectedProducts.value[selectedProductIndex.value].salePrice =
-      selectedProducts.value[selectedProductIndex.value].total +
-      selectedProducts.value[selectedProductIndex.value].vat;
+
+    // selectedProducts.value[selectedProductIndex.value].vat = Math.round(
+    //   selectedProducts.value[selectedProductIndex.value].total * 0.16
+    // );
+
+    let reversetax = (selectedProducts.value[selectedProductIndex.value].total * 16)/116
+    selectedProducts.value[selectedProductIndex.value].vat = Math.round( reversetax * 100 ) / 100;
+    
+    selectedProducts.value[selectedProductIndex.value].salePrice = selectedProducts.value[selectedProductIndex.value].total 
+
+    // selectedProducts.value[selectedProductIndex.value].salePrice =
+    //   selectedProducts.value[selectedProductIndex.value].total +
+    //   selectedProducts.value[selectedProductIndex.value].vat;
 
     addEverything();
   }
@@ -457,11 +464,17 @@ const setCalculations = (index) => {
       selectedProducts.value[index].wholesaleProductPrice;
   }
 
-  selectedProducts.value[index].vat = Math.round(
-    selectedProducts.value[index].total * 0.16
-  );
-  selectedProducts.value[index].salePrice =
-    selectedProducts.value[index].total + selectedProducts.value[index].vat;
+  // selectedProducts.value[index].vat = Math.round(
+  //   selectedProducts.value[index].total * 0.16
+  // );
+
+  let reversetax = (selectedProducts.value[index].total * 16)/116
+  selectedProducts.value[index].vat = Math.round(reversetax * 100) / 100;
+    
+  // selectedProducts.value[index].salePrice =
+  // selectedProducts.value[index].total + selectedProducts.value[index].vat;
+
+  selectedProducts.value[index].salePrice = selectedProducts.value[index].total 
 
   addEverything();
 };

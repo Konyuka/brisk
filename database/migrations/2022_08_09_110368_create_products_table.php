@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('product_quantity')->default(0);
             $table->string('product_code')->nullable();
             $table->bigInteger('bar_code')->nullable();
-            $table->integer('sales_price')->default(0);
-            $table->integer('wholesale_price')->default(0);
+            $table->bigInteger('sales_price')->default(0);
+            $table->bigInteger('wholesale_price')->default(0);
             $table->json('trip_batch')->nullable();
             $table->integer('finished_products')->nullable();
             $table->integer('in_delivery')->nullable();

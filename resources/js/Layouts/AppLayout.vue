@@ -9,14 +9,19 @@ defineProps({
 
 const currentRoute = computed(() => {
   return route().current();
-})
+});
 const adminLevel = computed(() => usePage().props.value.user.admin);
 
+const loggedOutModal = ref(false);
 const myProfile = ref(false);
 const mobileMenu = ref(false);
 
-const logout = () => {
-  Inertia.post(route("logout"));
+const logout =  () => {
+  Inertia.post(route("logout"), {
+    onSuccess: () => {
+      loggedOutModal.value = true
+    },
+  });
 };
 </script>
 
@@ -24,30 +29,6 @@ const logout = () => {
   <div>
     <Head :title="title" />
 
-    <!--
-  This example requires Tailwind CSS v2.0+ 
-  
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
--->
-    <!--
-  This example requires updating your template:
-
-  ```
-  <html class="h-full bg-gray-100">
-  <body class="h-full overflow-hidden">
-  ```
--->
     <div class="flex h-screen flex-col">
       <!-- Top nav-->
       <header class="relative flex h-16 flex-shrink-0 items-center bg-white">
@@ -69,9 +50,9 @@ const logout = () => {
         <div class="absolute inset-y-0 right-0 flex items-center pr-4 sm:pr-6 md:hidden">
           <!-- Mobile menu button -->
           <button
-           @click="mobileMenu=true"
+            @click="mobileMenu = true"
             type="button"
-            class="-mr-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+            class="-mr-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-green-600"
           >
             <span class="sr-only">Open main menu</span>
             <!-- Heroicon name: outline/menu -->
@@ -160,7 +141,7 @@ const logout = () => {
 
               <div class="relative inline-block text-left">
                 <button
-                  @click="myProfile=!myProfile"
+                  @click="myProfile = !myProfile"
                   type="button"
                   class="flex rounded-full text-light-green-800 hover:text-light-green-900 text-sm focus:outline-none focus:ring-2 focus:ring-light-green-900 focus:ring-offset-2"
                   id="menu-0-button"
@@ -176,16 +157,6 @@ const logout = () => {
                   /> -->
                 </button>
 
-                <!--
-              Dropdown menu, show/hide based on menu state.
-
-              Entering: "transition ease-out duration-100"
-                From: "transform opacity-0 scale-95"
-                To: "transform opacity-100 scale-100"
-              Leaving: "transition ease-in duration-75"
-                From: "transform opacity-100 scale-100"
-                To: "transform opacity-0 scale-95"
-            -->
                 <div
                   v-if="myProfile"
                   class="absolute right-0 z-30 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
@@ -205,16 +176,15 @@ const logout = () => {
                     >
                       Your Profile
                     </Link>
-                    <Link
+                    <button
                       @click.prevent="logout"
-                      href="#"
                       class="block px-4 py-2 text-sm text-gray-700"
                       role="menuitem"
                       tabindex="-1"
                       id="menu-0-item-1"
                     >
                       Sign Out
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -224,7 +194,12 @@ const logout = () => {
 
         <!-- Mobile menu, show/hide this `div` based on menu open/closed state -->
 
-        <div v-if="mobileMenu" class="relative z-40 md:hidden" role="dialog" aria-modal="true">
+        <div
+          v-if="mobileMenu"
+          class="relative z-40 md:hidden"
+          role="dialog"
+          aria-modal="true"
+        >
           <!--
         Off-canvas menu backdrop, show/hide based on off-canvas menu state.
 
@@ -258,14 +233,14 @@ const logout = () => {
                 <a href="#">
                   <img
                     class="block h-8 w-auto"
-                    src="https://tailwindui.com/img/logos/workflow-mark.svg?color=indigo&shade=500"
+                    src="https://tailwindui.com/img/logos/workflow-mark.svg?color=green&shade=500"
                     alt="Workflow"
                   />
                 </a>
                 <button
-                  @click="mobileMenu=false"
+                  @click="mobileMenu = false"
                   type="button"
-                  class="-mr-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                  class="-mr-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-green-600"
                 >
                   <span class="sr-only">Close main menu</span>
                   <!-- Heroicon name: outline/x -->
@@ -293,7 +268,7 @@ const logout = () => {
                     id="mobile-search"
                     type="search"
                     placeholder="Search"
-                    class="block w-full rounded-md border-gray-300 pl-10 placeholder-gray-500 focus:border-indigo-600 focus:ring-indigo-600"
+                    class="block w-full rounded-md border-gray-300 pl-10 placeholder-gray-500 focus:border-green-600 focus:ring-green-600"
                   />
                   <div
                     class="absolute inset-y-0 left-0 flex items-center justify-center pl-3"
@@ -317,55 +292,55 @@ const logout = () => {
               </div>
               <div class="max-w-8xl mx-auto py-3 px-2 sm:px-4">
                 <Link
-                  v-if="adminLevel==1 || adminLevel==2 || adminLevel==3 || adminLevel==4"
+                  v-if="
+                    adminLevel == 1 ||
+                    adminLevel == 2 ||
+                    adminLevel == 3 ||
+                    adminLevel == 4
+                  "
                   href="/dashboard"
                   :class="
-                    currentRoute == 'dashboard'
-                    ? 'text-black'
-                    : 'text-gray-500 pl-5'
+                    currentRoute == 'dashboard' ? 'text-black' : 'text-gray-500 pl-5'
                   "
                   class="block rounded-md py-2 px-3 text-lg font-bold hover:bg-gray-100"
                   >Sale</Link
                 >
 
                 <Link
-                  v-if="adminLevel==1 || adminLevel==2"
+                  v-if="adminLevel == 1 || adminLevel == 2"
                   href="/dashboard/product_inventory"
                   :class="
                     currentRoute == 'product_inventory'
-                    ? 'text-black'
-                    : 'text-gray-500 pl-5'
+                      ? 'text-black'
+                      : 'text-gray-500 pl-5'
                   "
-                  class="block rounded-md py-2 pr-3 text-lg font-bold  hover:bg-gray-100"
+                  class="block rounded-md py-2 pr-3 text-lg font-bold hover:bg-gray-100"
                   >Inventory</Link
                 >
 
                 <Link
-                  v-if="adminLevel==1 || adminLevel==2 || adminLevel==3"
+                  v-if="adminLevel == 1 || adminLevel == 2 || adminLevel == 3"
                   href="/dashboard/product_delivery"
                   :class="
                     currentRoute == 'product_delivery'
-                    ? 'text-black'
-                    : 'text-gray-500 pl-5'
+                      ? 'text-black'
+                      : 'text-gray-500 pl-5'
                   "
-                  class="block rounded-md py-2 pr-3 text-lg font-bold  hover:bg-gray-100"
+                  class="block rounded-md py-2 pr-3 text-lg font-bold hover:bg-gray-100"
                   >Delivery</Link
                 >
 
                 <Link
-                  v-if="adminLevel==1 || adminLevel==2"
+                  v-if="adminLevel == 1 || adminLevel == 2"
                   href="/dashboard/users_clients"
                   :class="
-                    currentRoute == 'add_client'
-                    ? 'text-black'
-                    : 'text-gray-500 pl-5'
+                    currentRoute == 'add_client' ? 'text-black' : 'text-gray-500 pl-5'
                   "
-                  class="block rounded-md py-2 pr-3 text-lg font-bold  hover:bg-gray-100"
+                  class="block rounded-md py-2 pr-3 text-lg font-bold hover:bg-gray-100"
                   >Users</Link
                 >
-
               </div>
-              <hr>
+              <hr />
               <div class="border-t border-gray-200 pt-4 pb-3">
                 <div class="max-w-8xl mx-auto mt-3 space-y-1 px-2 sm:px-4">
                   <a
@@ -395,27 +370,29 @@ const logout = () => {
         >
           <div class="relative flex w-20 flex-col space-y-3 p-3">
             <Link
-              v-if="adminLevel==1 || adminLevel==2 || adminLevel==3 || adminLevel==4"
+              v-if="
+                adminLevel == 1 || adminLevel == 2 || adminLevel == 3 || adminLevel == 4
+              "
               href="/dashboard"
               :class="
-                    currentRoute == 'dashboard'
-                    ? 'bg-white text-black'
-                    : 'bg-black text-white'
+                currentRoute == 'dashboard'
+                  ? 'bg-white text-black'
+                  : 'bg-black text-white'
               "
               class="text-gray-400 flex-shrink-0 inline-flex items-center justify-center h-14 w-14 rounded-lg"
             >
               <span class="sr-only">Open</span>
               <!-- Heroicon name: outline/inbox -->
-              <i class="fas fa-print fa-xl"></i> 
+              <i class="fas fa-print fa-xl"></i>
             </Link>
 
             <Link
-              v-if="adminLevel==1 || adminLevel==2"
+              v-if="adminLevel == 1 || adminLevel == 2"
               href="/dashboard/product_inventory"
               :class="
-                    currentRoute == 'product_inventory'
-                    ? 'bg-white text-black'
-                    : 'bg-black text-white'
+                currentRoute == 'product_inventory'
+                  ? 'bg-white text-black'
+                  : 'bg-black text-white'
               "
               class="text-gray-400 hover:bg-white hover:text-black flex-shrink-0 inline-flex items-center justify-center h-14 w-14 rounded-lg"
             >
@@ -425,12 +402,12 @@ const logout = () => {
             </Link>
 
             <Link
-              v-if="adminLevel==1 || adminLevel==2 || adminLevel==3"
+              v-if="adminLevel == 1 || adminLevel == 2 || adminLevel == 3"
               href="/dashboard/product_delivery"
               :class="
-                    currentRoute == 'product_delivery'
-                    ? 'bg-white text-black'
-                    : 'bg-black text-white'
+                currentRoute == 'product_delivery'
+                  ? 'bg-white text-black'
+                  : 'bg-black text-white'
               "
               class="text-gray-400 hover:bg-white hover:text-black flex-shrink-0 inline-flex items-center justify-center h-14 w-14 rounded-lg"
             >
@@ -440,12 +417,12 @@ const logout = () => {
             </Link>
 
             <Link
-              v-if="adminLevel==1 || adminLevel==2"
+              v-if="adminLevel == 1 || adminLevel == 2"
               href="/dashboard/users_clients"
               :class="
-                    currentRoute == 'users_clients'
-                    ? 'bg-white text-black'
-                    : 'bg-black text-white'
+                currentRoute == 'users_clients'
+                  ? 'bg-white text-black'
+                  : 'bg-black text-white'
               "
               class="text-gray-400 hover:bg-white hover:text-black flex-shrink-0 inline-flex items-center justify-center h-14 w-14 rounded-lg"
             >
@@ -453,8 +430,6 @@ const logout = () => {
               <!-- Heroicon name: outline/archive -->
               <i class="fas fa-users fa-xl"></i>
             </Link>
-
-           
           </div>
         </nav>
 
@@ -470,13 +445,66 @@ const logout = () => {
             <slot />
           </section>
 
-          <!-- Secondary column (hidden on smaller screens) -->
-          <!-- <aside class="hidden lg:order-first lg:block lg:flex-shrink-0">
-            <div
-              class="relative flex h-full w-96 flex-col overflow-y-auto border-r border-gray-200 bg-gray-100"
-            >
+          <div
+            v-if="loggedOutModal"
+            class="relative z-10"
+            aria-labelledby="modal-title"
+            role="dialog"
+            aria-modal="true"
+          >
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+            <div class="fixed inset-0 z-10 overflow-y-auto">
+              <div
+                class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
+              >
+               
+                <div
+                  class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6"
+                >
+                  <div>
+                    <div
+                      class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100"
+                    >
+                      <!-- Heroicon name: outline/check -->
+                      <svg
+                        class="h-6 w-6 text-green-600"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M4.5 12.75l6 6 9-13.5"
+                        />
+                      </svg>
+                    </div>
+                    <div class="mt-3 text-center sm:mt-5">
+                      <h3
+                        class="text-lg font-medium leading-6 text-gray-900"
+                        id="modal-title"
+                      >
+                        Karibu Tena 
+                      </h3>
+                    </div>
+                  </div>
+                  <div class="mt-5 sm:mt-6">
+                    <Link
+                      href="/"
+                      type="button"
+                      class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:text-sm"
+                    >
+                      Go to Landing Page
+                    </Link>
+                  </div>
+                </div>
+              </div>
             </div>
-          </aside> -->
+          </div>
         </main>
       </div>
     </div>

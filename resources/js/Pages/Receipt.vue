@@ -140,7 +140,7 @@ const generatePDF = () =>
         <tbody>
           <tr v-for="(product, index) in selectedProducts.slice(0, itemNumber)" :key="index">
             <td  style="font-size: 9.5pt;" class="description">{{ product.selectedproductName}}</td>
-            <td  class="quantity">{{ product.productSKU }} </td>
+            <td  class="quantity uppercase">{{ product.productSKU }} </td>
             <td  class="quantity">{{ product.productQuantity}} </td>
             <td  class="price">KES. {{ product.salePrice }}</td>
           </tr>
