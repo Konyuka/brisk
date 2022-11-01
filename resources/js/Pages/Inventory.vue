@@ -56,6 +56,8 @@ const editProduct = (product) =>
   form.spoiled_products = product.spoiled_products 
   form.missing_products = product.missing_products 
   form.product_id = product.id 
+  window.scrollTo(0, 0);
+
   // console.log(product)
 }
 const updateProduct = () => {

@@ -460,7 +460,7 @@ const deleteAgentRow = (index, selectedAgent) => {
                     @change="checkTeamLead"
                     id="location"
                     name="location"
-                    class="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-green-500 focus:outline-none focus:ring-green-500 text-xs sm:text-sm"
+                    class="uppercase mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-green-500 focus:outline-none focus:ring-green-500 text-xs sm:text-sm"
                   >
                     <option
                       v-for="(lead, index) in teamLead"
@@ -515,7 +515,7 @@ const deleteAgentRow = (index, selectedAgent) => {
                     id="last-name"
                     v-model="tripDetails.driver"
                     autocomplete="family-name"
-                    class="mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm text-xs sm:text-sm border-gray-300 rounded-md"
+                    class="uppercase mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm text-xs sm:text-sm border-gray-300 rounded-md"
                   />
                 </div>
 

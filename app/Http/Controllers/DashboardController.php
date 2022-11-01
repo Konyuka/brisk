@@ -231,8 +231,7 @@ class DashboardController extends Controller
             $PartyB = env('MPESA_STK_SHORTCODE');
             // $PhoneNumber='254722326662';
             $PhoneNumber = $phone;
-            $CallBackURL = 'https://16b1-105-160-101-135.in.ngrok.io/api/stkpush';
-            // $CallBackURL = env('MPESA_TEST_URL') . '/api/stkpush';
+            $CallBackURL = env('MPESA_TEST_URL') . '/api/stkpush';
             // $CallBackURL="https://tenderske.herokuapp.com/api/stkpush";
             $AccountReference = $account;
             $TransactionDesc = "Brisk POS Account";

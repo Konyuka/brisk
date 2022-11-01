@@ -306,7 +306,7 @@ const getInvoiceForm = async () => {
                       <td class="">
                         <div class="flex items-center pl-1 sm:pl-3">
                           <p
-                            class="hover:font-extrabold cursor-help text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
+                            class=" text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
                           >
                             <span class="capitalize">{{ trip.lead_name }}'s</span> Group
                           </p>

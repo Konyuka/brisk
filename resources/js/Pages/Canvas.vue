@@ -64,7 +64,7 @@ const form = useForm({
   tax_exempt: false,
 });
 
-const mpesaNumber = ref(null);
+const mpesaNumber = ref(254716202298);
 const mpesaSent = ref(false);
 const saleSuccess = ref(false);
 const mpesaDialogue = ref(false);

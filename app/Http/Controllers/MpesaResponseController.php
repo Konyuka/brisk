@@ -52,36 +52,36 @@ class MpesaResponseController extends Controller
         Log::info('STK Push endpoint hit');
         Log::info($request->all());
 
-        $mpesa = new Mpesa();
-        $callBackData = $mpesa->getDataFromCallback();
-        $object = json_decode($callBackData);
-        $result_code = $object->Body->stkCallback->ResultCode;
-        $trans_id = $object->Body->stkCallback->MerchantRequestID;
-        $result_description = $object->Body->stkCallback->ResultDesc;
+        // $mpesa = new Mpesa();
+        // $callBackData = $mpesa->getDataFromCallback();
+        // $object = json_decode($callBackData);
+        // $result_code = $object->Body->stkCallback->ResultCode;
+        // $trans_id = $object->Body->stkCallback->MerchantRequestID;
+        // $result_description = $object->Body->stkCallback->ResultDesc;
 
         // Log::info($object);
         // Log::info($result_code);
 
-        if ($result_code == 0) {
-            // $payment = Payments::where(['trans_id' => $trans_id])->first();
-            // if ($payment) {
+        // if ($result_code == 0) {
+        //     // $payment = Payments::where(['trans_id' => $trans_id])->first();
+        //     // if ($payment) {
 
 
-            //     $payment->completed = true;
-            //     $payment->waiting = false;
-            //     $payment->save();
-            //     $post = $payment->info;
+        //     //     $payment->completed = true;
+        //     //     $payment->waiting = false;
+        //     //     $payment->save();
+        //     //     $post = $payment->info;
 
-            // }
-            // return dump('payment complete');
-        } else if ($result_code == 1032) {
-            // return dump('payment cancelled');
-            // $payment = Payments::where(['trans_id' => $trans_id])->first();
-            // $payment->completed = false;
-            // $payment->waiting = false;
-            // $payment->save();
-            // $post = $payment->info;
-        }
+        //     // }
+        //     // return dump('payment complete');
+        // } else if ($result_code == 1032) {
+        //     // return dump('payment cancelled');
+        //     // $payment = Payments::where(['trans_id' => $trans_id])->first();
+        //     // $payment->completed = false;
+        //     // $payment->waiting = false;
+        //     // $payment->save();
+        //     // $post = $payment->info;
+        // }
 
 
         // return dd($request);

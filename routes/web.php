@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\URL;
 
 
-if (App::environment('production')) {
-    URL::forceScheme('https');
-}
+// if (App::environment('production')) {
+//     URL::forceScheme('https');
+// }
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -34,7 +34,7 @@ Route::middleware([
     Route::post('/dashboard/add_product', [DashboardController::class, 'addProduct'])
     ->name('add_product');
     Route::post('/dashboard/update_product', [DashboardController::class, 'updateProduct'])
-    ->name('add_product');
+    ->name('update_product');
     Route::get('/dashboard/users_clients', [DashboardController::class, 'usersClients'])
     ->name('users_clients');
     Route::post('/dashboard/user_register', [DashboardController::class, 'registerUser'])
