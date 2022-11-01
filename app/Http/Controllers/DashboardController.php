@@ -519,6 +519,16 @@ class DashboardController extends Controller
             array_push($agentsArray, $value->selectedAgentID);
 
         }
+        $leadID = Trip::where('id', $createdTrip->id)->select('team_lead')->first();
+        $decodedID = json_decode($leadID->team_lead);
+        array_push($agentsArray, $decodedID);
+        User::where('id', $decodedID)
+            ->update([
+                'trip_batch' => $tripBatch
+            ]);
+
+        // return dd($decodedID);
+
         Trip::where('id', $createdTrip->id)
         ->update([
             'user_ids' => $agentsArray,

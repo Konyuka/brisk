@@ -232,7 +232,8 @@ const stkPush = async () => {
     //   this.pauseTimer();
     // }, 60000);
     const requestBody = {
-      amount: overallTotal.value,
+      amount: 1,
+      // amount: overallTotal.value,
       account: 'Brisk POS',
       phone: parseInt(removeSpaces(mpesaNumber.value)),
       products: selectedProducts.value,
