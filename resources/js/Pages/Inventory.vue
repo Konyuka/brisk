@@ -20,6 +20,9 @@ const available_products = computed(() => {
   return form.finished_products - form.in_delivery - form.spoiled_products;
 });
 
+const success = ref(null);
+const filename = ref(null);
+const file = ref(null);
 const uploadProductModal = ref(false);
 const formEdit = ref(false);
 const productAddNotification = ref(false);
@@ -42,8 +45,43 @@ const form = useForm({
   product_id: null,
 });
 
-const uploadFile = () => {
-  alert("upload");
+const onFileChange = (e) => {
+  console.log(e.target.files[0]);
+  filename.value = "Selected File: " + e.target.files[0].name;
+  file.value = e.target.files[0];
+};
+
+const uploadFile = (e) => {
+  if (filename.value == null) {
+    alert("kindly select a file");
+  } else {
+    // alert("upload");
+    e.preventDefault();
+
+    // let currentObj = this;
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data",
+        // "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+      },
+    };
+
+    // form data
+    let formData = new FormData();
+    formData.append("file", file.value);
+
+    // send upload request
+    axios
+      .post("/dashboard/upload_product", formData, config)
+      .then(function (response) {
+        success.value = response.data.success;
+        filename.value = "";
+      })
+      .catch(function (error) {
+        // currentObj.output = error;
+        console.log(error.response.data)
+      });
+  }
 };
 
 const editProduct = (product) => {
@@ -542,64 +580,70 @@ const setTax = () => {
           <div
             class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg"
           >
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-              <div class="sm:flex sm:items-start">
-                <div
-                  class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10"
-                >
-                  <i class="fas fa-upload text-green-500"></i>
-                </div>
-                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                  <h3
-                    class="mb-10 text-lg font-medium leading-6 text-gray-900"
-                    id="modal-title"
+            <form @submit="uploadFile" enctype="multipart/form-data">
+
+              <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                  <div
+                    class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10"
                   >
-                    Upload Products
-                  </h3>
-                  <div class="mb-10">
-                    <div class="flex flex-row justify-center">
-                      <div>
-                        <button
-                          type="button"
-                          class="inline-flex items-center rounded-sm border border-transparent bg-green-600 px-3 py-2 text-sm font-light  leading-4 text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                        >
-                          Download Template <i class="ml-4 fas fa-file-csv fa-2x"></i>
-                        </button>
-                      </div>
-                      <div></div>
-                    </div>
+                    <i class="fas fa-upload text-green-500"></i>
                   </div>
-                  <div>
-                    <div class="flex justify-center">
-                      <div class="mb-3 w-96">
-                        <input
-                          class="form-control block w-full px-3 py-1.5 text-base font-bold text-gray-700 bg-gray-50 bg-clip-padding border border-solid border-green-500 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
-                          type="file"
-                          id="formFile"
-                        />
+                  <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <h3
+                      class="mb-10 text-lg font-medium leading-6 text-gray-900"
+                      id="modal-title"
+                    >
+                      Upload Products
+                    </h3>
+                    <div class="mb-10">
+                      <div class="flex flex-row justify-center">
+                        <div>
+                          <button
+                            type="button"
+                            class="inline-flex items-center rounded-sm border border-transparent bg-green-600 px-3 py-2 text-sm font-light leading-4 text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                          >
+                            Download Template <i class="ml-4 fas fa-file-csv fa-2x"></i>
+                          </button>
+                        </div>
+                        <div></div>
                       </div>
                     </div>
+                    <div>
+                      <div class="flex justify-center">
+                        <div class="mb-3 w-96">
+                          <input
+                            @change="onFileChange"
+                            id="inputFileUpload"
+                            name="filename"
+                            class="form-control block w-full px-3 py-1.5 text-base font-bold text-gray-700 bg-gray-50 bg-clip-padding border border-solid border-green-500 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                            type="file"
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  
                 </div>
               </div>
-            </div>
-            <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-              <button
-                @click="uploadFile"
-                type="button"
-                class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
-              >
-                Upload File <i class="fas fa-circle-arrow-up text-white ml-2 mt-1"></i>
-              </button>
-              <button
-                @click="uploadProductModal = false"
-                type="button"
-                class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white hover:bg-red-600 px-4 py-2 text-base font-medium text-gray-700 hover:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-              >
-                Cancel
-              </button>
-            </div>
+              <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                <!-- @click="uploadFile" -->
+                <button
+                  value="upload"
+                  type="submit"
+                  class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
+                >
+                  Upload File <i class="fas fa-circle-arrow-up text-white ml-2 mt-1"></i>
+                </button>
+                <button
+                  @click="uploadProductModal = false"
+                  type="button"
+                  class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white hover:bg-red-600 px-4 py-2 text-base font-medium text-gray-700 hover:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+
           </div>
         </div>
       </div>

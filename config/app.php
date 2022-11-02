@@ -198,7 +198,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\FortifyServiceProvider::class,
         App\Providers\JetstreamServiceProvider::class,
-        \Safaricom\Mpesa\MpesaServiceProvider::class
+        \Safaricom\Mpesa\MpesaServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
     ],
 
@@ -215,7 +216,8 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
-        'Mpesa' => \Safaricom\Mpesa\MpesaServiceProvider::class
+        'Mpesa' => \Safaricom\Mpesa\MpesaServiceProvider::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ])->toArray(),
 
 ];

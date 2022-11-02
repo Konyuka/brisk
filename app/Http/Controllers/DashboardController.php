@@ -13,11 +13,27 @@ use App\Models\Trip;
 use Illuminate\Support\Facades\Hash;
 use Safaricom\Mpesa\Mpesa;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\ProductsImport;
+use App\Exports\ProductsExport;
 
 
 
 class DashboardController extends Controller
 {
+    public function uploadProduct(Request $request)
+    {
+        // return dd($request);
+        Excel::import(new ProductsImport, $request->file('file')->store('temp'));
+        return back();
+    }
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public function fileExport()
+    {
+        return Excel::download(new ProductsImport, 'products-collection.xlsx');
+    }
     
     public function addProduct(Request $request)
     {
