@@ -45,13 +45,15 @@ const form = useForm({
   product_id: null,
 });
 
-const exportData = () =>
+
+
+const setDownloaded = () =>
 { 
-  Inertia.get("/dashboard/download_product");
+  alert('downloaded')
 }
 
 const onFileChange = (e) => {
-  console.log(e.target.files[0]);
+  // console.log(e.target.files[0]);
   filename.value = "Selected File: " + e.target.files[0].name;
   file.value = e.target.files[0];
 };
@@ -81,6 +83,9 @@ const uploadFile = (e) => {
       .then(function (response) {
         success.value = response.data.success;
         filename.value = "";
+        uploadProductModal.value = false
+        alert('Products Uploaded Successfully')
+        Inertia.get("/dashboard/product_inventory")
       })
       .catch(function (error) {
         // currentObj.output = error;
@@ -605,13 +610,15 @@ const setTax = () => {
                       <div class="flex flex-row justify-center">
                         <div>
                           <!-- @click="exportData" -->
-                          <a
-                            href="/dashboard/download_product"
-                            type="button"
-                            class="mr-2 inline-flex items-center rounded-sm border border-transparent bg-green-600 px-3 py-2 text-sm font-light leading-4 text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                          >
-                            Download Data <i class="ml-4 fas fa-file-csv fa-2x"></i>
-                          </a>
+                          <button @click="setDownloaded">
+                            <a
+                              href="/dashboard/download_product"
+                              type="button"
+                              class="mr-2 inline-flex items-center rounded-sm border border-transparent bg-green-600 px-3 py-2 text-sm font-light leading-4 text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                            >
+                              Download Data <i class="ml-4 fas fa-file-csv fa-2x"></i>
+                            </a>
+                          </button>
                         </div>
                         <div></div>
                       </div>
