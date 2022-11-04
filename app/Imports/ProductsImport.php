@@ -5,6 +5,9 @@ namespace App\Imports;
 use App\Models\Product;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
+// use Illuminate\Support\Facades\Schema;
+// use Illuminate\Database\Schema\Blueprint;
+
 
 
 class ProductsImport implements ToModel, WithStartRow
@@ -16,6 +19,28 @@ class ProductsImport implements ToModel, WithStartRow
      */
     public function model(array $row)
     {
+        // Schema::dropIfExists('products');
+        // Schema::create('products', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->string('product_name');
+        //     $table->string('product_quantity')->default(0);
+        //     $table->string('product_code')->nullable();
+        //     $table->bigInteger('bar_code')->nullable();
+        //     $table->bigInteger('sales_price')->default(0);
+        //     $table->bigInteger('wholesale_price')->default(0);
+        //     $table->json('trip_batch')->nullable();
+        //     $table->integer('finished_products')->nullable();
+        //     $table->integer('in_delivery')->nullable();
+        //     $table->integer('spoiled_products')->nullable();
+        //     $table->integer('missing_products')->nullable();
+        //     $table->integer('added_by');
+        //     $table->boolean('tax_exempt')->default(false);
+        //     $table->timestamps();
+        // });
+        // Schema::drop('users');
+
+        
+
         return new Product([
             'id'     => $row[0],
             'product_name'    => $row[1],

@@ -45,6 +45,11 @@ const form = useForm({
   product_id: null,
 });
 
+const exportData = () =>
+{ 
+  Inertia.get("/dashboard/download_product");
+}
+
 const onFileChange = (e) => {
   console.log(e.target.files[0]);
   filename.value = "Selected File: " + e.target.files[0].name;
@@ -599,12 +604,14 @@ const setTax = () => {
                     <div class="mb-10">
                       <div class="flex flex-row justify-center">
                         <div>
-                          <button
+                          <!-- @click="exportData" -->
+                          <a
+                            href="/dashboard/download_product"
                             type="button"
-                            class="inline-flex items-center rounded-sm border border-transparent bg-green-600 px-3 py-2 text-sm font-light leading-4 text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                            class="mr-2 inline-flex items-center rounded-sm border border-transparent bg-green-600 px-3 py-2 text-sm font-light leading-4 text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                           >
-                            Download Template <i class="ml-4 fas fa-file-csv fa-2x"></i>
-                          </button>
+                            Download Data <i class="ml-4 fas fa-file-csv fa-2x"></i>
+                          </a>
                         </div>
                         <div></div>
                       </div>

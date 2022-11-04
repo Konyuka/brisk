@@ -23,12 +23,15 @@ class DashboardController extends Controller
 {
     public function uploadProduct(Request $request)
     {
+        Product::truncate();
         Excel::import(new ProductsImport, $request->file('file')->store('temp'));
+        // return Excel::download(new ProductsExport, 'products-collection.xlsx');
         return back();
     }
-    public function fileExport()
+    public function downloadProduct()
     {
-        return Excel::download(new ProductsImport, 'products-collection.xlsx');
+        return Excel::download(new ProductsExport, 'products-collection.xlsx');
+        return back();
     }
     
     public function addProduct(Request $request)
