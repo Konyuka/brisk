@@ -23,13 +23,9 @@ class DashboardController extends Controller
 {
     public function uploadProduct(Request $request)
     {
-        // return dd($request);
         Excel::import(new ProductsImport, $request->file('file')->store('temp'));
         return back();
     }
-    /**
-     * @return \Illuminate\Support\Collection
-     */
     public function fileExport()
     {
         return Excel::download(new ProductsImport, 'products-collection.xlsx');
@@ -287,6 +283,19 @@ class DashboardController extends Controller
                 array_push($agentsArrayPush, $actual);
             }
         }
+
+        $adminUsers =  User::where('admin', 1)->select('id')->get();
+        $admindecoded = json_decode($adminUsers);
+        $managerUsers =  User::where('admin', 2)->select('id')->get();
+        $managersdecoded = json_decode($managerUsers);
+        foreach ($managersdecoded as $key => $value) {
+            array_push($agentsArrayPush, $value->id);
+        }
+        foreach ($admindecoded as $key => $value) {
+            array_push($agentsArrayPush, $value->id);
+        }
+        // return dd($agentsArrayPush);
+        // array_push($agentsArrayPush, json_decode($elevatedUsers));
         
 
         if($invoice != null){

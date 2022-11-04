@@ -740,7 +740,7 @@ const setTax = () => {
                           class="text-blue-600 fas fa-edit fa-md transform translate hover:scale-150 duration-300 hover:cursor-pointer mr-3"
                         ></i>
                         <i
-                          class="text-green-500 fas fa-trash fa-md transform translate hover:scale-150 duration-300 hover:cursor-pointer mr-3"
+                          class="text-red-500 fas fa-trash fa-md transform translate hover:scale-150 duration-300 hover:cursor-pointer mr-3"
                         ></i>
                       </div>
                     </td>

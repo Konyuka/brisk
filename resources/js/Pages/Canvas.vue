@@ -987,7 +987,7 @@ const addEverything = () => {
                           disabled
                           v-model="selectedProduct.selectedproductName"
                           type="text"
-                          class="form-control block w-full sm:px-3 sm:py-1.5 text-xs sm:text-base font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                          class="form-control block w-full sm:px-3 sm:py-1.5 text-xs sm:text-xs font-normal text-gray-700 bg-gray-200 bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                           id="exampleFormControlInput1"
                           placeholder=""
                         />
@@ -1055,7 +1055,7 @@ const addEverything = () => {
                               name="username"
                               id="username"
                               autocomplete="username"
-                              class="text-black  font-bold block w-12 min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-green-800 focus:ring-green-800 sm:text-sm"
+                              class="text-black  font-bold block w-16 min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-green-800 focus:ring-green-800 sm:text-sm"
                             />
                           </div>
                           <div
@@ -1073,7 +1073,7 @@ const addEverything = () => {
                               name="username"
                               id="username"
                               autocomplete="username"
-                              class="text-black  font-bold block w-12 min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-green-800 focus:ring-green-800 sm:text-sm"
+                              class="text-black  font-bold block w-16 min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-green-800 focus:ring-green-800 sm:text-sm"
                             />
                           </div>
                         </div>

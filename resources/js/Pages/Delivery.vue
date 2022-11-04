@@ -5,6 +5,7 @@ import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Canvass from "./Canvass.vue";
 import moment from "moment";
+import { forEach } from "lodash";
 
 const props = defineProps({
   products: Array,
@@ -18,6 +19,16 @@ const props = defineProps({
   activeTeamLeads: Array,
 });
 
+const stockValue = computed(() =>
+{ 
+  tripProducts.forEach(product =>
+  {
+    let itemsLoaded = JSON.parse(product.trip_batch)
+    // return product.sales_price * product.sales
+  });
+
+});
+const saleValue = computed(() => usePage().props.value.flash.success);
 const currentMessage = computed(() => usePage().props.value.flash.success);
 watch(currentMessage, (newX) => {
   if (newX == "Trip Finished Successfully") {
@@ -37,7 +48,10 @@ const form = useForm({
   added_by: currentUser,
 });
 
+// const stockValue = ref([]);
+// const saleValue = ref([]);
 const currentProduct = ref([]);
+const selectedTripLead = ref(null);
 const selectedTripID = ref(null);
 const tripProducts = ref([]);
 watch(
@@ -161,9 +175,10 @@ const checkSoldItems = (value) => {
 };
 
 const loadTripItems = (trip) => {
-  // console.log(trip);
+  console.log(trip);
   // return;
   selectedTripID.value = trip.id;
+  selectedTripLead.value = trip.lead_name;
   let productIDS = JSON.parse(trip.products_ids);
   for (let index = 0; index < productIDS.length; index++) {
     let found = props.products.find((item) => item.id === productIDS[index]);
@@ -450,9 +465,17 @@ const getInvoiceForm = async () => {
                 <i class="fas fa-chart-pie"></i>
               </div>
               <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">
-                  Finish Trip #{{ selectedTripID }}
-                </h3>
+                <div class="flex flex-row justify-between">
+                  <h3 class="capitalize text-lg font-medium leading-6 text-gray-900" id="modal-title">
+                    {{ selectedTripLead }}'s Trip 
+                  </h3>
+                  <h3 class="capitalize text-lg font-medium leading-6 text-gray-900" id="modal-title">
+                    Stock Value: {{ stockValue }}
+                  </h3>
+                  <h3 class="capitalize text-lg font-medium leading-6 text-gray-900" id="modal-title">
+                    Sale Value: {{ saleValue }}
+                  </h3>
+                </div>
                 <div class="mt-2">
                   <div
                     class="mb-8 border-2 border-gray-200 sm:border-0"
