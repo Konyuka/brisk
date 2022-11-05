@@ -219,7 +219,8 @@ class DashboardController extends Controller
                 $newTripFigures = [];
                 foreach ($tripFigures as $figure) {
                     if ($figure->batchNumber == $tripBatch) {
-                        $figure->itemsSold = $value->productQuantity;
+                        $initialFigure = $figure->itemsSold;
+                        $figure->itemsSold = $value->productQuantity + $initialFigure;
                         $figure->numberItems = $figure->numberItems - $value->productQuantity;
                     }
                 }
@@ -231,6 +232,7 @@ class DashboardController extends Controller
 
             return redirect()->back()->with('success', 'Sale Registered Successfully');
         } else {
+
             $phone = $request->phone;
             $amount = $request->amount;
             $account = $request->account;
