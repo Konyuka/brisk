@@ -846,8 +846,8 @@ const addEverything = () => {
             </p> -->
 
             <div class="mt-4 whitespace-nowrap py-2 text-sm text-gray-900">
+              <!-- v-LowerCase -->
               <input
-                v-LowerCase
                 :value="selectedProducts[selectedProductIndex].productname"
                 @input="
                   (e) =>

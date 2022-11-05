@@ -719,8 +719,8 @@ const deleteAgentRow = (index, selectedAgent) => {
           <div class="sm:flex-auto">
             <h1 class="text-xl font-semibold text-gray-900">Trip Products</h1>
             <div class="mt-4 whitespace-nowrap py-2 text-sm text-gray-900">
+              <!-- v-LowerCase -->
               <input
-                v-LowerCase
                 :value="selectedProducts[selectedProductIndex].productname"
                 @input="
                   (e) =>

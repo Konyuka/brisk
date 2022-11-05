@@ -5,7 +5,6 @@ import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Canvass from "./Canvass.vue";
 import moment from "moment";
-import { forEach } from "lodash";
 
 const props = defineProps({
   products: Array,
@@ -19,16 +18,12 @@ const props = defineProps({
   activeTeamLeads: Array,
 });
 
-const stockValue = computed(() =>
-{ 
-  tripProducts.forEach(product =>
-  {
-    let itemsLoaded = JSON.parse(product.trip_batch)
-    // return product.sales_price * product.sales
-  });
+// const stockValue = computed(() =>
+// { 
+  
 
-});
-const saleValue = computed(() => usePage().props.value.flash.success);
+// });
+// const saleValue = computed(() => usePage().props.value.flash.success);
 const currentMessage = computed(() => usePage().props.value.flash.success);
 watch(currentMessage, (newX) => {
   if (newX == "Trip Finished Successfully") {
@@ -48,8 +43,8 @@ const form = useForm({
   added_by: currentUser,
 });
 
-// const stockValue = ref([]);
-// const saleValue = ref([]);
+const stockValue = ref(null);
+const saleValue = ref(null);
 const currentProduct = ref([]);
 const selectedTripLead = ref(null);
 const selectedTripID = ref(null);
@@ -76,6 +71,12 @@ watch(
   }
 );
 const closingTripModal = ref(false);
+watch(closingTripModal, (newX) =>
+{
+  if (newX==true) { 
+    calcStockValue()
+  }
+});
 const selectedItem = ref({});
 watch(selectedItem, (newX) => {
   payload.product_id = newX.id;
@@ -96,6 +97,8 @@ onMounted(() => {
   } else {
     bottomCanvas.value = false;
   }
+
+  
 });
 
 const spoiledProducts = ref(null);
@@ -111,12 +114,21 @@ const payload = reactive({
   invoice_number: 1,
 });
 
+const calcStockValue = () =>
+{ 
+  // let valuesArray = []
+  // for (let index = 0; index < tripProducts.length; index++) {
+  //   valuesArray.push(tripProducts[index].sale_price)
+    // console.log(valuesArray) 
+  // }
+  // alert('check')
+  // return valuesArray
+}
 const editTrip = (trip) =>
 { 
-  console.log(trip)
+  // console.log(trip)
   tripDetails.value
 }
-
 const missingProducts = (value) =>
 { 
   if (value == 1) {
@@ -175,8 +187,9 @@ const checkSoldItems = (value) => {
 };
 
 const loadTripItems = (trip) => {
-  console.log(trip);
+  // console.log(trip);
   // return;
+  
   selectedTripID.value = trip.id;
   selectedTripLead.value = trip.lead_name;
   let productIDS = JSON.parse(trip.products_ids);
@@ -184,7 +197,27 @@ const loadTripItems = (trip) => {
     let found = props.products.find((item) => item.id === productIDS[index]);
     tripProducts.value.push(found);
   }
+  let stockValuesArray = []
+  let saleValuesArray = []
+  let allProducts = tripProducts.value;
+  for (let index = 0; index < allProducts.length; index++) {
+    let stockMultiples = allProducts[index].sales_price * allProducts[index].in_delivery
+    stockValuesArray.push(stockMultiples)
+
+    let parseJson = JSON.parse(allProducts[index].trip_batch);
+    let soldItem =  parseJson[0].itemsSold;
+    let saleMultiples = allProducts[index].sales_price * soldItem
+    saleValuesArray.push(saleMultiples)
+    // return console.log(soldItem)
+  }
+  console.log(saleValuesArray)
+  let addedStockValue = stockValuesArray.reduce((a, b) => a + b, 0)
+  let addedSaleValue = saleValuesArray.reduce((a, b) => a + b, 0)
+  stockValue.value = addedStockValue
+  saleValue.value = addedSaleValue
   closingTripModal.value = true;
+
+
 };
 
 const formatTime = (value) => {
@@ -469,11 +502,11 @@ const getInvoiceForm = async () => {
                   <h3 class="capitalize text-lg font-medium leading-6 text-gray-900" id="modal-title">
                     {{ selectedTripLead }}'s Trip 
                   </h3>
-                  <h3 class="capitalize text-lg font-medium leading-6 text-gray-900" id="modal-title">
-                    Stock Value: {{ stockValue }}
+                  <h3 class="capitalize text-lg font-medium leading-6 text-gray-600" id="modal-title">
+                    <span class="text-xs">Stock Value:</span> KES {{ stockValue }}
                   </h3>
-                  <h3 class="capitalize text-lg font-medium leading-6 text-gray-900" id="modal-title">
-                    Sale Value: {{ saleValue }}
+                  <h3 class="capitalize text-lg font-medium leading-6 text-gray-600" id="modal-title">
+                    <span class="text-xs">Sale Value:</span> KES {{ saleValue }}
                   </h3>
                 </div>
                 <div class="mt-2">
