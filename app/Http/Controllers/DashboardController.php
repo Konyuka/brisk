@@ -461,9 +461,9 @@ class DashboardController extends Controller
                 } 
             }
         }
-        foreach($detailsArray as $key=>$value){
-             $tripBatch = $value->tripBatch;
-        }
+        // foreach($detailsArray as $key=>$value){
+        //      $tripBatch = $value->tripBatch;
+        // }
         foreach($detailsArray as $key=>$value){
              $leadName = User::where('id', $value->lead)->get()->first();
             //  return dd($leadName->name);
@@ -497,8 +497,12 @@ class DashboardController extends Controller
             ]);
         }
 
-        // return dd($createdTrip);
+        $tripBatch = $createdTrip->id;
+        // $tripBatch = Sale::latest()->get()->first(); 
+
+        // return dd($tripBatch);
         foreach($productArray as $key=>$value){
+            // return dd($value);
             // return dd($value);
              $remainingStock = $value->remainingProducts - $value->productQuantity;
              $productQuantity = $value->productQuantity;

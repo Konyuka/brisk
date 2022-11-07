@@ -29,6 +29,7 @@ class ProductsExport implements FromCollection, WithHeadings
             'in_delivery',
             'spoiled_products',
             'missing_products',
+            'added_by',
             'tax_exempt',
             'created_at',
             'updated_at',
