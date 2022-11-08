@@ -19,8 +19,7 @@ const props = defineProps({
 });
 
 // const stockValue = computed(() =>
-// { 
-  
+// {
 
 // });
 // const saleValue = computed(() => usePage().props.value.flash.success);
@@ -43,6 +42,7 @@ const form = useForm({
   added_by: currentUser,
 });
 
+const finishModalPrompt = ref(false);
 const stockValue = ref(null);
 const saleValue = ref(null);
 const currentProduct = ref([]);
@@ -71,10 +71,9 @@ watch(
   }
 );
 const closingTripModal = ref(false);
-watch(closingTripModal, (newX) =>
-{
-  if (newX==true) { 
-    calcStockValue()
+watch(closingTripModal, (newX) => {
+  if (newX == true) {
+    calcStockValue();
   }
 });
 const selectedItem = ref({});
@@ -97,8 +96,6 @@ onMounted(() => {
   } else {
     bottomCanvas.value = false;
   }
-
-  
 });
 
 const spoiledProducts = ref(null);
@@ -114,41 +111,38 @@ const payload = reactive({
   invoice_number: 1,
 });
 
-const calcStockValue = () =>
-{ 
+const calcStockValue = () => {
   // let valuesArray = []
   // for (let index = 0; index < tripProducts.length; index++) {
   //   valuesArray.push(tripProducts[index].sale_price)
-    // console.log(valuesArray) 
+  // console.log(valuesArray)
   // }
   // alert('check')
   // return valuesArray
-}
-const editTrip = (trip) =>
-{ 
+};
+const editTrip = (trip) => {
   // console.log(trip)
-  tripDetails.value
-}
-const missingProducts = (value) =>
-{ 
+  tripDetails.value;
+};
+const missingProducts = (value) => {
   if (value == 1) {
-    return false
-  } else { 
-    return true
-  }
-}
-
-const closedTrip = (trip) =>
-{
-  if (trip.trip_complete == 1) {
-    return false
+    return false;
   } else {
-    return true
+    return true;
   }
-  
 };
 
-const finishTrip = async () => {
+const closedTrip = (trip) => {
+  if (trip.trip_complete == 1) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+const finishTrip = async () =>
+{
+  finishModalPrompt.value = false
   await Inertia.post("/dashboard/finish_trip", currentProduct.value);
 };
 
@@ -189,7 +183,7 @@ const checkSoldItems = (value) => {
 const loadTripItems = (trip) => {
   // console.log(trip);
   // return;
-  
+
   selectedTripID.value = trip.id;
   selectedTripLead.value = trip.lead_name;
   let productIDS = JSON.parse(trip.products_ids);
@@ -197,27 +191,25 @@ const loadTripItems = (trip) => {
     let found = props.products.find((item) => item.id === productIDS[index]);
     tripProducts.value.push(found);
   }
-  let stockValuesArray = []
-  let saleValuesArray = []
+  let stockValuesArray = [];
+  let saleValuesArray = [];
   let allProducts = tripProducts.value;
   for (let index = 0; index < allProducts.length; index++) {
-    let stockMultiples = allProducts[index].sales_price * allProducts[index].in_delivery
-    stockValuesArray.push(stockMultiples)
+    let stockMultiples = allProducts[index].sales_price * allProducts[index].in_delivery;
+    stockValuesArray.push(stockMultiples);
 
     let parseJson = JSON.parse(allProducts[index].trip_batch);
-    let soldItem =  parseJson[0].itemsSold;
-    let saleMultiples = allProducts[index].sales_price * soldItem
-    saleValuesArray.push(saleMultiples)
+    let soldItem = parseJson[0].itemsSold;
+    let saleMultiples = allProducts[index].sales_price * soldItem;
+    saleValuesArray.push(saleMultiples);
     // return console.log(soldItem)
   }
-  console.log(saleValuesArray)
-  let addedStockValue = stockValuesArray.reduce((a, b) => a + b, 0)
-  let addedSaleValue = saleValuesArray.reduce((a, b) => a + b, 0)
-  stockValue.value = addedStockValue
-  saleValue.value = addedSaleValue
+  console.log(saleValuesArray);
+  let addedStockValue = stockValuesArray.reduce((a, b) => a + b, 0);
+  let addedSaleValue = saleValuesArray.reduce((a, b) => a + b, 0);
+  stockValue.value = addedStockValue;
+  saleValue.value = addedSaleValue;
   closingTripModal.value = true;
-
-
 };
 
 const formatTime = (value) => {
@@ -360,7 +352,7 @@ const getInvoiceForm = async () => {
                       <td class="">
                         <div class="flex items-center pl-1 sm:pl-3">
                           <p
-                            class=" text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
+                            class="text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
                           >
                             <span class="capitalize">{{ trip.lead_name }}'s</span> Group
                           </p>
@@ -419,7 +411,7 @@ const getInvoiceForm = async () => {
                       <td class="pl-2">
                         <div class="flex items-center">
                           <button
-                           v-if="closedTrip(trip)"
+                            v-if="closedTrip(trip)"
                             @click="loadTripItems(trip)"
                             type="button"
                             class="mr-2 inline-flex items-center rounded border border-transparent bg-green-900 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-light-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
@@ -492,20 +484,32 @@ const getInvoiceForm = async () => {
             class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 w-full sm:w-full sm:max-w-3xl sm:p-6"
           >
             <div class="sm:flex sm:items-start">
-              <div
-                class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10"
+              <Link
+                href="/dashboard/product_delivery"
+                class="group mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 hover:bg-red-100 sm:mx-0 sm:h-10 sm:w-10"
               >
-                <i class="fas fa-chart-pie"></i>
-              </div>
+                <i
+                  class="transition transform duration-600 group-hover:scale-125 fas fa-xmark"
+                ></i>
+              </Link>
               <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                 <div class="flex flex-row justify-between">
-                  <h3 class="capitalize text-lg font-medium leading-6 text-gray-900" id="modal-title">
-                    {{ selectedTripLead }}'s Trip 
+                  <h3
+                    class="capitalize text-lg font-medium leading-6 text-gray-900"
+                    id="modal-title"
+                  >
+                    {{ selectedTripLead }}'s Trip
                   </h3>
-                  <h3 class="capitalize text-lg font-medium leading-6 text-gray-600" id="modal-title">
+                  <h3
+                    class="capitalize text-lg font-medium leading-6 text-gray-600"
+                    id="modal-title"
+                  >
                     <span class="text-xs">Stock Value:</span> KES {{ stockValue }}
                   </h3>
-                  <h3 class="capitalize text-lg font-medium leading-6 text-gray-600" id="modal-title">
+                  <h3
+                    class="capitalize text-lg font-medium leading-6 text-gray-600"
+                    id="modal-title"
+                  >
                     <span class="text-xs">Sale Value:</span> KES {{ saleValue }}
                   </h3>
                 </div>
@@ -616,7 +620,7 @@ const getInvoiceForm = async () => {
             </div>
             <div class="mt-5 sm:mt-4 sm:ml-10 sm:flex justify-between sm:pl-4">
               <button
-                @click="finishTrip"
+                @click="finishModalPrompt = true"
                 type="button"
                 class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-800 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-light-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto sm:text-sm"
               >
@@ -625,10 +629,60 @@ const getInvoiceForm = async () => {
               <Link
                 href="/dashboard/product_delivery"
                 type="button"
-                class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white hover:bg-red-600 px-4 py-2 text-base font-medium text-gray-700 hover:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-red-500 hover:bg-red-700 px-4 py-2 text-base font-medium text-white hover:text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
               >
                 Cancel
               </Link>
+            </div>
+
+            <div
+              v-if="finishModalPrompt"
+              class="relative z-10"
+              aria-labelledby="modal-title"
+              role="dialog"
+              aria-modal="true"
+            >
+              <div
+                class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+              ></div>
+
+              <div class="fixed inset-0 z-10 overflow-y-auto">
+                <div
+                  class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
+                >
+                  <div
+                    class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
+                  >
+                    <div>
+                      <div class="mt-3 text-center sm:mt-5">
+                        <h3
+                          class="text-lg font-medium leading-6 text-gray-900"
+                          id="modal-title"
+                        >
+                          Do you want to close the Trip?
+                        </h3>
+                      </div>
+                    </div>
+                    <div
+                      class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3"
+                    >
+                      <button
+                        @click="finishTrip"
+                        type="button"
+                        class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm"
+                      >
+                        YES
+                      </button>
+                      <Link
+                        href="/dashboard/product_delivery"
+                        type="button"
+                        class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-600 bg-red-500 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm"
+                        >NO</Link
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
