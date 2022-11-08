@@ -461,24 +461,8 @@ class DashboardController extends Controller
                 } 
             }
         }
-        // foreach($detailsArray as $key=>$value){
-        //      $tripBatch = $value->tripBatch;
-        // }
         foreach($detailsArray as $key=>$value){
-             $leadName = User::where('id', $value->lead)->get()->first();
-            //  return dd($leadName->name);
-            // $agentsArray = [];
-            // foreach($agentArray as $key=>$value){
-            //     User::where('id', $value->selectedAgentID)
-            //     ->update([
-            //         'trip_batch' => $tripBatch
-            //     ]);
-
-            //     $idsArray = []; 
-            //     array_push($agentsArray, $value->selectedAgentID);
-
-            // }
-
+            $leadName = User::where('id', $value->lead)->get()->first();
             $createdTrip =  Trip::create([
                 'added_by' => $value->added_by,
                 'number_users' => $value->agentsNumber,
@@ -498,12 +482,7 @@ class DashboardController extends Controller
         }
 
         $tripBatch = $createdTrip->id;
-        // $tripBatch = Sale::latest()->get()->first(); 
-
-        // return dd($tripBatch);
-        foreach($productArray as $key=>$value){
-            // return dd($value);
-            // return dd($value);
+        foreach ($productArray as $key => $value) {
              $remainingStock = $value->remainingProducts - $value->productQuantity;
              $productQuantity = $value->productQuantity;
              $productTripBatch = Product::where('id', $value->selectedproductID)->select('trip_batch')->first();
@@ -514,7 +493,7 @@ class DashboardController extends Controller
              if(is_null($productTripBatchDecoded)){
                 $batchObject = new \stdClass();
                 $batchObject->batchNumber = $tripBatch;
-                $batchObject->numberItems = $productQuantity;
+                $batchObject->numberItems = (int)$productQuantity;
                 $batchObject->itemsSold = 0;
 
                  array_push($batchArray, $batchObject);
@@ -529,7 +508,7 @@ class DashboardController extends Controller
                      }
                      $batchObject = new \stdClass();
                      $batchObject->batchNumber = $tripBatch;
-                     $batchObject->numberItems = $productQuantity; 
+                $batchObject->numberItems = (int)$productQuantity; 
                      $batchObject->itemsSold = 0;
                      array_push($batchArray, $batchObject);  
                     }

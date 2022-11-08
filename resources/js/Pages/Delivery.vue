@@ -1,6 +1,6 @@
 <script setup>
 import { useForm, usePage, Link } from "@inertiajs/inertia-vue3";
-import { ref, toRefs, computed, reactive, watch, onMounted } from "vue";
+import { ref, computed, reactive, watch, onMounted } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Canvass from "./Canvass.vue";
