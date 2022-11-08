@@ -398,11 +398,10 @@ const addTableRow = () => {
 };
 const deleteTableRow = (index, selectedProduct) => {
   var idx = selectedProducts.value.indexOf(selectedProduct);
-  console.log(idx, index);
-  if (idx > 0) {
+  var productID = selectedProduct.selectedproductID
+  if (productID != undefined) {
     selectedProducts.value.splice(idx, 1);
   }
-  // calculateTotal();
 };
 const deleteAgentRow = (index, selectedAgent) => {
   var idx = selectedAgents.value.indexOf(selectedAgent);
@@ -758,7 +757,7 @@ const deleteAgentRow = (index, selectedAgent) => {
                           >
                           <input
                             v-model="selectedProduct.productQuantity"
-                            type="text"
+                            type="number"
                             name="username"
                             id="username"
                             autocomplete="username"

@@ -412,13 +412,13 @@ const addTableRow = () => {
     salePrice: null,
   });
 };
-const deleteTableRow = (index, selectedProduct) => {
+const deleteTableRow = (index, selectedProduct) =>
+{
   var idx = selectedProducts.value.indexOf(selectedProduct);
-  console.log(idx, index);
-  if (idx > -1) {
+  var productID = selectedProduct.selectedproductID
+  if (productID != undefined) {
     selectedProducts.value.splice(idx, 1);
-  }
-  // calculateTotal();
+  }  
   addEverything();
 };
 const checkSaleChanges = (index) => {
