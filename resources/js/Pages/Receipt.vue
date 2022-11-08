@@ -34,6 +34,11 @@ watch(printTrigger, (value) => {
   // console.log(value)
 })
 
+const formatToCurrency = (amount) =>
+{ 
+  return (amount).toFixed(0).replace(/\d(?=(\d{3})+\.)/g, '$&,'); 
+} 
+
 const generatePDF = () =>
 {
   var doc = new jsPDF();
@@ -142,7 +147,7 @@ const generatePDF = () =>
             <td  style="font-size: 9.5pt;" class="description">{{ product.selectedproductName}}</td>
             <td  class="quantity uppercase">{{ product.productSKU }} </td>
             <td  class="quantity">{{ product.productQuantity}} </td>
-            <td  class="price">KES. {{ product.salePrice }}</td>
+            <td  class="price">KES. {{ formatToCurrency(product.salePrice) }}</td>
           </tr>
         </tbody>
       </table>
@@ -193,6 +198,10 @@ const generatePDF = () =>
       </div>
       <div style="font-size: 18.5pt;" class="">
         <p>Thank you for the purchase</p>
+      </div>
+      <div style="font-size: 18.5pt;" class="">
+        <!-- <p>Thank you for the purchase</p> -->
+        Contact Us On: 0112047733 
       </div>
     </div>
 

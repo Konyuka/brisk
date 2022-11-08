@@ -1,11 +1,8 @@
 <script setup>
 import { useForm, usePage } from "@inertiajs/inertia-vue3";
-import { ref, computed, watch, toRefs, reactive } from "vue";
+import { ref, computed, watch, toRefs } from "vue";
 import { Inertia } from "@inertiajs/inertia";
-// import AppLayout from "@/Layouts/AppLayout.vue";
-// import { Calendar, DatePicker } from "v-calendar";
 import moment from "moment";
-import Receipt from "./Receipt.vue";
 
 const props = defineProps({
   salesAgents: Array,
@@ -45,9 +42,8 @@ const clientsCollapse = computed(() => {
     return false;
   }
 });
-const productsCollapse = computed(() =>
-{
-  let lastProductIndex = productsNumber.value + 1
+const productsCollapse = computed(() => {
+  let lastProductIndex = productsNumber.value + 1;
   if (selectedProducts.value[0].productname != null) {
     // if (purchasedProduct.value != "") {
     return true;
@@ -146,8 +142,6 @@ const tripDetails = useForm({
   brandsNumber: brandsNumber,
   agentsNumber: agentsNumber,
 });
-
-const date = ref(moment().format("MMMM Do YYYY, h:mm:ss a"));
 
 watch(
   chosenAgent,
@@ -259,13 +253,12 @@ watch(
   selectedProducts,
   (value) => {
     // console.log(value)
-    let numberOfItems = []
-    selectedProducts.value.forEach(function (item, index)
-    { 
-      numberOfItems.push(parseInt(item.productQuantity))
-    })
-    numberOfItems.pop()
-    tripDetails.loadedProducts = numberOfItems.reduce((a, b) => a + b, 0)
+    let numberOfItems = [];
+    selectedProducts.value.forEach(function (item, index) {
+      numberOfItems.push(parseInt(item.productQuantity));
+    });
+    numberOfItems.pop();
+    tripDetails.loadedProducts = numberOfItems.reduce((a, b) => a + b, 0);
   },
   {
     deep: true,
@@ -273,83 +266,84 @@ watch(
   }
 );
 
+const reloadData = () =>
+{
 
-const checkTeamLead = () =>
-{ 
-  if (activeTeamLeads.value.includes(tripDetails.lead)) {
-    tripDetails.lead = null
-    alert('Team Lead Assigned Team Already')
-  }
+  Inertia.reload({ only: ['salesAgents', 'teamLead', 'products', 'trips', 'activeAgents', 'activeTeamLeads', 'tripBatch' ] })
+  
 }
+
+const checkTeamLead = () => {
+  if (activeTeamLeads.value.includes(tripDetails.lead)) {
+    tripDetails.lead = null;
+    alert("Team Lead Assigned Team Already");
+  }
+};
 const clearForm = () => {
   Inertia.get("/dashboard/product_delivery");
 };
-const processTrip = async  () =>
-{
+const processTrip = async () => {
   if (selectedAgents.value.length == 1) {
-    alert('No Agent has been Addeed')
-  } else if (selectedProducts.value.length == 1) { 
-    alert('No product has been Addeed')
-  } else if (tripDetails.lead == null) { 
-    alert('No Team Lead assigned')
-  }else { 
-
+    alert("No Agent has been Addeed");
+  } else if (selectedProducts.value.length == 1) {
+    alert("No product has been Addeed");
+  } else if (tripDetails.lead == null) {
+    alert("No Team Lead assigned");
+  } else {
     selectedProducts.value.pop();
     selectedAgents.value.pop();
-  
-    let missingQunatities = false
-    selectedProducts.value.forEach(function (item, index)
-    {
-      if (typeof item.productQuantity === "undefined" || typeof item.productQuantity === "") {
-        missingQunatities = true
+
+    let missingQunatities = false;
+    selectedProducts.value.forEach(function (item, index) {
+      if (
+        typeof item.productQuantity === "undefined" ||
+        typeof item.productQuantity === ""
+      ) {
+        missingQunatities = true;
       }
-  
     });
-    let missingAgents = false
-    selectedAgents.value.forEach(function (item, index)
-    {
-      if (typeof item.selectedAgentName === null || typeof item.selectedAgentName === "null") {
-        missingAgents = true
+    let missingAgents = false;
+    selectedAgents.value.forEach(function (item, index) {
+      if (
+        typeof item.selectedAgentName === null ||
+        typeof item.selectedAgentName === "null"
+      ) {
+        missingAgents = true;
       }
-  
     });
-  
-  
+
     if (missingQunatities === true || missingAgents == true) {
       alert("Set Product Quantitie(s) to proceed");
-      addAgentRow()
-      addTableRow()
-    } else { 
+      addAgentRow();
+      addTableRow();
+    } else {
       let productsAgents = selectedProducts.value.concat(selectedAgents.value);
       let productsAgentsDetails = productsAgents.concat(tripDetails);
-    
+
       await Inertia.post("/dashboard/process_delivery", productsAgentsDetails);
-    
+
       setTimeout(() => {
         Inertia.get("/dashboard/product_delivery");
       }, 3000);
     }
-
   }
-
 };
-const setAgent = (agent) =>
-{
-  // console.log(agent) 
+const setAgent = (agent) => {
+  // console.log(agent)
   // return
   if (activeAgents.value.includes(agent.id)) {
-    alert('Already a member of another trip')
-  } else { 
+    alert("Already a member of another trip");
+  } else {
     agentsCollapseValue.value = false;
     chosenAgent.value = agent.name;
-  
+
     for (var i = 0; i < selectedAgents.value.length; i++) {
       if (i > 0) {
         // console.log(i);
         // console.log(selectedAgents.value[i].selectedAgentID);
       }
     }
-  
+
     if (!selectedAgents.value.includes(agent)) {
       selectedAgents.value[selectedAgentIndex.value].selectedAgentName = agent.name;
       selectedAgents.value[selectedAgentIndex.value].selectedAgentID = agent.id;
@@ -359,10 +353,7 @@ const setAgent = (agent) =>
     agentsCollapseValue.value = false;
   }
 };
-const setProduct = (product) =>
-{
-  
-
+const setProduct = (product) => {
   productsCollapseValue.value = false;
   purchasedProduct.value = product.product_name;
 
@@ -390,7 +381,6 @@ const setProduct = (product) =>
 
   // let lastProductIndex = productsNumber.value - 1
   // console.log(lastProductIndex)
-
 };
 const addAgentRow = () => {
   selectedAgents.value.push({
@@ -432,10 +422,18 @@ const deleteAgentRow = (index, selectedAgent) => {
         class="container-fluid w-full flex flex-wrap items-center justify-between px-6"
       >
         <div class="container-fluid">
-          <h5 class="text-md text-black font-semibold" href="#">
-            <i class="fa-solid fa-truck"></i> Trip Batch.
-            <span class="text-md sm:text-2xl">{{ tripBatch }}</span>
-          </h5>
+          <div class="grid grid-cols-2 gap-6">
+            <div>
+              <h5 class="text-md text-black font-semibold" href="#">
+                <i class="fa-solid fa-truck"></i> Trip Batch.
+                <span class="text-md sm:text-2xl">{{ tripBatch }}</span>
+              </h5>
+            </div>
+  
+            <button @click="reloadData" class="mt-2">
+              <i class="fas fa-refresh text-green-800 transfrom translate hover:scale-150 duration-700 hover:animate-spin"></i>
+            </button>
+          </div>
         </div>
       </div>
     </nav>
@@ -520,88 +518,14 @@ const deleteAgentRow = (index, selectedAgent) => {
                 </div>
 
                 <!-- <div class="col-span-3 sm:col-span-1">
-                  <label for="last-name" class="block text-sm font-medium text-gray-700"
-                    ><i class="fas fa-boxes-packing text-light-green-800 fa-lg mr-1"></i>
-                    Loaded Products</label
+                  <button
+                    type="button"
+                    className="mt-6 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                   >
-                  <input
-                    disabled
-                    type="number"
-                    name="last-name"
-                    id="last-name"
-                    v-model="tripDetails.loadedProducts"
-                    autocomplete="family-name"
-                    class="bg-gray-300 mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                  />
-                </div>
-
-                <div class="col-span-3 sm:col-span-1">
-                  <label for="last-name" class="block text-sm font-medium text-gray-700"
-                    ><i class="fas fa-coins text-light-green-800 fa-lg mr-1"></i> Sold
-                    Products</label
-                  >
-                  <input
-                    disabled
-                    type="number"
-                    name="last-name"
-                    id="last-name"
-                    v-model="tripDetails.soldProducts"
-                    autocomplete="family-name"
-                    class="bg-gray-300 mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                  />
-                </div>
-
-                <div class="col-span-3 sm:col-span-2">
-                  <label for="last-name" class="block text-sm font-medium text-gray-700"
-                    ><i class="fas fa-retweet text-light-green-800 fa-lg mr-1"></i>
-                    Returned Products</label
-                  >
-                  <input
-                    disabled
-                    type="number"
-                    name="last-name"
-                    id="last-name"
-                    v-model="tripDetails.returnedProducts"
-                    autocomplete="family-name"
-                    class="bg-gray-100 mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                  />
-                </div>
-
-                <div class="col-span-3 sm:col-span-2">
-                  <label for="last-name" class="block text-sm font-medium text-gray-700"
-                    ><i
-                      class="fas fa-rectangle-xmark text-light-green-800 fa-lg mr-1"
-                    ></i>
-                    Spoiled Products</label
-                  >
-                  <input
-                    disabled
-                    type="number"
-                    name="last-name"
-                    id="last-name"
-                    v-model="tripDetails.spoiledProducts"
-                    autocomplete="family-name"
-                    class="bg-gray-100 mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                  />
-                </div>
-
-                <div class="col-span-3 sm:col-span-1">
-                  <label for="last-name" class="block text-sm font-medium text-gray-700"
-                    ><i
-                      class="fas fa-rectangle-xmark text-light-green-800 fa-lg mr-1"
-                    ></i>
-                    Missing Products</label
-                  >
-                  <input
-                    disabled
-                    type="number"
-                    name="last-name"
-                    id="last-name"
-                    v-model="tripDetails.missingProducts"
-                    autocomplete="family-name"
-                    class="bg-gray-300 mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                  />
+                    Refresh Trip Data
+                  </button>
                 </div> -->
+                
               </div>
             </div>
           </div>

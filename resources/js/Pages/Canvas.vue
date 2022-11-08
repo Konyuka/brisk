@@ -199,6 +199,13 @@ watch(
   }
 );
 
+const reloadData = () =>
+{
+
+  Inertia.reload({ only: ['clients', 'products', 'invoiceLog' ] })
+  
+}
+
 const processPayment = () => {
   if (overallTotal.value == null) {
     alert("No products have been selected");
@@ -556,6 +563,13 @@ const addEverything = () => {
         class="bg-green-700 hover:bg-green-900 form-label font-bold rounded-md text-xs px-2 py-2 inline-block mb-2 text-white"
       >
         Add Client Details
+      </button>
+      <button
+        @click="reloadData"
+        for="exampleFormControlInput1"
+        class="ml-4 bg-orange-700 hover:bg-green-900 form-label font-light rounded-md text-xs px-2 py-2 inline-block mb-2 text-white"
+      >
+        <i class="fas fa-refresh text-white transfrom translate hover:scale-150 duration-700 hover:animate-spin"></i>
       </button>
       <div
         v-if="!anonymousSale"

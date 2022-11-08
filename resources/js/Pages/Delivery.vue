@@ -18,30 +18,22 @@ const props = defineProps({
   activeTeamLeads: Array,
 });
 
-// const stockValue = computed(() =>
-// {
+onMounted(() => {
+  if (currentMessage.value == "Trip Registered Successfully") {
+    bottomCanvas.value = true;
+  } else {
+    bottomCanvas.value = false;
+  }
+});
 
-// });
-// const saleValue = computed(() => usePage().props.value.flash.success);
 const currentMessage = computed(() => usePage().props.value.flash.success);
 watch(currentMessage, (newX) => {
   if (newX == "Trip Finished Successfully") {
     closingTripModal.value = false;
   }
 });
+
 const currentUser = computed(() => usePage().props.value.user.id);
-const currentTime = computed(() => moment().format("LLL"));
-
-const form = useForm({
-  product_name: "",
-  product_quantity: 20,
-  stock_quantity: 10,
-  production_price: 120,
-  sales_price: 150,
-  product_description: "SoftSol Shampoo",
-  added_by: currentUser,
-});
-
 const finishModalPrompt = ref(false);
 const stockValue = ref(null);
 const saleValue = ref(null);
@@ -88,15 +80,7 @@ watch(purchasingClient, (newX) => {
 
 const purchasingQuantity = ref(1);
 const purchasingPrice = ref(200);
-
 const bottomCanvas = ref(false);
-onMounted(() => {
-  if (currentMessage.value == "Trip Registered Successfully") {
-    bottomCanvas.value = true;
-  } else {
-    bottomCanvas.value = false;
-  }
-});
 
 const spoiledProducts = ref(null);
 const itemsAreMissing = ref(false);
@@ -118,17 +102,7 @@ const formatToCurrency = (amount) =>
 } 
 
 const calcStockValue = () => {
-  // let valuesArray = []
-  // for (let index = 0; index < tripProducts.length; index++) {
-  //   valuesArray.push(tripProducts[index].sale_price)
-  // console.log(valuesArray)
-  // }
-  // alert('check')
-  // return valuesArray
-};
-const editTrip = (trip) => {
-  // console.log(trip)
-  tripDetails.value;
+  
 };
 const missingProducts = (value) => {
   if (value == 1) {
