@@ -31,6 +31,12 @@ const form = useForm({
   added_by: currentUser,
 });
 
+const formatToCurrency = (amount) =>
+{ 
+  return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'); 
+} 
+
+
 const agentSales = ref([]);
 
 const selectedItem = ref({});
@@ -301,7 +307,7 @@ const addProduct = () => {
                             class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
                           >
                             <!-- {{ product.sales_price }} KES -->
-                            {{ getProductPriceDetails(sale) }} KES
+                            {{ formatToCurrency(getProductPriceDetails(sale))  }} KES
                           </p>
                         </div>
                       </td>

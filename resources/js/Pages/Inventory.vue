@@ -45,7 +45,10 @@ const form = useForm({
   product_id: null,
 });
 
-
+const formatToCurrency = (amount) =>
+{ 
+  return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'); 
+} 
 
 const setDownloaded = () =>
 { 
@@ -743,7 +746,17 @@ const setTax = () => {
                         <p
                           class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
                         >
-                          {{ product.sales_price }} KES
+                          <span class="m-2 italic text-xs text-green-800">R</span> - {{ formatToCurrency(product.sales_price) }} KES
+                        </p>
+                      </div>
+                    </td>
+                    <td class="pl-2">
+                      <div class="flex items-center">
+                        <i class="fas fa-money-bill-trend-up text-green-900"></i>
+                        <p
+                          class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
+                        >
+                          <span class="m-2 italic text-xs text-green-800">W</span> - {{ formatToCurrency(product.wholesale_price) }} KES
                         </p>
                       </div>
                     </td>

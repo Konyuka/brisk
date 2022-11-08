@@ -111,6 +111,12 @@ const payload = reactive({
   invoice_number: 1,
 });
 
+  
+const formatToCurrency = (amount) =>
+{ 
+  return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'); 
+} 
+
 const calcStockValue = () => {
   // let valuesArray = []
   // for (let index = 0; index < tripProducts.length; index++) {
@@ -163,6 +169,7 @@ const setExpected = (value) => {
 };
 const checkLoadedItems = (value) => {
   let parseJson = JSON.parse(value);
+  // console.log(parseJson)
   let expectedItems = parseJson[0].numberItems - parseJson[0].itemsSold;
   let soldItems = parseJson[0].itemsSold;
   return parseInt(expectedItems) + parseInt(soldItems);
@@ -195,7 +202,14 @@ const loadTripItems = (trip) => {
   let saleValuesArray = [];
   let allProducts = tripProducts.value;
   for (let index = 0; index < allProducts.length; index++) {
-    let stockMultiples = allProducts[index].sales_price * allProducts[index].in_delivery;
+    
+    let parsedJson = JSON.parse(allProducts[index].trip_batch);
+    // console.log(allProducts[index])
+    let numberItems = parsedJson[0].numberItems;
+    // console.log(numberItems)
+  
+    let stockMultiples = allProducts[index].sales_price * numberItems;
+    // let stockMultiples = numberItems * allProducts[index].in_delivery;
     stockValuesArray.push(stockMultiples);
 
     let parseJson = JSON.parse(allProducts[index].trip_batch);
@@ -204,7 +218,7 @@ const loadTripItems = (trip) => {
     saleValuesArray.push(saleMultiples);
     // return console.log(soldItem)
   }
-  console.log(saleValuesArray);
+  // console.log(stockValuesArray);
   let addedStockValue = stockValuesArray.reduce((a, b) => a + b, 0);
   let addedSaleValue = saleValuesArray.reduce((a, b) => a + b, 0);
   stockValue.value = addedStockValue;
@@ -504,13 +518,13 @@ const getInvoiceForm = async () => {
                     class="capitalize text-lg font-medium leading-6 text-gray-600"
                     id="modal-title"
                   >
-                    <span class="text-xs">Stock Value:</span> KES {{ stockValue }}
+                    <span class="text-xs">Stock Value:</span> KES {{ formatToCurrency(stockValue) }}
                   </h3>
                   <h3
                     class="capitalize text-lg font-medium leading-6 text-gray-600"
                     id="modal-title"
                   >
-                    <span class="text-xs">Sale Value:</span> KES {{ saleValue }}
+                    <span class="text-xs">Sale Value:</span> KES {{ formatToCurrency(saleValue)  }}
                   </h3>
                 </div>
                 <div class="mt-2">
