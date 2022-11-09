@@ -602,7 +602,7 @@ class DashboardController extends Controller
             $missingProducts = Product::where('id', $value->productID)->select("missing_products")->first();
             $tripBatch = Product::where('id', $value->productID)->select("trip_batch")->first();
             $tripBatchDecoded = json_decode($tripBatch->trip_batch);
-            return dd($tripBatchDecoded);
+            // return dd($tripBatchDecoded);
             $newTripBatch = [];
             $recordedTripBatch = [];
 
