@@ -151,11 +151,13 @@ const checkLoadedItems = (value) => {
 };
 const checkExpectedItems = (value, value2) => {
   let parseJson = JSON.parse(value);
-  let expectedItems = parseJson[0].numberItems - parseJson[0].itemsSold;
-  let objIndex = currentProduct.value.findIndex((obj) => obj.productID == value2);
-  currentProduct.value[objIndex].expectedProducts = expectedItems;
+  let found = parseJson.find((item) => item.batchNumber === selectedTripID.value);
+  return found.numberItems - found.itemsSold
+  // let expectedItems = parseJson[0].numberItems - parseJson[0].itemsSold;
+  // let objIndex = currentProduct.value.findIndex((obj) => obj.productID == value2);
+  // currentProduct.value[objIndex].expectedProducts = expectedItems;
 
-  return expectedItems;
+  // return expectedItems;
 };
 const checkSoldItems = (value) => {
   let parseJson = JSON.parse(value);
