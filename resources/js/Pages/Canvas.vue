@@ -1,9 +1,7 @@
 <script setup>
 import { useForm, usePage, Link } from "@inertiajs/inertia-vue3";
-import { ref, toRefs, computed, watch, toRef, reactive } from "vue";
+import { ref, computed, watch } from "vue";
 import { Inertia } from "@inertiajs/inertia";
-// import AppLayout from "@/Layouts/AppLayout.vue";
-// import { Calendar, DatePicker } from "v-calendar";
 import moment from "moment";
 import Receipt from "./Receipt.vue";
 
@@ -13,20 +11,6 @@ const props = defineProps({
   currentMessage: String,
   invoiceLog: String,
 });
-
-// const invoiceLog = toRefs(props)
-
-const vLowerCase = {
-  updated: (el) => {
-    el.value = el.value.toLowerCase();
-  },
-};
-
-const vUpperCase = {
-  updated: (el) => {
-    el.value = el.value.toUpperCase();
-  },
-};
 
 const clientsCollapse = computed(() => {
   if (purchasingClient.value != "") {
@@ -122,15 +106,6 @@ const selectedProducts = ref([
 
 const addClientCollapse = ref(false);
 const date = ref(moment().format("MMMM Do YYYY, h:mm:ss a"));
-
-// watch(props.currentMessage, (value) => {
-//   if (value == "Sale Registered Successfully") {
-//     alert('Molio')
-//     paymentModal.value = false;
-//     saleSuccess.value = true;
-
-//   }
-// });
 
 watch(purchasingClient, (value) => {
   if (value == "") {
@@ -869,7 +844,7 @@ const addEverything = () => {
               <!-- <input type="text" :value="customer.name.toUpperCase()" @input="customer.name = $event.target.value.toUpperCase()"> -->
 
               <input
-                :value="selectedProducts[selectedProductIndex].productname.toUpperCase()"
+                :value="selectedProducts[selectedProductIndex].productname"
                 @input="
                   (e) =>
                     (selectedProducts[selectedProductIndex].productname = e.target.value.toUpperCase())

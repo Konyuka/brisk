@@ -2,7 +2,6 @@
 import { useForm, usePage } from "@inertiajs/inertia-vue3";
 import { ref, computed, watch, toRefs } from "vue";
 import { Inertia } from "@inertiajs/inertia";
-import moment from "moment";
 
 const props = defineProps({
   salesAgents: Array,
@@ -22,6 +21,12 @@ const { activeTeamLeads } = toRefs(props);
 const vLowerCase = {
   updated: (el) => {
     el.value = el.value.toLowerCase();
+  },
+};
+
+const vUpperCase = {
+  updated: (el) => {
+    el.value = el.value.toUpperCase();
   },
 };
 
@@ -119,6 +124,7 @@ const selectedProducts = ref([
     selectedType: null,
   },
 ]);
+
 const selectedAgents = ref([
   {
     selectedAgentName: null,
@@ -644,7 +650,7 @@ const deleteAgentRow = (index, selectedAgent) => {
             <div class="mt-4 whitespace-nowrap py-2 text-sm text-gray-900">
               <!-- v-LowerCase -->
               <input
-                :value="selectedProducts[selectedProductIndex].productname.toUpperCase()"
+                :value="selectedProducts[selectedProductIndex].productname"
                 @input="
                   (e) =>
                     (selectedProducts[selectedProductIndex].productname = e.target.value.toUpperCase())
