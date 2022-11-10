@@ -143,10 +143,11 @@ const setExpected = (value) => {
 };
 const checkLoadedItems = (value) => {
   let parseJson = JSON.parse(value);
-  // console.log(parseJson)
-  let expectedItems = parseJson[0].numberItems - parseJson[0].itemsSold;
-  let soldItems = parseJson[0].itemsSold;
-  return parseInt(expectedItems) + parseInt(soldItems);
+  let found = parseJson.find((item) => item.batchNumber === selectedTripID.value);
+  return found.numberItems
+  // let expectedItems = parseJson[0].numberItems - parseJson[0].itemsSold;
+  // let soldItems = parseJson[0].itemsSold;
+  // return parseInt(expectedItems) + parseInt(soldItems);
 };
 const checkExpectedItems = (value, value2) => {
   let parseJson = JSON.parse(value);

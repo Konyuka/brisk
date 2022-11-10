@@ -436,7 +436,6 @@ class DashboardController extends Controller
                 } 
             }
         }
-        // return dd($productArray);
         foreach($agentArray as $elementKey => $element) {
             foreach($element as $valueKey => $value) {
                 if($valueKey == 'selectedType' && $value == 'product'){
@@ -482,7 +481,7 @@ class DashboardController extends Controller
         }
 
         $tripBatch = $createdTrip->id;
-        foreach ($productArray as $key => $value) {
+        foreach ($productArray as $value) {
              $remainingStock = $value->remainingProducts - $value->productQuantity;
              $productQuantity = $value->productQuantity;
              $productTripBatch = Product::where('id', $value->selectedproductID)->select('trip_batch')->first();
@@ -496,22 +495,26 @@ class DashboardController extends Controller
                 $batchObject->numberItems = (int)$productQuantity;
                 $batchObject->itemsSold = 0;
 
-                 array_push($batchArray, $batchObject);
-                }else{
-                     foreach ($productTripBatchDecoded as $item) {
-                         $batchObject = new \stdClass();
-                         $batchObject->batchNumber = $item->batchNumber;
-                         $batchObject->numberItems = $item->numberItems; 
-                         $batchObject->itemsSold = $item->itemsSold; 
+                array_push($batchArray, $batchObject);
+            } else {
 
-                         array_push($batchArray, $batchObject);
-                     }
-                     $batchObject = new \stdClass();
-                     $batchObject->batchNumber = $tripBatch;
-                $batchObject->numberItems = (int)$productQuantity; 
-                     $batchObject->itemsSold = 0;
-                     array_push($batchArray, $batchObject);  
-                    }
+                foreach ($productTripBatchDecoded as $item) {
+                    $batchObject = new \stdClass();
+                    $batchObject->batchNumber = $item->batchNumber;
+                    $batchObject->numberItems = $item->numberItems;
+                    $batchObject->itemsSold = $item->itemsSold;
+
+                    array_push($batchArray, $batchObject);
+                }
+
+                $batchObject2 = new \stdClass();
+                $batchObject2->batchNumber = $tripBatch;
+                $batchObject2->numberItems = (int)$productQuantity;
+                $batchObject2->itemsSold = 0;
+                array_push($batchArray, $batchObject2);
+            }
+
+            // return dd($batchArray);
 
              Product::where('id', $value->selectedproductID)
              ->update([
@@ -556,12 +559,12 @@ class DashboardController extends Controller
             'products_ids' => $productIDsArray,
         ]);
 
-        if($tripBatch == 1){
-            Trip::where('id', $createdTrip->id)
-            ->update([
-                'id' => 1,
-            ]);
-        }
+        // if($tripBatch == 1){
+        //     Trip::where('id', $createdTrip->id)
+        //     ->update([
+        //         'id' => 1,
+        //     ]);
+        // }
         
         return redirect()->back()->with('success', 'Trip Registered Successfully');
 
