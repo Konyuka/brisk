@@ -22,6 +22,12 @@ const vLowerCase = {
   },
 };
 
+const vUpperCase = {
+  updated: (el) => {
+    el.value = el.value.toUpperCase();
+  },
+};
+
 const clientsCollapse = computed(() => {
   if (purchasingClient.value != "") {
     return true;
@@ -860,8 +866,21 @@ const addEverything = () => {
             </p> -->
 
             <div class="mt-4 whitespace-nowrap py-2 text-sm text-gray-900">
-              <!-- v-LowerCase -->
+              <!-- <input type="text" :value="customer.name.toUpperCase()" @input="customer.name = $event.target.value.toUpperCase()"> -->
+
               <input
+                :value="selectedProducts[selectedProductIndex].productname.toUpperCase()"
+                @input="
+                  (e) =>
+                    (selectedProducts[selectedProductIndex].productname = e.target.value.toUpperCase())
+                "
+                type="text"
+                class="capitalize form-control block w-full sm:w-1/2 px-3 py-1.5 text-base font-medium text-gray-900 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
+                id="exampleFormControlInput1"
+                placeholder="Search Products"
+              />
+              <!-- <input
+                v-UpperCase
                 :value="selectedProducts[selectedProductIndex].productname"
                 @input="
                   (e) =>
@@ -871,7 +890,7 @@ const addEverything = () => {
                 class="capitalize form-control block w-full sm:w-1/2 px-3 py-1.5 text-base font-medium text-gray-900 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
                 id="exampleFormControlInput1"
                 placeholder="Search Products"
-              />
+              /> -->
               <div
                 v-if="productsCollapseValue"
                 class="mt-2 collapse mb-2 w-full sm:w-1/2 max-h-52 overflow-y-auto"
