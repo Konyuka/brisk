@@ -1,5 +1,5 @@
 <script setup>
-import { useForm, usePage, Link } from "@inertiajs/inertia-vue3";
+import { usePage, Link } from "@inertiajs/inertia-vue3";
 import { ref, computed, reactive, watch, onMounted } from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
@@ -159,7 +159,8 @@ const checkExpectedItems = (value, value2) => {
 };
 const checkSoldItems = (value) => {
   let parseJson = JSON.parse(value);
-  return parseJson[0].itemsSold;
+  let found = parseJson.find((item) => item.batchNumber === selectedTripID.value);
+  return found.itemsSold;
 };
 
 const loadTripItems = (trip) => {
@@ -177,23 +178,22 @@ const loadTripItems = (trip) => {
   let saleValuesArray = [];
   let allProducts = tripProducts.value;
   for (let index = 0; index < allProducts.length; index++) {
-    
     let parsedJson = JSON.parse(allProducts[index].trip_batch);
-    // console.log(allProducts[index])
-    let numberItems = parsedJson[0].numberItems;
-    // console.log(numberItems)
-  
+    let found = parsedJson.find((item) => item.batchNumber === selectedTripID.value);
+    let numberItems = found.numberItems
     let stockMultiples = allProducts[index].sales_price * numberItems;
     // let stockMultiples = numberItems * allProducts[index].in_delivery;
     stockValuesArray.push(stockMultiples);
 
-    let parseJson = JSON.parse(allProducts[index].trip_batch);
-    let soldItem = parseJson[0].itemsSold;
+    // let parseJson = JSON.parse(allProducts[index].trip_batch);
+    let soldItem = found.itemsSold;
     let saleMultiples = allProducts[index].sales_price * soldItem;
+    // let saleMultiples = allProducts[index].sales_price * soldItem;
     saleValuesArray.push(saleMultiples);
     // return console.log(soldItem)
   }
   // console.log(stockValuesArray);
+
   let addedStockValue = stockValuesArray.reduce((a, b) => a + b, 0);
   let addedSaleValue = saleValuesArray.reduce((a, b) => a + b, 0);
   stockValue.value = addedStockValue;
@@ -340,11 +340,11 @@ const getInvoiceForm = async () => {
                       </td>
                       <td class="">
                         <div class="flex items-center pl-1 sm:pl-3">
-                          <p
-                            class="text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
+                          <button
+                            class="hover:text-green-700 hover:font-bold translate transition hover:scale-125 duration-700 text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
                           >
-                            <span class="capitalize">{{ trip.lead_name }}'s</span> Group
-                          </p>
+                            <span class="capitalize">{{ trip.lead_name }}'s</span> Team
+                          </button>
                         </div>
                       </td>
                       <td class="pl-2">
