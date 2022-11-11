@@ -642,7 +642,13 @@ const getInvoiceForm = async () => {
               </Link>
             </div>
 
-            <div
+            
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
               v-if="finishModalPrompt"
               class="relative z-10"
               aria-labelledby="modal-title"
@@ -691,10 +697,6 @@ const getInvoiceForm = async () => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <div
       v-if="teamDataModal"
