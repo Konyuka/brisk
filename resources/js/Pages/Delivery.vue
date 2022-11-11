@@ -185,7 +185,7 @@ const loadTripItems = (trip) => {
     let parsedJson = JSON.parse(allProducts[index].trip_batch);
     let found = parsedJson.find((item) => item.batchNumber === selectedTripID.value);
     let numberItems = found.numberItems;
-    let stockMultiples = allProducts[index].sales_price * numberItems;
+    let stockMultiples = allProducts[index].wholesale_price * numberItems;
     // let stockMultiples = numberItems * allProducts[index].in_delivery;
     stockValuesArray.push(stockMultiples);
 
@@ -498,7 +498,7 @@ const getInvoiceForm = async () => {
                     class="capitalize text-lg font-medium leading-6 text-gray-600"
                     id="modal-title"
                   >
-                    <span class="text-xs">Goods Value ( <span class="text-gray-400">Retail Price</span> ) :</span> KES
+                    <span class="text-xs">Goods Value ( <span class="text-gray-400">Wholesale</span> ) :</span> KES
                     <span class="text-green-500">
                       {{ formatToCurrency(stockValue) }}
                     </span>
@@ -514,7 +514,7 @@ const getInvoiceForm = async () => {
                     class="capitalize text-lg font-medium leading-6 text-gray-600"
                     id="modal-title"
                   >
-                    <span class="text-xs">Sales Value ( <span class="text-gray-400">Retail Price</span> ) :</span> KES
+                    <span class="text-xs">Sales Value ( <span class="text-gray-400">Retail</span> ) :</span> KES
                     <span class="text-green-500">
                       {{ formatToCurrency(saleValue) }}
                     </span>
