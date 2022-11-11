@@ -37,6 +37,7 @@ const currentUser = computed(() => usePage().props.value.user.id);
 const teamDataModal = ref(false);
 const finishModalPrompt = ref(false);
 const stockValue = ref(null);
+const stockValue2 = ref(null);
 const saleValue = ref(null);
 const currentProduct = ref([]);
 const selectedTripLead = ref(null);
@@ -497,15 +498,26 @@ const getInvoiceForm = async () => {
                     class="capitalize text-lg font-medium leading-6 text-gray-600"
                     id="modal-title"
                   >
-                    <span class="text-xs">Stock Value:</span> KES
-                    {{ formatToCurrency(stockValue) }}
+                    <span class="text-xs">Goods Value ( <span class="text-gray-400">Retail Price</span> ) :</span> KES
+                    <span class="text-green-500">
+                      {{ formatToCurrency(stockValue) }}
+                    </span>
                   </h3>
+                  <!-- <h3
+                    class="capitalize text-lg font-medium leading-6 text-gray-600"
+                    id="modal-title"
+                  >
+                    <span class="text-xs">Wholesale Value:</span>
+                    {{ formatToCurrency(stockValue) }}
+                  </h3> -->
                   <h3
                     class="capitalize text-lg font-medium leading-6 text-gray-600"
                     id="modal-title"
                   >
-                    <span class="text-xs">Sale Value:</span> KES
-                    {{ formatToCurrency(saleValue) }}
+                    <span class="text-xs">Sales Value ( <span class="text-gray-400">Retail Price</span> ) :</span> KES
+                    <span class="text-green-500">
+                      {{ formatToCurrency(saleValue) }}
+                    </span>
                   </h3>
                 </div>
                 <div class="mt-2">
