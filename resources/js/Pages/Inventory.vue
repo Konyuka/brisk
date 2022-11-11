@@ -1,9 +1,8 @@
 <script setup>
-import { useForm, usePage, Link } from "@inertiajs/inertia-vue3";
-import { ref, computed, reactive, watch, onMounted } from "vue";
+import { useForm, usePage } from "@inertiajs/inertia-vue3";
+import { ref, computed} from "vue";
 import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { IS_REF } from "@vue/compiler-core";
 
 defineProps({
   products: Array,

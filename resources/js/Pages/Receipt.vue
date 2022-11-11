@@ -1,9 +1,7 @@
 <script setup>
 import { usePage  } from "@inertiajs/inertia-vue3";
-import { watch, toRefs, computed, ref } from "vue";
+import { watch, toRefs, computed } from "vue";
 import moment from 'moment'
-// import jsPDF from "jspdf";
-import autoTable from 'jspdf-autotable';
 
 const props = defineProps({
   selectedProducts: Array,

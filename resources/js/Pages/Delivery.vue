@@ -32,8 +32,9 @@ watch(currentMessage, (newX) => {
     closingTripModal.value = false;
   }
 });
-
 const currentUser = computed(() => usePage().props.value.user.id);
+
+const teamDataModal = ref(false);
 const finishModalPrompt = ref(false);
 const stockValue = ref(null);
 const saleValue = ref(null);
@@ -95,15 +96,16 @@ const payload = reactive({
   invoice_number: 1,
 });
 
-  
-const formatToCurrency = (amount) =>
+const setTeamData = (data) =>
 { 
-  return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'); 
-} 
+  teamDataModal.value = true
+}
 
-const calcStockValue = () => {
-  
+const formatToCurrency = (amount) => {
+  return amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
 };
+
+const calcStockValue = () => {};
 const missingProducts = (value) => {
   if (value == 1) {
     return false;
@@ -120,9 +122,8 @@ const closedTrip = (trip) => {
   }
 };
 
-const finishTrip = async () =>
-{
-  finishModalPrompt.value = false
+const finishTrip = async () => {
+  finishModalPrompt.value = false;
   await Inertia.post("/dashboard/finish_trip", currentProduct.value);
 };
 
@@ -144,7 +145,7 @@ const setExpected = (value) => {
 const checkLoadedItems = (value) => {
   let parseJson = JSON.parse(value);
   let found = parseJson.find((item) => item.batchNumber === selectedTripID.value);
-  return found.numberItems
+  return found.numberItems;
   // let expectedItems = parseJson[0].numberItems - parseJson[0].itemsSold;
   // let soldItems = parseJson[0].itemsSold;
   // return parseInt(expectedItems) + parseInt(soldItems);
@@ -152,7 +153,7 @@ const checkLoadedItems = (value) => {
 const checkExpectedItems = (value, value2) => {
   let parseJson = JSON.parse(value);
   let found = parseJson.find((item) => item.batchNumber === selectedTripID.value);
-  return found.numberItems - found.itemsSold
+  return found.numberItems - found.itemsSold;
   // let expectedItems = parseJson[0].numberItems - parseJson[0].itemsSold;
   // let objIndex = currentProduct.value.findIndex((obj) => obj.productID == value2);
   // currentProduct.value[objIndex].expectedProducts = expectedItems;
@@ -182,7 +183,7 @@ const loadTripItems = (trip) => {
   for (let index = 0; index < allProducts.length; index++) {
     let parsedJson = JSON.parse(allProducts[index].trip_batch);
     let found = parsedJson.find((item) => item.batchNumber === selectedTripID.value);
-    let numberItems = found.numberItems
+    let numberItems = found.numberItems;
     let stockMultiples = allProducts[index].sales_price * numberItems;
     // let stockMultiples = numberItems * allProducts[index].in_delivery;
     stockValuesArray.push(stockMultiples);
@@ -343,6 +344,7 @@ const getInvoiceForm = async () => {
                       <td class="">
                         <div class="flex items-center pl-1 sm:pl-3">
                           <button
+                            @click="setTeamData(trip)"
                             class="hover:text-green-700 hover:font-bold translate transition hover:scale-125 duration-700 text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
                           >
                             <span class="capitalize">{{ trip.lead_name }}'s</span> Team
@@ -495,13 +497,15 @@ const getInvoiceForm = async () => {
                     class="capitalize text-lg font-medium leading-6 text-gray-600"
                     id="modal-title"
                   >
-                    <span class="text-xs">Stock Value:</span> KES {{ formatToCurrency(stockValue) }}
+                    <span class="text-xs">Stock Value:</span> KES
+                    {{ formatToCurrency(stockValue) }}
                   </h3>
                   <h3
                     class="capitalize text-lg font-medium leading-6 text-gray-600"
                     id="modal-title"
                   >
-                    <span class="text-xs">Sale Value:</span> KES {{ formatToCurrency(saleValue)  }}
+                    <span class="text-xs">Sale Value:</span> KES
+                    {{ formatToCurrency(saleValue) }}
                   </h3>
                 </div>
                 <div class="mt-2">
@@ -679,6 +683,57 @@ const getInvoiceForm = async () => {
         </div>
       </div>
     </div>
+
+    <div
+      v-if="teamDataModal"
+      class="relative z-10"
+      aria-labelledby="modal-title"
+      role="dialog"
+      aria-modal="true"
+    >
+    
+      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+      <div class="fixed inset-0 z-10 overflow-y-auto">
+        <div
+          class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
+        >
+          
+          <div
+            class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6"
+          >
+            <div>
+              <div
+                class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100"
+              >
+                <i class="fas fa-users text-green-700"></i>
+              </div>
+              <div class="mt-3 text-center sm:mt-5">
+                <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">
+                  Payment successful
+                </h3>
+                <div class="mt-2">
+                  <p class="text-sm text-gray-500">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur
+                    amet labore.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="mt-5 sm:mt-6">
+              <button
+                @click="teamDataModal=false"
+                type="button"
+                class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:text-sm"
+              >
+                Close Modal
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </AppLayout>
 </template>
 

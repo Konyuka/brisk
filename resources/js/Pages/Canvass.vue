@@ -18,18 +18,6 @@ const { tripBatch } = toRefs(props);
 const { activeAgents } = toRefs(props);
 const { activeTeamLeads } = toRefs(props);
 
-const vLowerCase = {
-  updated: (el) => {
-    el.value = el.value.toLowerCase();
-  },
-};
-
-const vUpperCase = {
-  updated: (el) => {
-    el.value = el.value.toUpperCase();
-  },
-};
-
 const productsNumber = computed(() => {
   return selectedProducts.value.length;
 });
@@ -80,17 +68,9 @@ const selectedAgentIndex = computed(() => {
   return selectedAgents.value.length - 1;
 });
 
-// const payload = reactive({
-//   amount_paid: amountPaid.value,
-//   payment_method: paymentMethod.value,
-//   sale_id: props.sale.id,
-//   product_id: props.product.id,
-// });
-
-const printTrigger = ref(false);
+const uploadProductModal = ref(false);
 const searchedProductsArray = ref(null);
 const searchedAgentsArray = ref(null);
-const clients = computed(() => props.clients);
 const currentUser = computed(() => usePage().props.value.user.id);
 
 const form = useForm({
@@ -272,12 +252,20 @@ watch(
   }
 );
 
-const reloadData = () =>
-{
 
-  Inertia.reload({ only: ['salesAgents', 'teamLead', 'products', 'trips', 'activeAgents', 'activeTeamLeads', 'tripBatch' ] })
-  
-}
+const reloadData = () => {
+  Inertia.reload({
+    only: [
+      "salesAgents",
+      "teamLead",
+      "products",
+      "trips",
+      "activeAgents",
+      "activeTeamLeads",
+      "tripBatch",
+    ],
+  });
+};
 
 const checkTeamLead = () => {
   if (activeTeamLeads.value.includes(tripDetails.lead)) {
@@ -404,7 +392,7 @@ const addTableRow = () => {
 };
 const deleteTableRow = (index, selectedProduct) => {
   var idx = selectedProducts.value.indexOf(selectedProduct);
-  var productID = selectedProduct.selectedproductID
+  var productID = selectedProduct.selectedproductID;
   if (productID != undefined) {
     selectedProducts.value.splice(idx, 1);
   }
@@ -434,9 +422,11 @@ const deleteAgentRow = (index, selectedAgent) => {
                 <span class="text-md sm:text-2xl">{{ tripBatch }}</span>
               </h5>
             </div>
-  
+
             <button @click="reloadData" class="mt-2">
-              <i class="fas fa-refresh text-green-800 transfrom translate hover:scale-150 duration-700 hover:animate-spin"></i>
+              <i
+                class="fas fa-refresh text-green-800 transfrom translate hover:scale-150 duration-700 hover:animate-spin"
+              ></i>
             </button>
           </div>
         </div>
@@ -525,12 +515,11 @@ const deleteAgentRow = (index, selectedAgent) => {
                 <!-- <div class="col-span-3 sm:col-span-1">
                   <button
                     type="button"
-                    className="mt-6 inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    className="mt-6 inline-flex items-center rounded-md border border-transparent bg-green-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                   >
                     Refresh Trip Data
                   </button>
                 </div> -->
-                
               </div>
             </div>
           </div>
@@ -646,14 +635,26 @@ const deleteAgentRow = (index, selectedAgent) => {
       <div class="mt-10 sm:mt-20 px-4 sm:px-6 lg:px-8">
         <div class="sm:flex sm:items-center">
           <div class="sm:flex-auto">
-            <h1 class="text-xl font-semibold text-gray-900">Trip Products</h1>
+            <div class="flex justify-between">
+              <h1 class="text-xl font-semibold text-gray-900">Trip Products</h1>
+              <button
+                @click="uploadProductModal=true"
+                type="button"
+                className="inline-flex items-center rounded-md border border-transparent bg-green-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+              >
+                Upload Product
+              </button>
+              <!-- <button class="text-xl font-semibold text-gray-900">Trip Products</button> -->
+            </div>
             <div class="mt-4 whitespace-nowrap py-2 text-sm text-gray-900">
               <!-- v-LowerCase -->
               <input
                 :value="selectedProducts[selectedProductIndex].productname"
                 @input="
                   (e) =>
-                    (selectedProducts[selectedProductIndex].productname = e.target.value.toUpperCase())
+                    (selectedProducts[
+                      selectedProductIndex
+                    ].productname = e.target.value.toUpperCase())
                 "
                 type="text"
                 class="capitalize form-control block w-full sm:w-1/2 px-3 py-1.5 text-base font-medium text-gray-900 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
@@ -671,6 +672,7 @@ const deleteAgentRow = (index, selectedAgent) => {
                     @click="setProduct(product)"
                     v-for="product in searchedProduct"
                     class="font-bold text-black hover:cursor-pointer hover:bg-light-green-100 border-b-2 border-light-green-900 block px-4 py-2 rounded-lg shadow-lg hover:shadow-3xl bg-white max-w-sm"
+                    rfl
                   >
                     <span class="italic">{{ product.product_name }}</span> -
                     {{ product.product_quantity }}
@@ -680,6 +682,7 @@ const deleteAgentRow = (index, selectedAgent) => {
             </div>
           </div>
         </div>
+
         <div class="mt-8 flex flex-col">
           <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
