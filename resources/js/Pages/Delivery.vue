@@ -131,10 +131,11 @@ const finishTrip = async () => {
 const setExpected = (value) => {
   let objIndex = currentProduct.value.findIndex((obj) => obj.productID == value);
   let itemsToDeduct =
-    parseInt(currentProduct.value[objIndex].restocked) +
-    parseInt(currentProduct.value[objIndex].spoiledProducts);
+  parseInt(currentProduct.value[objIndex].restocked) +
+  parseInt(currentProduct.value[objIndex].spoiledProducts);
   let losItems =
-    parseInt(currentProduct.value[objIndex].expectedProducts) - itemsToDeduct;
+  parseInt(currentProduct.value[objIndex].expectedProducts) - itemsToDeduct;
+  console.log(currentProduct.value[objIndex])
   if (isNaN(losItems)) {
     currentProduct.value[objIndex].missingProducts = 0;
     currentProduct.value[objIndex].itemsMissing = false;
@@ -166,6 +167,14 @@ const checkSoldItems = (value) => {
   let found = parseJson.find((item) => item.batchNumber === selectedTripID.value);
   return found.itemsSold;
 };
+const checkMissingItems = (value, id) => {
+  console.log(id)
+  let parseJson = JSON.parse(value);
+  let found = parseJson.find((item) => item.batchNumber === selectedTripID.value);
+  let expetedItems = found.numberItems - found.itemsSold;
+
+  console.log(expetedItems)
+}
 
 const loadTripItems = (trip) => {
   // console.log(trip);
@@ -617,8 +626,9 @@ const getInvoiceForm = async () => {
                               : 'bg-red-100 text-white'
                           "
                           class="font-bold italic text-xs block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:max-w-xs sm:text-sm"
-                          :placeholder="'Missing: ' + currentProduct[i].missingProducts"
-                        />
+                          :placeholder="'Missing: ' + checkMissingItems(product.trip_batch, product.id)"
+                          />
+                          <!-- :placeholder="'Missing: ' + currentProduct[i].missingProducts" -->
                       </div>
                     </div>
                   </div>
