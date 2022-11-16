@@ -31,6 +31,8 @@ Route::middleware([
     // })->name('dashboard');
     Route::get('/dashboard', [DashboardController::class, 'stock'])
     ->name('dashboard');
+    Route::get('/reports', [DashboardController::class, 'reports'])
+    ->name('reports');
     Route::post('/dashboard/add_product', [DashboardController::class, 'addProduct'])
     ->name('add_product');
     Route::post('/dashboard/upload_product', [DashboardController::class, 'uploadProduct'])

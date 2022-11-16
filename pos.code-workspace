@@ -7,11 +7,14 @@
             "path": "..\\tenders"
         },
         {
-            "path": "../tailwind-landing-page-template"
+            "path": "../kwcwc"
+        },
+        {
+            "path": "../akaunting"
         }
     ],
     "settings": {
         "vue3snippets.enable-compile-vue-file-on-did-save-code": false,
-        "liveServer.settings.multiRootWorkspaceName": "softUI"
+        "liveServer.settings.multiRootWorkspaceName": "kwcwc"
     }
 }

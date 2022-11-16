@@ -168,12 +168,27 @@ const checkSoldItems = (value) => {
   return found.itemsSold;
 };
 const checkMissingItems = (value, id) => {
-  console.log(id)
+  // console.log(value, id)
   let parseJson = JSON.parse(value);
   let found = parseJson.find((item) => item.batchNumber === selectedTripID.value);
   let expetedItems = found.numberItems - found.itemsSold;
-
-  console.log(expetedItems)
+  let objIndex = currentProduct.value.findIndex((obj) => obj.productID == id);
+  let restockedItems = currentProduct.value[objIndex].restocked
+  let spoiledItems = currentProduct.value[objIndex].spoiledProducts
+  if (restockedItems==null){
+    let lostItems = 0
+    currentProduct.value[objIndex].itemsMissing = false
+    return lostItems
+  }else{
+    let lostItems = expetedItems - (restockedItems + spoiledItems)
+    if (lostItems>0){
+      currentProduct.value[objIndex].itemsMissing = true
+      // itemsAreMissing.value = true
+    }else{
+      currentProduct.value[objIndex].itemsMissing = false
+    }
+    return lostItems
+  }
 }
 
 const loadTripItems = (trip) => {

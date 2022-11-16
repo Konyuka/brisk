@@ -21,6 +21,16 @@ use App\Exports\ProductsExport;
 
 class DashboardController extends Controller
 {
+    public function reports()
+    {
+        $clients = Client::latest()->get();
+        $users = User::latest()->get();
+        return Inertia::render('Reports', [
+            'clients' => $clients,
+            'users' => $users
+        ]);
+    }
+
     public function uploadProduct(Request $request)
     {
         Product::truncate();
