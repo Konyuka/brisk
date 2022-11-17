@@ -3,6 +3,7 @@
 import { ref, computed, reactive, watch, onMounted } from "vue";
 // import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
+import TripReport from "@/Pages/Reports/TripReport.vue";
 
 
 defineProps({
@@ -102,6 +103,8 @@ const setReportMenu = (reportMenu) => {
                     </nav>
                 </div>
             </div>
+
+            <TripReport/>
 
         </div>
 
