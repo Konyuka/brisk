@@ -2,13 +2,44 @@
 // import { useForm, usePage, Link } from "@inertiajs/inertia-vue3";
 import { ref, computed, reactive, watch, onMounted } from "vue";
 // import { Inertia } from "@inertiajs/inertia";
+import moment from "moment";
 
-defineProps({
-    //   canLogin: Boolean,
+
+const props = defineProps({
+    trips: Array,
+    users: Array,
+    sales: Array,
 });
 
 const openFilters = ref(false);
 const openSort = ref(false);
+
+const formatToCurrency = (amount) => {
+    return amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
+};
+
+const formatTime = (value) => {
+    return moment(value).format("MMMM Do YYYY, h:mm:ss a");
+};
+
+const checkValueLoaded = (data) => {
+
+}
+const checkValueSold = (data) => {
+
+}
+const checkLoadedItems = (data) => {
+
+}
+const checkReturnedItems = (data) => {
+
+}
+const checkSpoiledItems = (data) => {
+
+}
+const checkMissingItems = (data) => {
+
+}
 
 </script>
 
@@ -236,44 +267,48 @@ const openSort = ref(false);
                                 <tr>
                                     <th scope="col"
                                         class="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
-                                        Transaction ID</th>
+                                        Trip ID</th>
                                     <th scope="col"
                                         class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                        Company</th>
+                                        Location</th>
                                     <th scope="col"
                                         class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                        Share</th>
+                                        Timestamp</th>
                                     <th scope="col"
                                         class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                        Commision</th>
+                                        Value Loaded</th>
                                     <th scope="col"
                                         class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                        Price</th>
-                                    <th scope="col"
-                                        class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                        Quantity</th>
-                                    <th scope="col"
-                                        class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                        Net amount</th>
+                                        Value Sold</th>
+                                    <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                        Loaded Items</th>
+                                    <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                        Returned Items</th>
+                                    <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                        Spoiled Items</th>
+                                    <th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                        Missing Items</th>
                                     <th scope="col" class="relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-6">
                                         <span class="sr-only">Edit</span>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white">
-                                <tr>
-                                    <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6">AAPS0L</td>
-                                    <td class="whitespace-nowrap px-2 py-2 text-sm font-medium text-gray-900">Chase &amp;
-                                        Co.</td>
-                                    <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">CAC</td>
-                                    <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">+$4.37</td>
-                                    <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">$3,509.00</td>
-                                    <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">12.00</td>
-                                    <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">$4,397.00</td>
+                                <tr v-for="(trip, index) in trips" :key="index">
+                                    <td class="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-black font-extrabold sm:pl-6">{{ trip.id }} - <span class="font-bold capitalize">{{ trip.lead_name }}</span></td>
+                                    <td class="whitespace-nowrap px-2 py-2 text-sm font-medium text-gray-500 capitalize">{{ trip.trip_location }}</td>
+                                    <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ formatTime(trip.created_at) }}</td>
+                                    <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ checkValueLoaded(trip.porducts_summary) }}</td>
+                                    <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ checkValueSold(trip.porducts_summary) }}</td>
+                                    <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ checkLoadedItems(trip.porducts_summary) }}</td>
+                                    <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ checkReturnedItems(trip.porducts_summary) }}</td>
+                                    <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ checkSpoiledItems(trip.porducts_summary) }}</td>
+                                    <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{{ checkMissingItems(trip.porducts_summary) }}</td>
                                     <td
                                         class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                        <a href="#" class="text-green-600 hover:text-green-900">Edit<span
-                                                class="sr-only">, AAPS0L</span></a>
+                                        <a href="#" class="text-green-600 hover:text-green-900">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
                                     </td>
                                 </tr>
     

@@ -49,11 +49,15 @@ watch(
     for (let index = 0; index < newX.length; index++) {
       let object = {
         productID: newX[index].id,
+        loadedItems: null,
         soldProducts: null,
         restocked: null,
         spoiledProducts: null,
         expectedProducts: null,
         missingProducts: 0,
+        itemsMissing: false,
+        valueLoaded: false,
+        valueSold: false,
         itemsMissing: false,
         currentBatch: selectedTripID,
       };
@@ -174,8 +178,11 @@ const checkMissingItems = (value, id) => {
   let found = parseJson.find((item) => item.batchNumber === selectedTripID.value);
   let objIndex = currentProduct.value.findIndex((obj) => obj.productID == id);
   let expetedItems = found.numberItems - found.itemsSold;
+  currentProduct.value[objIndex].loadedItems = found.numberItems
   currentProduct.value[objIndex].soldProducts = found.itemsSold
   currentProduct.value[objIndex].expectedProducts = expetedItems
+  currentProduct.value[objIndex].valueLoaded = stockValue.value
+  currentProduct.value[objIndex].valueSold = saleValue.value
   
   let restockedItems = currentProduct.value[objIndex].restocked
   let spoiledItems = currentProduct.value[objIndex].spoiledProducts

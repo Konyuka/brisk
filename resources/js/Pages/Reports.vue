@@ -6,8 +6,10 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import TripReport from "@/Pages/Reports/TripReport.vue";
 
 
-defineProps({
-    //   canLogin: Boolean,
+const props = defineProps({
+    trips: Array,
+    users: Array,
+    sales: Array,
 });
 
 const currentReport = ref("trips");
@@ -42,7 +44,7 @@ const setReportMenu = (reportMenu) => {
                 </h2>
             </div>
 
-            <div>
+            <div class="shadow-xl">
                 <div class="sm:hidden">
                     <label for="tabs" class="sr-only">Select a tab</label>
                     <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
@@ -104,7 +106,7 @@ const setReportMenu = (reportMenu) => {
                 </div>
             </div>
 
-            <TripReport/>
+            <TripReport :trips="props.trips"/>
 
         </div>
 

@@ -23,11 +23,13 @@ class DashboardController extends Controller
 {
     public function reports()
     {
-        $clients = Client::latest()->get();
+        $trips = Trip::latest()->get();
         $users = User::latest()->get();
+        $sales = Sale::latest()->get();
         return Inertia::render('Reports', [
-            'clients' => $clients,
-            'users' => $users
+            'trips' => $trips,
+            'users' => $users,
+            'sales' => $sales
         ]);
     }
 
