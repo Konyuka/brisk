@@ -7,6 +7,7 @@ import TripReport from "@/Pages/Reports/TripReport.vue";
 
 
 const props = defineProps({
+    products: Array,
     trips: Array,
     users: Array,
     sales: Array,
@@ -106,7 +107,7 @@ const setReportMenu = (reportMenu) => {
                 </div>
             </div>
 
-            <TripReport :trips="props.trips"/>
+            <TripReport :products="props.products" :trips="props.trips"/>
 
         </div>
 
