@@ -14,6 +14,26 @@ const props = defineProps({
 });
 
 const currentModalMenu = ref('loaded');
+watch(currentModalMenu, (newValue) => {
+    if (newValue=='sold'){
+        loadSoldData()
+    }
+    if (newValue=='returned'){
+        loadReturnedData()
+    }
+    if (newValue=='spoiled'){
+        loadSpoiledData()
+    }
+    if (newValue=='missing'){
+        loadMissingData()
+    }
+});
+
+
+const missingProducts = ref([]);
+const spoiledProducts = ref([]);
+const returnedProducts = ref([]);
+const soldProducts = ref([]);
 const tripProducts = ref([]);
 const tripID = ref(null);
 const tripTeamLead = ref(null);
@@ -24,6 +44,65 @@ const tripLocation = ref(null);
 const reportDataModal = ref(false);
 const openSort = ref(false);
 const openFilters = ref(false);
+
+
+
+
+
+const loadMissingData = () => {
+    missingProducts.value = []
+    for (let index = 0; index < tripProducts.value.length; index++) {
+        const element = tripProducts.value[index];
+        if (element.missingProducts > 0){
+            missingProducts.value.push(element)
+        }
+    }
+
+}
+
+const loadSpoiledData = () => {
+    spoiledProducts.value = []
+    for (let index = 0; index < tripProducts.value.length; index++) {
+        const element = tripProducts.value[index];
+        if (element.spoiledProducts > 0){
+            spoiledProducts.value.push(element)
+        }
+    }
+
+}
+
+const loadReturnedData = () => {
+    returnedProducts.value = []
+    for (let index = 0; index < tripProducts.value.length; index++) {
+        const element = tripProducts.value[index];
+        if (element.restocked > 0){
+            returnedProducts.value.push(element)
+        }
+    }
+
+}
+
+const loadSoldData = () => {
+    soldProducts.value = []
+    for (let index = 0; index < tripProducts.value.length; index++) {
+        const element = tripProducts.value[index];
+        if (element.soldProducts > 0){
+            soldProducts.value.push(element)
+        }
+    }
+
+}
+
+const findInfo = (data, type) => {
+    let product = props.products.find(obj => obj.id === data);
+    if (type == 'name') {
+        return product.product_name
+    }
+    if (type == 'sku') {
+        return product.product_quantity
+    }
+
+}
 
 const loadReportData = (data) => {
     reportDataModal.value = true
@@ -41,21 +120,6 @@ const loadReportData = (data) => {
     // }
 
 };
-
-const findSKU = (data) => {
-
-}
-
-const findInfo = (data, type) => {
-    let product = props.products.find(obj => obj.id === data);
-    if (type == 'name') {
-        return product.product_name
-    }
-    if (type == 'sku') {
-        return product.product_quantity
-    }
-
-}
 
 const formatToCurrency = (amount) => {
     if (amount != undefined) {
@@ -629,6 +693,10 @@ const checkMissingItems = (data) => {
                                                                     </th>
                                                                     <th scope="col"
                                                                         class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Spoiled Items
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
                                                                         Lost Items
                                                                     </th>
                                                                 </tr>
@@ -651,6 +719,8 @@ const checkMissingItems = (data) => {
                                                                     <td
                                                                         class="whitespace-nowrap p-4 text-sm text-gray-500">
                                                                         {{ product.restocked }}</td>
+                                                                    <td class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ product.spoiledProducts }}</td>
                                                                     <td
                                                                         class="whitespace-nowrap py-4 pl-4 pr-4 text-sm text-gray-500 sm:pr-6">
                                                                         {{ product.missingProducts }}</td>
@@ -663,6 +733,294 @@ const checkMissingItems = (data) => {
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div v-if="currentModalMenu == 'sold'" class="mt-8 flex flex-col">
+                                            <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                                <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                                                    <div
+                                                        class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                                                        <table class="min-w-full divide-y divide-gray-300">
+                                                            <thead class="bg-gray-50">
+                                                                <tr class="divide-x divide-gray-200">
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                                                                        Product Name
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                                        Product SKU
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                                        Loaded Items
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Sold Items
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Returned Items
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Spoiled Items
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Lost Items
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="divide-y divide-gray-200 bg-white">
+                                                                <tr v-for="(product, index) in soldProducts"
+                                                                    :key="index" class="divide-x divide-gray-200">
+                                                                    <td
+                                                                        class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-6">
+                                                                        {{ findInfo(product.productID, 'name') }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ findInfo(product.productID, 'sku') }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ product.loadedItems }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ product.soldProducts }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ product.restocked }}</td>
+                                                                    <td class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ product.spoiledProducts }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap py-4 pl-4 pr-4 text-sm text-gray-500 sm:pr-6">
+                                                                        {{ product.missingProducts }}</td>
+                                                                </tr>
+
+                                                                <!-- More people... -->
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div v-if="currentModalMenu == 'returned'" class="mt-8 flex flex-col">
+                                            <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                                <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                                                    <div
+                                                        class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                                                        <table class="min-w-full divide-y divide-gray-300">
+                                                            <thead class="bg-gray-50">
+                                                                <tr class="divide-x divide-gray-200">
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                                                                        Product Name
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                                        Product SKU
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                                        Loaded Items
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Sold Items
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Returned Items
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Spoiled Items
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Lost Items
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="divide-y divide-gray-200 bg-white">
+                                                                <tr v-for="(product, index) in returnedProducts"
+                                                                    :key="index" class="divide-x divide-gray-200">
+                                                                    <td
+                                                                        class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-6">
+                                                                        {{ findInfo(product.productID, 'name') }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ findInfo(product.productID, 'sku') }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ product.loadedItems }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ product.soldProducts }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ product.restocked }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ product.spoiledProducts }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap py-4 pl-4 pr-4 text-sm text-gray-500 sm:pr-6">
+                                                                        {{ product.missingProducts }}</td>
+                                                                </tr>
+
+                                                                <!-- More people... -->
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div v-if="currentModalMenu == 'spoiled'" class="mt-8 flex flex-col">
+                                            <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                                <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                                                    <div
+                                                        class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                                                        <table class="min-w-full divide-y divide-gray-300">
+                                                            <thead class="bg-gray-50">
+                                                                <tr class="divide-x divide-gray-200">
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                                                                        Product Name
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                                        Product SKU
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                                        Loaded Items
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Sold Items
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Returned Items
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Spoiled Items
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Lost Items
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="divide-y divide-gray-200 bg-white">
+                                                                <tr v-for="(product, index) in spoiledProducts"
+                                                                    :key="index" class="divide-x divide-gray-200">
+                                                                    <td
+                                                                        class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-6">
+                                                                        {{ findInfo(product.productID, 'name') }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ findInfo(product.productID, 'sku') }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ product.loadedItems }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ product.soldProducts }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ product.restocked }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ product.spoiledProducts }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap py-4 pl-4 pr-4 text-sm text-gray-500 sm:pr-6">
+                                                                        {{ product.missingProducts }}</td>
+                                                                </tr>
+
+                                                                <!-- More people... -->
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div v-if="currentModalMenu == 'missing'" class="mt-8 flex flex-col">
+                                            <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                                <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                                                    <div
+                                                        class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                                                        <table class="min-w-full divide-y divide-gray-300">
+                                                            <thead class="bg-gray-50">
+                                                                <tr class="divide-x divide-gray-200">
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                                                                        Product Name
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                                        Product SKU
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                                        Loaded Items
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Sold Items
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Returned Items
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Spoiled Items
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Lost Items
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="divide-y divide-gray-200 bg-white">
+                                                                <tr v-for="(product, index) in missingProducts"
+                                                                    :key="index" class="divide-x divide-gray-200">
+                                                                    <td
+                                                                        class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-6">
+                                                                        {{ findInfo(product.productID, 'name') }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ findInfo(product.productID, 'sku') }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ product.loadedItems }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ product.soldProducts }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ product.restocked }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ product.spoiledProducts }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap py-4 pl-4 pr-4 text-sm text-gray-500 sm:pr-6">
+                                                                        {{ product.missingProducts }}</td>
+                                                                </tr>
+
+                                                                <!-- More people... -->
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
 
 
