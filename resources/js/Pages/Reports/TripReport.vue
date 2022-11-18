@@ -13,6 +13,7 @@ const props = defineProps({
     sales: Array,
 });
 
+const currentModalMenu = ref('loaded');
 const tripProducts = ref([]);
 const tripID = ref(null);
 const tripTeamLead = ref(null);
@@ -32,7 +33,7 @@ const loadReportData = (data) => {
     tripvehicle.value = data.vehicle_number
     tripLocation.value = data.trip_location
 
-    let products = JSON.parse(data.products_summary) 
+    let products = JSON.parse(data.products_summary)
     tripProducts.value = products
     // for (let index = 0; index < tripProducts.length; index++) {
     //     const element = tripProducts[index];
@@ -42,20 +43,19 @@ const loadReportData = (data) => {
 };
 
 const findSKU = (data) => {
-    
-} 
+
+}
 
 const findInfo = (data, type) => {
-    let product =  props.products.find(obj => obj.id === data);
-    console.log(product)
-    if(type=='name'){
+    let product = props.products.find(obj => obj.id === data);
+    if (type == 'name') {
         return product.product_name
     }
-    if(type=='sku'){
+    if (type == 'sku') {
         return product.product_quantity
     }
 
-} 
+}
 
 const formatToCurrency = (amount) => {
     if (amount != undefined) {
@@ -414,9 +414,11 @@ const checkMissingItems = (data) => {
                                         <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500 font-bold">KES {{
                                                 formatToCurrency(checkValueLoaded(trip.products_summary))
                                         }}</td>
-                                        <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500 font-bold">KES <span class="font-bold text-green-500">{{
-                                        formatToCurrency(checkValueSold(trip.products_summary))
-                                        }}</span></td>
+                                        <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500 font-bold">KES
+                                            <span class="font-bold text-green-500">{{
+                                                    formatToCurrency(checkValueSold(trip.products_summary))
+                                            }}</span>
+                                        </td>
                                         <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500 font-bold">{{
                                                 checkLoadedItems(trip.products_summary)
                                         }}</td>
@@ -434,7 +436,8 @@ const checkMissingItems = (data) => {
                                         }}</td>
                                         <td
                                             class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                            <button @click="loadReportData(trip)" class="text-green-600 hover:text-green-900">
+                                            <button @click="loadReportData(trip)"
+                                                class="text-green-600 hover:text-green-900">
                                                 <i class="fas fa-eye"></i>
                                             </button>
                                         </td>
@@ -448,22 +451,23 @@ const checkMissingItems = (data) => {
                 </div>
             </div>
 
-            <div v-if="reportDataModal" class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-               
+            <div v-if="reportDataModal" class="relative z-10" aria-labelledby="modal-title" role="dialog"
+                aria-modal="true">
+
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-            
+
                 <div class="fixed inset-0 z-10 overflow-y-auto">
                     <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                        
+
                         <div
                             class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-7xl sm:p-6">
                             <div class="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
-                                <button @click="reportDataModal=false" type="button"
+                                <button @click="reportDataModal = false" type="button"
                                     class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
                                     <span class="sr-only">Close</span>
                                     <!-- Heroicon name: outline/x-mark -->
-                                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                 </button>
@@ -476,11 +480,19 @@ const checkMissingItems = (data) => {
                                 <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
 
                                     <div class="grid grid-cols-5">
-                                        <h3 class="text-md font-medium leading-6 text-gray-900" id="modal-title"><span class="text-lg text-gray-600">Trip Number:</span> {{ tripID }}</h3>
-                                        <h3 class="text-md font-medium leading-6 text-gray-900 uppercase" id="modal-title"><span class="text-lg text-gray-600 capitalize">Team Lead:</span> {{ tripTeamLead }}</h3>
-                                        <h3 class="text-md font-medium leading-6 text-gray-900 " id="modal-title"><span class="text-lg text-gray-600">Trip Location:</span> {{ tripLocation }}</h3>
-                                        <h3 class="text-md font-medium leading-6 text-gray-900" id="modal-title"><span class="text-lg text-gray-600">Trip Driver:</span> {{ tripDriver }}</h3>
-                                        <h3 class="text-md font-medium leading-6 text-gray-900" id="modal-title"><span class="text-lg text-gray-600">Vehicle Plate:</span> {{ tripvehicle }}</h3>
+                                        <h3 class="text-md font-medium leading-6 text-gray-900" id="modal-title"><span
+                                                class="text-lg text-gray-600">Trip Number:</span> {{ tripID }}</h3>
+                                        <h3 class="text-md font-medium leading-6 text-gray-900 uppercase"
+                                            id="modal-title"><span class="text-lg text-gray-600 capitalize">Team
+                                                Lead:</span> {{ tripTeamLead }}</h3>
+                                        <h3 class="text-md font-medium leading-6 text-gray-900 " id="modal-title"><span
+                                                class="text-lg text-gray-600">Trip Location:</span> {{ tripLocation }}
+                                        </h3>
+                                        <h3 class="text-md font-medium leading-6 text-gray-900" id="modal-title"><span
+                                                class="text-lg text-gray-600">Trip Driver:</span> {{ tripDriver }}</h3>
+                                        <h3 class="text-md font-medium leading-6 text-gray-900" id="modal-title"><span
+                                                class="text-lg text-gray-600">Vehicle Plate:</span> {{ tripvehicle }}
+                                        </h3>
                                     </div>
 
                                     <hr class="m-4 border-1 border-green-800">
@@ -493,53 +505,78 @@ const checkMissingItems = (data) => {
                                                 <select id="tabs" name="tabs"
                                                     class="block w-full rounded-md border-gray-300 focus:border-green-500 focus:ring-green-500">
                                                     <option selected>My Account</option>
-                                        
+
                                                     <option>Company</option>
-                                        
+
                                                     <option>Team Members</option>
-                                        
+
                                                     <option>Billing</option>
                                                 </select>
                                             </div>
 
                                             <div class="hidden sm:block">
-                                                <nav class="isolate flex divide-x divide-gray-200 rounded-lg shadow" aria-label="Tabs">
-                                                    <a href="#"
+                                                <nav class="isolate flex divide-x divide-gray-200 rounded-lg shadow"
+                                                    aria-label="Tabs">
+                                                    <button @click="currentModalMenu = 'loaded'"
                                                         class="text-gray-900 rounded-l-lg group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10"
                                                         aria-current="page">
                                                         <span>Loaded Products</span>
-                                                        <span aria-hidden="true" class="bg-green-500 absolute inset-x-0 bottom-0 h-0.5"></span>
-                                                    </a>
-                                        
-                                                    <a href="#"
+                                                        <span aria-hidden="true" :class="
+                                                            currentModalMenu == 'loaded'
+                                                                ? 'bg-green-500'
+                                                                : 'bg-transparent'
+                                                        " class="absolute inset-x-0 bottom-0 h-0.5"></span>
+                                                    </button>
+
+                                                    <button @click="currentModalMenu = 'sold'"
                                                         class="text-gray-500 hover:text-gray-700 group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10">
                                                         <span>Sold Products</span>
-                                                        <span aria-hidden="true" class="bg-transparent absolute inset-x-0 bottom-0 h-0.5"></span>
-                                                    </a>
-                                        
-                                                    <a href="#"
+                                                        <span aria-hidden="true" :class="
+                                                            currentModalMenu == 'sold'
+                                                                ? 'bg-green-500'
+                                                                : 'bg-transparent'
+                                                        " class="absolute inset-x-0 bottom-0 h-0.5"></span>
+                                                    </button>
+
+                                                    <button @click="currentModalMenu = 'returned'"
                                                         class="text-gray-500 hover:text-gray-700 group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10">
                                                         <span>Returned Products</span>
-                                                        <span aria-hidden="true" class="bg-transparent absolute inset-x-0 bottom-0 h-0.5"></span>
-                                                    </a>
-                                        
-                                                    <a href="#"
+                                                        <span aria-hidden="true" :class="
+                                                            currentModalMenu == 'returned'
+                                                                ? 'bg-green-500'
+                                                                : 'bg-transparent'
+                                                        " class="absolute inset-x-0 bottom-0 h-0.5"></span>
+                                                    </button>
+
+                                                    <button @click="currentModalMenu = 'spoiled'"
                                                         class="text-gray-500 hover:text-gray-700 rounded-r-lg group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10">
                                                         <span>Spoiled Products</span>
-                                                        <span aria-hidden="true" class="bg-transparent absolute inset-x-0 bottom-0 h-0.5"></span>
-                                                    </a>
+                                                        <span aria-hidden="true" :class="
+                                                            currentModalMenu == 'spoiled'
+                                                                ? 'bg-green-500'
+                                                                : 'bg-transparent'
+                                                        " class="absolute inset-x-0 bottom-0 h-0.5"></span>
+                                                    </button>
 
-                                                    <a href="#"
+                                                    <button @click="currentModalMenu = 'missing'"
                                                         class="text-gray-500 hover:text-gray-700 rounded-r-lg group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10">
                                                         <span>Missing Products</span>
-                                                        <span aria-hidden="true" class="bg-transparent absolute inset-x-0 bottom-0 h-0.5"></span>
-                                                    </a>
+                                                        <span aria-hidden="true" :class="
+                                                            currentModalMenu == 'missing'
+                                                                ? 'bg-green-500'
+                                                                : 'bg-transparent'
+                                                        " class="absolute inset-x-0 bottom-0 h-0.5"></span>
+                                                    </button>
 
-                                                    <a href="#"
+                                                    <button @click="currentModalMenu = 'excess'"
                                                         class="text-gray-500 hover:text-gray-700 rounded-r-lg group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-sm font-medium text-center hover:bg-gray-50 focus:z-10">
                                                         <span>Excess Products</span>
-                                                        <span aria-hidden="true" class="bg-transparent absolute inset-x-0 bottom-0 h-0.5"></span>
-                                                    </a>
+                                                        <span aria-hidden="true" :class="
+                                                            currentModalMenu == 'excess'
+                                                                ? 'bg-green-500'
+                                                                : 'bg-transparent'
+                                                        " class="absolute inset-x-0 bottom-0 h-0.5"></span>
+                                                    </button>
                                                 </nav>
                                             </div>
                                         </div>
@@ -549,7 +586,8 @@ const checkMissingItems = (data) => {
                                         <div class="sm:flex sm:items-center">
                                             <div>
                                                 <div class="relative mt-1 rounded-md shadow-sm">
-                                                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                                    <div
+                                                        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                                                         <i class="fas fa-search"></i>
                                                     </div>
                                                     <input type="email" name="email" id="email"
@@ -557,45 +595,67 @@ const checkMissingItems = (data) => {
                                                         placeholder="search">
                                                 </div>
                                             </div>
-                            
-                                            
+
+
                                         </div>
-                                        <div class="mt-8 flex flex-col">
+
+                                        <div v-if="currentModalMenu == 'loaded'" class="mt-8 flex flex-col">
                                             <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                                 <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                                                    <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                                                    <div
+                                                        class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
                                                         <table class="min-w-full divide-y divide-gray-300">
                                                             <thead class="bg-gray-50">
                                                                 <tr class="divide-x divide-gray-200">
                                                                     <th scope="col"
-                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">Product Name
-                                                                    </th>
-                                                                    <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Product SKU
-                                                                    </th>
-                                                                    <th scope="col" class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">Loaded Items
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                                                                        Product Name
                                                                     </th>
                                                                     <th scope="col"
-                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">Sold Items
+                                                                        class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                                        Product SKU
                                                                     </th>
                                                                     <th scope="col"
-                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">Returned Items
+                                                                        class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                                        Loaded Items
                                                                     </th>
                                                                     <th scope="col"
-                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">Lost Items
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Sold Items
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Returned Items
+                                                                    </th>
+                                                                    <th scope="col"
+                                                                        class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Lost Items
                                                                     </th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody class="divide-y divide-gray-200 bg-white">
-                                                                <tr v-for="(product, index) in tripProducts" :key="index" class="divide-x divide-gray-200">
-                                                                    <td class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-6">
+                                                                <tr v-for="(product, index) in tripProducts"
+                                                                    :key="index" class="divide-x divide-gray-200">
+                                                                    <td
+                                                                        class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-6">
                                                                         {{ findInfo(product.productID, 'name') }}</td>
-                                                                    <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ findInfo(product.productID, 'sku') }}</td>
-                                                                    <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ product.loadedItems }}</td>
-                                                                    <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ product.soldProducts }}</td>
-                                                                    <td class="whitespace-nowrap p-4 text-sm text-gray-500">{{ product.restocked }}</td>
-                                                                    <td class="whitespace-nowrap py-4 pl-4 pr-4 text-sm text-gray-500 sm:pr-6">{{ product.missingProducts }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ findInfo(product.productID, 'sku') }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ product.loadedItems }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ product.soldProducts }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        {{ product.restocked }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap py-4 pl-4 pr-4 text-sm text-gray-500 sm:pr-6">
+                                                                        {{ product.missingProducts }}</td>
                                                                 </tr>
-                                    
+
                                                                 <!-- More people... -->
                                                             </tbody>
                                                         </table>
@@ -607,7 +667,7 @@ const checkMissingItems = (data) => {
 
 
 
-                                    
+
                                 </div>
                             </div>
                         </div>
