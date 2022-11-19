@@ -261,6 +261,12 @@ const checkMissingItems = (data) => {
                                             <label for="price-1" class="ml-3 min-w-0 flex-1 text-gray-600">Tony</label>
                                         </div>
 
+                                        <div class="flex items-center text-base sm:text-sm">
+                                            <input id="price-1" name="price[]" value="25" type="checkbox"
+                                                class="h-4 w-4 flex-shrink-0 rounded border-gray-300 text-green-600 focus:ring-green-500">
+                                            <label for="price-1" class="ml-3 min-w-0 flex-1 text-gray-600">Amos</label>
+                                        </div>
+
                                     </div>
                                 </fieldset>
                                 <fieldset>

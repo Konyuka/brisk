@@ -4,6 +4,7 @@ import { ref, computed, reactive, watch, onMounted } from "vue";
 // import { Inertia } from "@inertiajs/inertia";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import TripReport from "@/Pages/Reports/TripReport.vue";
+import SaleReport from "@/Pages/Reports/SaleReport.vue";
 
 
 const props = defineProps({
@@ -16,7 +17,6 @@ const props = defineProps({
 const currentReport = ref("trips");
 
 const setReportMenu = (reportMenu) => {
-    console.log(reportMenu)
     currentReport.value = reportMenu
 }
 
@@ -107,7 +107,8 @@ const setReportMenu = (reportMenu) => {
                 </div>
             </div>
 
-            <TripReport :products="props.products" :trips="props.trips"/>
+            <TripReport v-if="currentReport=='trips'" :products="props.products" :trips="props.trips"/>
+            <SaleReport v-if="currentReport=='sales'"  :sales="props.sales" :products="props.products" :trips="props.trips"/>
 
         </div>
 
