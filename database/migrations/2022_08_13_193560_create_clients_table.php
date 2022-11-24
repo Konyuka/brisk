@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->string('added_by');
             $table->string('client_name');
-            $table->string('client_email')->default(0);
-            $table->bigInteger('client_contact')->default(0);
-            $table->string('client_kra')->default(0);
+            $table->string('client_email')->nullable();
+            $table->bigInteger('client_contact')->nullable();
+            $table->string('client_kra')->nullable();
             $table->string('client_address')->nullable();
             $table->integer('client_balance')->nullable();
             $table->boolean('tax_exempt')->default(false);

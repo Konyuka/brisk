@@ -137,7 +137,8 @@ class DashboardController extends Controller
         $client->tax_exempt = $request->tax_exempt;
         $client->save();
         // return;
-        return redirect()->back()->with('success', 'Client Created Successfully');
+        return redirect()->back();
+        // return redirect()->back()->with('success', 'Client Created Successfully');
 
     }
 

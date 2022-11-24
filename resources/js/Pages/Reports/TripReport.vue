@@ -48,6 +48,9 @@ const openFilters = ref(false);
 
 
 
+const sale = () => {
+
+}
 
 const loadMissingData = () => {
     missingProducts.value = []
@@ -114,10 +117,6 @@ const loadReportData = (data) => {
 
     let products = JSON.parse(data.products_summary)
     tripProducts.value = products
-    // for (let index = 0; index < tripProducts.length; index++) {
-    //     const element = tripProducts[index];
-    //     console.log(element)
-    // }
 
 };
 
@@ -130,6 +129,7 @@ const formatToCurrency = (amount) => {
 const formatTime = (value) => {
     return moment(value).format("MMMM Do YYYY, h:mm:ss a");
 };
+
 
 const checkValueLoaded = (data) => {
     if (data != null) {
