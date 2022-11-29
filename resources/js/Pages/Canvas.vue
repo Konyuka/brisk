@@ -357,12 +357,12 @@ const setProduct = (product) => {
   let itemsAvailable = itemsLoaded - itemsSold;
 
   // var checkDuplicate
-  for (var i = 0; i < selectedProducts.value.length; i++) {
-    if (i > 0) {
-      console.log(i);
-      console.log(selectedProducts.value[i].selectedproductID);
-    }
-  }
+  // for (var i = 0; i < selectedProducts.value.length; i++) {
+  //   if (i > 0) {
+  //     // console.log(i);
+  //     // console.log(selectedProducts.value[i].selectedproductID);
+  //   }
+  // }
 
   if (!selectedProducts.value.includes(product)) {
     // searchedClient.value.push(allClients[i]);

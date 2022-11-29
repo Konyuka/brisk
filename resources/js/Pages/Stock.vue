@@ -18,6 +18,7 @@ const props = defineProps({
 
 const { activeAgents } = toRefs(props);
 
+const currentBatch = computed(() => usePage().props.value.user.trip_batch);
 const currentMessage = computed(() => usePage().props.value.flash.success);
 const currentUser = computed(() => usePage().props.value.user.id);
 const currentTime = computed(() => moment().format("LLL"));
@@ -31,6 +32,29 @@ const form = useForm({
   product_description: "SoftSol Shampoo",
   added_by: currentUser,
 });
+
+const getProducts = (productIDS) => {
+  let parsedData = JSON.parse(productIDS) 
+  return parsedData.length
+}
+
+const getLocation = (tripBatch) => {
+  let trip = props.trips.find((obj) => obj.id == tripBatch);
+  return trip.trip_location
+}
+
+const getClient = (clientID) => {
+  if(clientID!=undefined){
+    let client = props.clients.find((obj) => obj.id == clientID);
+    return client.client_name
+  }else{
+    return 'Anonymous'
+  }  
+}
+
+const geDateFormat = (time)=>{
+  return moment(time).format("LLL")
+}
 
 const formatToCurrency = (amount) =>
 { 
@@ -255,11 +279,12 @@ const addProduct = () => {
                 <table class="w-full whitespace-nowrap">
                   <tbody>
                     <tr
-                      v-for="(sale, index) in agentSales"
+                      v-for="(sale, index) in sales"
                       :key="index"
                       tabindex="0"
                       class="focus:outline-none h-16 border border-gray-100 rounded"
                     >
+                      
                       <td>
                         <div class="ml-1 sm:ml-5">
                           <div
@@ -275,7 +300,47 @@ const addProduct = () => {
                             class="hover:font-extrabold cursor-help text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
                           >
                             <!-- {{ sale[0].selectedproductName }} -->
-                            {{ getProductNameDetails(sale) }}
+                            {{ geDateFormat(sale.created_at) }}
+                          </p>
+                        </div>
+                      </td>
+                      <td class="">
+                        <div class="flex items-center pl-1 sm:pl-3">
+                          <p
+                            class="bold capitalize hover:font-extrabold cursor-help text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
+                          >
+                            <!-- {{ sale[0].selectedproductName }} -->
+                            {{ getClient(sale.client_id) }}
+                          </p>
+                        </div>
+                      </td>
+                      <td class="">
+                        <div class="flex items-center pl-1 sm:pl-3">
+                          <p
+                            class="bold capitalize hover:font-extrabold cursor-help text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
+                          >
+                            <!-- {{ sale[0].selectedproductName }} -->
+                            {{ getLocation(sale.trip_batch) }}
+                          </p>
+                        </div>
+                      </td>
+                      <td class="">
+                        <div class="flex items-center pl-1 sm:pl-3">
+                          <p
+                            class="bold capitalize hover:font-extrabold cursor-help text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
+                          >
+                            <!-- {{ sale[0].selectedproductName }} -->
+                            <span class="text-green-600">{{ getProducts(sale.products) }}</span> Products
+                          </p>
+                        </div>
+                      </td>
+                      <td class="">
+                        <div class="flex items-center pl-1 sm:pl-3">
+                          <p
+                            class="hover:font-extrabold cursor-help text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
+                          >
+                            <!-- {{ sale[0].selectedproductName }} -->
+                            <!-- {{ getProductNameDetails(sale) }} -->
                           </p>
                         </div>
                       </td>
@@ -286,7 +351,7 @@ const addProduct = () => {
                             class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
                           >
                             <!-- {{ product.product_quantity }} Grams -->
-                            {{ getProductQuantityDetails(sale) }}
+                            <!-- {{ getProductQuantityDetails(sale) }} -->
                           </p>
                         </div>
                       </td>
@@ -297,7 +362,7 @@ const addProduct = () => {
                             class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
                           >
                             <!-- {{ product.stock_quantity }} items -->
-                            {{ getProductStockQuantityDetails(sale) }} items
+                            <!-- {{ getProductStockQuantityDetails(sale) }} items -->
                           </p>
                         </div>
                       </td>
@@ -308,7 +373,7 @@ const addProduct = () => {
                             class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
                           >
                             <!-- {{ product.sales_price }} KES -->
-                            {{ formatToCurrency(getProductPriceDetails(sale))  }} KES
+                            <!-- {{ formatToCurrency(getProductPriceDetails(sale))  }} KES -->
                           </p>
                         </div>
                       </td>
