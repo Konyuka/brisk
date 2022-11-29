@@ -9,6 +9,7 @@ import moment from "moment";
 const props = defineProps({
   products: Array,
   clients: Array,
+  trips: Array,
   sales: Array,
   message: String,
   invoiceLog: String,
@@ -1125,6 +1126,7 @@ const addProduct = () => {
         <Canvas
           :clients="clients"
           :products="products"
+          :trips="trips"
           :currentMessage="currentMessage"
           :invoiceLog="invoiceLog"
         />

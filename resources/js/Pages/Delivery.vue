@@ -445,7 +445,7 @@ const getInvoiceForm = async () => {
                             type="button"
                             class="mr-2 inline-flex items-center rounded border border-transparent bg-green-900 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-light-green-900 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                           >
-                            Finish Trip <i class="ml-2 fas fa-flag-checkered"></i>
+                            Monitor Trip <i class="ml-2 fas fa-computer"></i>
                           </button>
                           <button
                             v-else

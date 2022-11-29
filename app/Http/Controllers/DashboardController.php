@@ -288,6 +288,7 @@ class DashboardController extends Controller
     {
         $products = Product::latest()->get();
         $clients = Client::latest()->get();
+        $trips = Trip::latest()->get();
         $invoice = Sale::latest()->get()->first();
         $userId = auth()->user()->id;
         $sales = Sale::where('added_by', $userId)->latest()->get();
@@ -326,6 +327,7 @@ class DashboardController extends Controller
         return Inertia::render('Stock', [
             'products' => $products,
             'clients' => $clients,
+            'trips' => $trips,
             'invoiceLog' => $invoiceID,
             'sales' => $sales,
             'activeAgents' => $agentsArrayPush,

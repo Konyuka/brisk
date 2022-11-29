@@ -48,6 +48,51 @@ const openFilters = ref(false);
 
 
 
+const exportRep = (type, fn, dl, value) => {
+    console.log(type, fn, dl, value)
+    // return
+    var elt = document.getElementById(value);
+    var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+    return dl ?
+        XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+        XLSX.writeFile(wb, fn || (tripTeamLead.value + '_' + tripID.value + '_' + currentModalMenu.value + '_' + 'report.' + (type || 'xlsx')));
+}
+
+const exportReport = (tableID, filename) => {
+
+    var downloadLink;
+    var dataType = 'application/vnd.ms-excel';
+    var tableSelect = document.getElementById(tableID);
+    var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+
+    // Specify file name
+    filename = filename ? filename + '.xlsx' : 'excel_data.xlsx';
+    // filename = filename ? filename + '.xls' : 'excel_data.xls';
+
+    // Create download link element
+    downloadLink = document.createElement("a");
+
+    document.body.appendChild(downloadLink);
+
+    if (navigator.msSaveOrOpenBlob) {
+        var blob = new Blob(['\ufeff', tableHTML], {
+            type: dataType
+        });
+        navigator.msSaveOrOpenBlob(blob, filename);
+    } else {
+        // Create a link to the file
+        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+
+        // Setting the file name
+        downloadLink.download = filename;
+
+        //triggering the function
+        downloadLink.click();
+    }
+
+
+}
+
 const sale = () => {
 
 }
@@ -431,7 +476,7 @@ const checkMissingItems = (data) => {
                 <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                         <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                            <table class="min-w-full divide-y divide-gray-300">
+                            <table  class="min-w-full divide-y divide-gray-300">
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th scope="col"
@@ -653,8 +698,8 @@ const checkMissingItems = (data) => {
                                     </div>
 
                                     <div class="mt-10 px-4 sm:px-6 lg:px-8">
-                                        <div class="sm:flex sm:items-center">
-                                            <div>
+                                        <div class="justify-between">
+                                            <div class="flex justify-between">
                                                 <div class="relative mt-1 rounded-md shadow-sm">
                                                     <div
                                                         class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -664,17 +709,22 @@ const checkMissingItems = (data) => {
                                                         class="block w-full rounded-md border-gray-300 pl-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                                         placeholder="search">
                                                 </div>
+                                                <div>
+                                                    <button @click="exportRep('xlsx', fn, dl, currentModalMenu)" 
+                                                        class="inline-flex items-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                                        <i class="fa-solid fa-file-excel mr-2"></i> Download Excel
+                                                    </button>
+                                                </div>
                                             </div>
-
-
+                                            <!-- <button @click="exportReport('tblData', 'members-data')">Export Table Data To Excel File</button> -->
                                         </div>
-
+                                        
                                         <div v-if="currentModalMenu == 'loaded'" class="mt-8 flex flex-col">
                                             <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                                 <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                                                     <div
                                                         class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                                                        <table class="min-w-full divide-y divide-gray-300">
+                                                        <table id="loaded" class="min-w-full divide-y divide-gray-300">
                                                             <thead class="bg-gray-50">
                                                                 <tr class="divide-x divide-gray-200">
                                                                     <th scope="col"
@@ -745,7 +795,7 @@ const checkMissingItems = (data) => {
                                                 <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                                                     <div
                                                         class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                                                        <table class="min-w-full divide-y divide-gray-300">
+                                                        <table id="sold" class="min-w-full divide-y divide-gray-300">
                                                             <thead class="bg-gray-50">
                                                                 <tr class="divide-x divide-gray-200">
                                                                     <th scope="col"
@@ -816,7 +866,7 @@ const checkMissingItems = (data) => {
                                                 <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                                                     <div
                                                         class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                                                        <table class="min-w-full divide-y divide-gray-300">
+                                                        <table id="returned" class="min-w-full divide-y divide-gray-300">
                                                             <thead class="bg-gray-50">
                                                                 <tr class="divide-x divide-gray-200">
                                                                     <th scope="col"
@@ -888,7 +938,7 @@ const checkMissingItems = (data) => {
                                                 <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                                                     <div
                                                         class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                                                        <table class="min-w-full divide-y divide-gray-300">
+                                                        <table id="spoiled" class="min-w-full divide-y divide-gray-300">
                                                             <thead class="bg-gray-50">
                                                                 <tr class="divide-x divide-gray-200">
                                                                     <th scope="col"
@@ -960,7 +1010,7 @@ const checkMissingItems = (data) => {
                                                 <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                                                     <div
                                                         class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                                                        <table class="min-w-full divide-y divide-gray-300">
+                                                        <table id="missing" class="min-w-full divide-y divide-gray-300">
                                                             <thead class="bg-gray-50">
                                                                 <tr class="divide-x divide-gray-200">
                                                                     <th scope="col"

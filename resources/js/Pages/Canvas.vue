@@ -8,6 +8,7 @@ import Receipt from "./Receipt.vue";
 const props = defineProps({
   clients: Array,
   products: Array,
+  trips: Array,
   currentMessage: String,
   invoiceLog: String,
 });
@@ -143,6 +144,22 @@ watch(
             allProducts[i].trip_batch != null
           ) {
             searchedProduct.value.push(allProducts[i]);
+
+            let trip = props.trips.find((obj) => obj.id == currentBatch.value);
+            let tripProducts = JSON.parse(trip.products_ids)
+            let rightArray = []
+            
+            for (var j = 0; j < tripProducts.length; j++) {
+              if (searchedProduct.value.length >= 0 ){
+                // alert('radar safi')
+                let refinedProducts = searchedProduct.value.find((obj) => obj.id == tripProducts[j]);
+                if (refinedProducts!=undefined){
+                  rightArray.push(refinedProducts);
+                }
+              }
+            }
+            searchedProduct.value = rightArray
+            // console.log(rightArray)
           }
         }
       }
@@ -179,6 +196,16 @@ watch(
     immediate: true,
   }
 );
+
+const removeObjectWithId = (arr, id) => {
+  const objWithIdIndex = arr.findIndex((obj) => obj.id === id);
+
+  if (objWithIdIndex > -1) {
+    arr.splice(objWithIdIndex, 1);
+  }
+
+  return arr;
+} 
 
 const reloadData = () =>
 {
