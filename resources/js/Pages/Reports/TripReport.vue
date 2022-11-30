@@ -1,7 +1,7 @@
 <script setup>
 // import { useForm, usePage, Link } from "@inertiajs/inertia-vue3";
 import { ref, computed, reactive, watch, onMounted } from "vue";
-// import { Inertia } from "@inertiajs/inertia";
+import { Inertia } from "@inertiajs/inertia";
 import moment from "moment";
 import { parseInt } from "lodash";
 
@@ -11,6 +11,24 @@ const props = defineProps({
     trips: Array,
     users: Array,
     sales: Array,
+});
+
+
+onMounted(() => {
+    // console.log('component mounted');
+    let rightProducts = []
+    for (var i = 0; i < props.trips.length; i++) {
+        let closedTrips = props.trips.find((obj) => obj.trip_complete == 1);
+        rightProducts.push(closedTrips);
+    }
+    // console.log(rightProducts)
+    
+    // const objWithIdIndex = props.trips.findIndex((obj) => obj.id === id);
+    // if (objWithIdIndex > -1) {
+    //     arr.splice(objWithIdIndex, 1);
+    // }
+
+    // return arr;
 });
 
 const currentModalMenu = ref('loaded');
@@ -46,7 +64,23 @@ const openSort = ref(false);
 const openFilters = ref(false);
 
 
+const closeReportDataModal = () => {
+    // reportDataModal.value = false
+    Inertia.get("/reports");
+}
 
+const missingItemsValue = () => {
+    // alert('check')
+    const amountsArray = []
+    for (let index = 0; index < missingProducts.value.length; index++) {
+        const element = missingProducts.value[index];
+        // console.log(element)
+        const product = props.products.find((obj) => obj.id == element.productID);
+        const rowAmount = element.missingProducts * product.wholesale_price
+        amountsArray.push(rowAmount)
+    }
+    return amountsArray.reduce((a, b) => a + b, 0)
+}
 
 const exportRep = (type, fn, dl, value) => {
     console.log(type, fn, dl, value)
@@ -175,6 +209,14 @@ const formatTime = (value) => {
     return moment(value).format("MMMM Do YYYY, h:mm:ss a");
 };
 
+
+const checkValueLost = (data) => {
+    // console.log(data)
+    // if (data != null) {
+    //     let parseJson = JSON.parse(data)
+    //     return parseInt(parseJson[0].valueLoaded)
+    // }
+}
 
 const checkValueLoaded = (data) => {
     if (data != null) {
@@ -577,7 +619,7 @@ const checkMissingItems = (data) => {
                         <div
                             class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-7xl sm:p-6">
                             <div class="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
-                                <button @click="reportDataModal = false" type="button"
+                                <button @click="closeReportDataModal" type="button"
                                     class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
                                     <span class="sr-only">Close</span>
                                     <!-- Heroicon name: outline/x-mark -->
@@ -1067,6 +1109,31 @@ const checkMissingItems = (data) => {
                                                                     <td
                                                                         class="whitespace-nowrap py-4 pl-4 pr-4 text-sm text-gray-500 sm:pr-6">
                                                                         {{ product.missingProducts }}</td>
+                                                                </tr>
+                                                                <tr
+                                                                    class="divide-x divide-gray-200">
+                                                                    <td
+                                                                        class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-6">
+                                                                        </td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        </td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        </td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        </td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        </td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        </td>
+                                                                    <td
+                                                                        class="whitespace-nowrap py-4 pl-4 pr-4 text-xs text-red-400 sm:pr-6">
+                                                                        KES <span class="font-bold text-red-500 text-sm"> {{ missingItemsValue() }} </span> 
+                                                                    </td>
                                                                 </tr>
 
                                                                 <!-- More people... -->
