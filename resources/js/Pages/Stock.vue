@@ -33,8 +33,15 @@ const form = useForm({
   added_by: currentUser,
 });
 
+const getOveralTotal = (productIDS) => {
+  let parsedData = JSON.parse(productIDS) 
+  // console.log(parsedData[0].overallTotal)
+  return parsedData[0].overallTotal
+}
+
 const getProducts = (productIDS) => {
   let parsedData = JSON.parse(productIDS) 
+  console.log(parsedData)
   return parsedData.length
 }
 
@@ -327,60 +334,21 @@ const addProduct = () => {
                       <td class="">
                         <div class="flex items-center pl-1 sm:pl-3">
                           <p
-                            class="bold capitalize hover:font-extrabold cursor-help text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
+                            class="bold capitalize hover:font-extrabold cursor-pointer text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
                           >
                             <!-- {{ sale[0].selectedproductName }} -->
-                            <span class="text-green-600">{{ getProducts(sale.products) }}</span> Products
+                            <span class="text-green-600 font-bold">{{ getProducts(sale.products) }}</span> Products
                           </p>
                         </div>
                       </td>
                       <td class="">
                         <div class="flex items-center pl-1 sm:pl-3">
                           <p
-                            class="hover:font-extrabold cursor-help text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
+                            class="bold capitalize hover:font-extrabold text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
                           >
                             <!-- {{ sale[0].selectedproductName }} -->
-                            <!-- {{ getProductNameDetails(sale) }} -->
+                            KES <span class="text-green-600 font-bold"> {{ getOveralTotal(sale.products) }}</span>
                           </p>
-                        </div>
-                      </td>
-                      <td class="pl-2">
-                        <div class="flex items-center">
-                          <i class="fas fa-scale-unbalanced text-green-900"></i>
-                          <p
-                            class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
-                          >
-                            <!-- {{ product.product_quantity }} Grams -->
-                            <!-- {{ getProductQuantityDetails(sale) }} -->
-                          </p>
-                        </div>
-                      </td>
-                      <td class="pl-2">
-                        <div class="flex items-center">
-                          <i class="fas fa-boxes-packing text-green-900"></i>
-                          <p
-                            class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
-                          >
-                            <!-- {{ product.stock_quantity }} items -->
-                            <!-- {{ getProductStockQuantityDetails(sale) }} items -->
-                          </p>
-                        </div>
-                      </td>
-                      <td class="pl-2">
-                        <div class="flex items-center">
-                          <i class="fas fa-money-bill-trend-up text-green-900"></i>
-                          <p
-                            class="text-xs sm:text-sm leading-none text-gray-600 sm:ml-1 ml-2"
-                          >
-                            <!-- {{ product.sales_price }} KES -->
-                            <!-- {{ formatToCurrency(getProductPriceDetails(sale))  }} KES -->
-                          </p>
-                        </div>
-                      </td>
-                      <td class="pl-2">
-                        
-                        <div class="flex items-center">
-                          <i class="transform translate hover:scale-150 duration-600 fas fa-pen hover:text-green-900 text-gray-500"></i>
                         </div>
                       </td>
                     </tr>
