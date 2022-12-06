@@ -11,6 +11,9 @@
         },
         {
             "path": "../akaunting"
+        },
+        {
+            "path": "../ngo"
         }
     ],
     "settings": {
