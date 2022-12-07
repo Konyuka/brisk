@@ -202,7 +202,7 @@ const logout = () => {
                     : 'text-gray-500 pl-5'
                 " class="block rounded-md py-2 pr-3 text-lg font-bold hover:bg-gray-100">Inventory</Link>
 
-                <Link v-if="adminLevel == 1 || adminLevel == 2 || adminLevel == 3" href="/dashboard/product_delivery"
+                <Link v-if="adminLevel == 1 || adminLevel == 2 " href="/dashboard/product_delivery"
                   :class="
                     currentRoute == 'product_delivery'
                       ? 'text-black'
@@ -246,7 +246,7 @@ const logout = () => {
             <i class="fas fa-print fa-xl"></i>
             </Link>
 
-            <Link v-if="adminLevel == 1 || adminLevel == 2" href="/dashboard/product_inventory" :class="
+            <Link v-if="adminLevel == 1 " href="/dashboard/product_inventory" :class="
               currentRoute == 'product_inventory'
                 ? 'bg-white text-black'
                 : 'bg-black text-white'
@@ -257,7 +257,7 @@ const logout = () => {
             <i class="fas fa-box-open fa-xl"></i>
             </Link>
 
-            <Link v-if="adminLevel == 1 || adminLevel == 2 || adminLevel == 3" href="/dashboard/product_delivery"
+            <Link v-if="adminLevel == 1 || adminLevel == 2" href="/dashboard/product_delivery"
               :class="
                 currentRoute == 'product_delivery'
                   ? 'bg-white text-black'
@@ -270,7 +270,7 @@ const logout = () => {
             </Link>
 
             <Link v-if="
-              adminLevel == 1 || adminLevel == 2 || adminLevel == 3 || adminLevel == 4
+              adminLevel == 1 || adminLevel == 2
             " href="/reports" :class="
   currentRoute == 'reports'
     ? 'bg-white text-black'
