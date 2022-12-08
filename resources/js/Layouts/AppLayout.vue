@@ -196,7 +196,7 @@ const logout = () => {
   currentRoute == 'dashboard' ? 'text-black' : 'text-gray-500 pl-5'
 " class="block rounded-md py-2 px-3 text-lg font-bold hover:bg-gray-100">Sale</Link>
 
-                <Link v-if="adminLevel == 1 || adminLevel == 2" href="/dashboard/product_inventory" :class="
+                <Link v-if="adminLevel == 1" href="/dashboard/product_inventory" :class="
                   currentRoute == 'product_inventory'
                     ? 'text-black'
                     : 'text-gray-500 pl-5'
