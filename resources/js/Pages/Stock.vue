@@ -16,9 +16,24 @@ const props = defineProps({
   activeAgents: Array,
 });
 
+onMounted(() => {
+  if (currentMessage.value != null) {
+    bottomCanvas.value = true;
+  } else {
+    bottomCanvas.value = false;
+  }
+
+  let saleItems = props.sales.map(({ products }) => products);
+
+  var myArray = [];
+  for (let i = 0; i < saleItems.length; i++) {
+    myArray.push(saleItems[i]);
+  }
+  agentSales.value = myArray
+});
+
 const { activeAgents } = toRefs(props);
 
-const currentBatch = computed(() => usePage().props.value.user.trip_batch);
 const currentMessage = computed(() => usePage().props.value.flash.success);
 const currentUser = computed(() => usePage().props.value.user.id);
 const currentTime = computed(() => moment().format("LLL"));
@@ -33,16 +48,64 @@ const form = useForm({
   added_by: currentUser,
 });
 
+const agentSales = ref([]);
+const selectedItem = ref({});
+watch(selectedItem, (newX) => {
+  payload.product_id = newX.id;
+});
+const purchasingClient = ref({});
+watch(purchasingClient, (newX) => {
+  payload.client_id = newX.id;
+});
+const purchasingQuantity = ref(1);
+const purchasingPrice = ref(200);
+const bottomCanvas = ref(false);
+const addModal = ref(false);
+const saleModal = ref(false);
+const showInvoice = ref(false);
+const defaultClientButtons = ref(true);
+const selectClientButtons = ref(false);
+const clientTypeModal = ref(false);
+const saleDetails = ref(false);
+
+const payload = reactive({
+  added_by: currentUser,
+  client_id: null,
+  product_id: null,
+  product_quantity: purchasingQuantity,
+  sale_amount: purchasingPrice,
+  payment_status: false,
+  invoice_number: 1,
+});
+
+const showItems = (items) => {
+  let parsedData = JSON.parse(items) 
+  console.log(items)
+}
+
 const getOveralTotal = (productIDS) => {
   let parsedData = JSON.parse(productIDS) 
   // console.log(parsedData[0].overallTotal)
   return parsedData[0].overallTotal
 }
 
+const getItems = (productIDS) => {
+  let parsedData = JSON.parse(productIDS)
+  let productQunatityArray = []
+  for (let index = 0; index < parsedData.length; index++) {
+    const element = parsedData[index];
+    productQunatityArray.push(parseInt(element.productQuantity))
+  }
+  return productQunatityArray.reduce((a, b) => a + b, 0)
+}
+
 const getProducts = (productIDS) => {
   let parsedData = JSON.parse(productIDS) 
-  console.log(parsedData)
-  return parsedData.length
+  const ids = parsedData.map(o => o.selectedproductID)
+  let unique = [...new Set(ids)];
+  // const filtered = parsedData.filter(({ id }, index) => !ids.includes(id, index + 1))
+  // console.log(unique)
+  return unique.length
 }
 
 const getLocation = (tripBatch) => {
@@ -68,62 +131,6 @@ const formatToCurrency = (amount) =>
   return (amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'); 
 } 
 
-
-const agentSales = ref([]);
-
-const selectedItem = ref({});
-watch(selectedItem, (newX) => {
-  payload.product_id = newX.id;
-});
-
-const purchasingClient = ref({});
-watch(purchasingClient, (newX) => {
-  payload.client_id = newX.id;
-});
-
-const purchasingQuantity = ref(1);
-const purchasingPrice = ref(200);
-
-const bottomCanvas = ref(false);
-onMounted(() => {
-  if (currentMessage.value != null) {
-    bottomCanvas.value = true;
-  } else {
-    bottomCanvas.value = false;
-  }
-
-  // console.log(props.sales)
-  // let saleItems = props.sales.find(obj => obj.products);
-  let saleItems = props.sales.map(({ products }) => products);
-  //   for (var i = 0; len = saleItems.length; i < len; i++){
-    //   myArray.push(dataset.towns[i][2];
-    // }
-  var myArray = [];
-  for (let i = 0; i < saleItems.length; i++) {
-      myArray.push(saleItems[i]);
-  }
-  agentSales.value = myArray
-  // console.log(myArray);
-
-  // console.log(saleItems);
-});
-const addModal = ref(false);
-const saleModal = ref(false);
-const showInvoice = ref(false);
-const defaultClientButtons = ref(true);
-const selectClientButtons = ref(false);
-const clientTypeModal = ref(false);
-const saleDetails = ref(false);
-
-const payload = reactive({
-  added_by: currentUser,
-  client_id: null,
-  product_id: null,
-  product_quantity: purchasingQuantity,
-  sale_amount: purchasingPrice,
-  payment_status: false,
-  invoice_number: 1,
-});
 
 const getProductNameDetails = (sale) =>
 { 
@@ -304,7 +311,7 @@ const addProduct = () => {
                       <td class="">
                         <div class="flex items-center pl-1 sm:pl-3">
                           <p
-                            class="hover:font-extrabold cursor-help text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
+                            class="text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
                           >
                             <!-- {{ sale[0].selectedproductName }} -->
                             {{ geDateFormat(sale.created_at) }}
@@ -314,7 +321,7 @@ const addProduct = () => {
                       <td class="">
                         <div class="flex items-center pl-1 sm:pl-3">
                           <p
-                            class="bold capitalize hover:font-extrabold cursor-help text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
+                            class="bold capitalize text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
                           >
                             <!-- {{ sale[0].selectedproductName }} -->
                             {{ getClient(sale.client_id) }}
@@ -324,7 +331,7 @@ const addProduct = () => {
                       <td class="">
                         <div class="flex items-center pl-1 sm:pl-3">
                           <p
-                            class="bold capitalize hover:font-extrabold cursor-help text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
+                            class="bold capitalize text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
                           >
                             <!-- {{ sale[0].selectedproductName }} -->
                             {{ getLocation(sale.trip_batch) }}
@@ -334,7 +341,7 @@ const addProduct = () => {
                       <td class="">
                         <div class="flex items-center pl-1 sm:pl-3">
                           <p
-                            class="bold capitalize hover:font-extrabold cursor-pointer text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
+                            class="hover:text-lg transform translate hover:scale-125 duration-700  bold capitalize hover:font-extrabold cursor-pointer text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
                           >
                             <!-- {{ sale[0].selectedproductName }} -->
                             <span class="text-green-600 font-bold">{{ getProducts(sale.products) }}</span> Products
@@ -343,8 +350,19 @@ const addProduct = () => {
                       </td>
                       <td class="">
                         <div class="flex items-center pl-1 sm:pl-3">
+                          <button
+                          @click="showItems(sale.products)"
+                            class="hover:text-lg transform translate hover:scale-125 duration-700  bold capitalize hover:font-extrabold cursor-pointer text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
+                          >
+                            <!-- {{ sale[0].selectedproductName }} -->
+                            <span class="text-green-600 font-bold">{{ getItems(sale.products) }}</span> Items
+                          </button>
+                        </div>
+                      </td>
+                      <td class="">
+                        <div class="flex items-center pl-1 sm:pl-3">
                           <p
-                            class="bold capitalize hover:font-extrabold text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
+                            class="bold capitalize text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
                           >
                             <!-- {{ sale[0].selectedproductName }} -->
                             KES <span class="text-green-600 font-bold"> {{ getOveralTotal(sale.products) }}</span>
@@ -359,6 +377,82 @@ const addProduct = () => {
                 </table>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    
+    
+    <div class="p-20 modal fade fixed top-0 left-0 w-full h-full outline-none overflow-x-hidden overflow-y-auto"
+      id="exampleModalLg" tabindex="-1" aria-labelledby="exampleModalLgLabel" aria-modal="true" role="dialog">
+      <div class="modal-dialog modal-lg relative w-auto pointer-events-none">
+        <div
+          class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+          <div
+            class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
+            <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalLgLabel">
+              Sale Item
+            </h5>
+            <button @click="" type="button"
+              class="btn-close box-content w-4 h-4 p-1 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline"
+              data-bs-dismiss="modal" aria-label="Close">
+            <i class="fas fa-xmark"></i>
+            </button>
+          </div>
+          <div class="modal-body relative p-4">
+            <div class="px-4 sm:px-6 lg:px-8">
+              <div class="sm:flex sm:items-center">
+                <div class="sm:flex-auto">
+                  <h1 class="text-xl font-semibold text-gray-900">Users</h1>
+                  <p class="mt-2 text-sm text-gray-700">A list of all the users in your account including their name, title, email
+                    and role.</p>
+                </div>
+                <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+                  <button type="button"
+                    class="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">Add
+                    user</button>
+                </div>
+              </div>
+              <div class="mt-8 flex flex-col">
+                <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                  <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                    <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                      <table class="min-w-full divide-y divide-gray-300">
+                        <thead class="bg-gray-50">
+                          <tr>
+                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Name</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Title</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Email</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Role</th>
+                            <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                              <span class="sr-only">Edit</span>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 bg-white">
+                          <tr>
+                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">Lindsay Walton
+                            </td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">Front-end Developer</td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">lindsay.walton@example.com</td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">Member</td>
+                            <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                              <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit<span class="sr-only">, Lindsay
+                                  Walton</span></a>
+                            </td>
+                          </tr>
+            
+                          <!-- More people... -->
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -1165,6 +1259,7 @@ const addProduct = () => {
         />
       </div>
     </div>
+
   </AppLayout>
 </template>
 

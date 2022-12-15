@@ -64,6 +64,16 @@ const openSort = ref(false);
 const openFilters = ref(false);
 
 
+const getWholesale = (value) => {
+    let product = props.products.find(obj => obj.id === value);
+    return product.wholesale_price
+}
+
+const getRetail = (value) => {
+    let product = props.products.find(obj => obj.id === value);
+    return product.sales_price
+}
+
 const closeReportDataModal = () => {
     // reportDataModal.value = false
     Inertia.get("/reports");
@@ -842,31 +852,37 @@ const checkMissingItems = (data) => {
                                                                 <tr class="divide-x divide-gray-200">
                                                                     <th scope="col"
                                                                         class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pl-6">
-                                                                        Product Name
+                                                                        Product
                                                                     </th>
                                                                     <th scope="col"
                                                                         class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                                        Product SKU
+                                                                        SKU
                                                                     </th>
                                                                     <th scope="col"
                                                                         class="px-4 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                                        Loaded Items
+                                                                        Loaded
                                                                     </th>
                                                                     <th scope="col"
                                                                         class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
-                                                                        Sold Items
+                                                                        Sold
+                                                                    </th>
+                                                                    <th scope="col" class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Retail
+                                                                    </th>
+                                                                    <th scope="col" class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Wholesale
                                                                     </th>
                                                                     <th scope="col"
                                                                         class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
-                                                                        Returned Items
+                                                                        Returned
                                                                     </th>
                                                                     <th scope="col"
                                                                         class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
-                                                                        Spoiled Items
+                                                                        Spoiled
                                                                     </th>
                                                                     <th scope="col"
                                                                         class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
-                                                                        Lost Items
+                                                                        Lost
                                                                     </th>
                                                                 </tr>
                                                             </thead>
@@ -885,6 +901,12 @@ const checkMissingItems = (data) => {
                                                                     <td
                                                                         class="whitespace-nowrap p-4 text-sm text-gray-500">
                                                                         {{ product.soldProducts }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm font-bold text-gray-500">
+                                                                        {{ getRetail(product.productID) }}</td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm font-bold text-gray-500">
+                                                                        {{ getWholesale(product.productID) }}</td>
                                                                     <td
                                                                         class="whitespace-nowrap p-4 text-sm text-gray-500">
                                                                         {{ product.restocked }}</td>
@@ -1071,6 +1093,12 @@ const checkMissingItems = (data) => {
                                                                         class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
                                                                         Sold Items
                                                                     </th>
+                                                                    <th scope="col" class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Retail
+                                                                    </th>
+                                                                    <th scope="col" class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
+                                                                        Wholesale
+                                                                    </th>
                                                                     <th scope="col"
                                                                         class="py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6">
                                                                         Returned Items
@@ -1100,6 +1128,10 @@ const checkMissingItems = (data) => {
                                                                     <td
                                                                         class="whitespace-nowrap p-4 text-sm text-gray-500">
                                                                         {{ product.soldProducts }}</td>
+                                                                    <td class="whitespace-nowrap p-4 text-sm font-bold text-gray-500">
+                                                                        {{ getRetail(product.productID) }}</td>
+                                                                    <td class="whitespace-nowrap p-4 text-sm font-bold text-gray-500">
+                                                                        {{ getWholesale(product.productID) }}</td>
                                                                     <td
                                                                         class="whitespace-nowrap p-4 text-sm text-gray-500">
                                                                         {{ product.restocked }}</td>
@@ -1114,6 +1146,12 @@ const checkMissingItems = (data) => {
                                                                     class="divide-x divide-gray-200">
                                                                     <td
                                                                         class="whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-6">
+                                                                        </td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
+                                                                        </td>
+                                                                    <td
+                                                                        class="whitespace-nowrap p-4 text-sm text-gray-500">
                                                                         </td>
                                                                     <td
                                                                         class="whitespace-nowrap p-4 text-sm text-gray-500">
