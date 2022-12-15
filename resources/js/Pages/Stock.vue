@@ -48,6 +48,7 @@ const form = useForm({
   added_by: currentUser,
 });
 
+const itemsToShow = ref([]);
 const agentSales = ref([]);
 const selectedItem = ref({});
 watch(selectedItem, (newX) => {
@@ -60,6 +61,7 @@ watch(purchasingClient, (newX) => {
 const purchasingQuantity = ref(1);
 const purchasingPrice = ref(200);
 const bottomCanvas = ref(false);
+const showItemsModal = ref(false);
 const addModal = ref(false);
 const saleModal = ref(false);
 const showInvoice = ref(false);
@@ -78,9 +80,22 @@ const payload = reactive({
   invoice_number: 1,
 });
 
+
+const getUnitPrice = (data) => {
+  return parseInt(data.total) / parseInt(data.productQuantity)
+}
+
+const getSKU = (data) => {
+  let product = props.products.find((obj) => obj.id == data);
+  return product.product_quantity
+}
+
 const showItems = (items) => {
+  itemsToShow.value = []
+  showItemsModal.value = true
   let parsedData = JSON.parse(items) 
-  console.log(items)
+  itemsToShow.value = parsedData
+  // console.log(parsedData)
 }
 
 const getOveralTotal = (productIDS) => {
@@ -341,7 +356,7 @@ const addProduct = () => {
                       <td class="">
                         <div class="flex items-center pl-1 sm:pl-3">
                           <p
-                            class="hover:text-lg transform translate hover:scale-125 duration-700  bold capitalize hover:font-extrabold cursor-pointer text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
+                            class="bold capitalize text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
                           >
                             <!-- {{ sale[0].selectedproductName }} -->
                             <span class="text-green-600 font-bold">{{ getProducts(sale.products) }}</span> Products
@@ -355,7 +370,12 @@ const addProduct = () => {
                             class="hover:text-lg transform translate hover:scale-125 duration-700  bold capitalize hover:font-extrabold cursor-pointer text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
                           >
                             <!-- {{ sale[0].selectedproductName }} -->
-                            <span class="text-green-600 font-bold">{{ getItems(sale.products) }}</span> Items
+                            <button type="button"
+                              class="inline-flex items-center rounded border border-transparent bg-green-800 px-2.5 py-1.5 text-xs font-bold text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                              {{ getItems(sale.products) }} items
+                            </button>
+
+                            <!-- <span class="text-green-600 font-bold">{{ getItems(sale.products) }}</span> Items -->
                           </button>
                         </div>
                       </td>
@@ -385,7 +405,7 @@ const addProduct = () => {
     
     
     
-    <div class="p-20 modal fade fixed top-0 left-0 w-full h-full outline-none overflow-x-hidden overflow-y-auto"
+    <div v-if="showItemsModal" class="bg-gray-100  p-20 modal fade fixed top-0 left-0 w-full h-full outline-none overflow-x-hidden overflow-y-auto"
       id="exampleModalLg" tabindex="-1" aria-labelledby="exampleModalLgLabel" aria-modal="true" role="dialog">
       <div class="modal-dialog modal-lg relative w-auto pointer-events-none">
         <div
@@ -395,7 +415,7 @@ const addProduct = () => {
             <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalLgLabel">
               Sale Item
             </h5>
-            <button @click="" type="button"
+            <button @click="showItemsModal=false" type="button"
               class="btn-close box-content w-4 h-4 p-1 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline"
               data-bs-dismiss="modal" aria-label="Close">
             <i class="fas fa-xmark"></i>
@@ -403,18 +423,6 @@ const addProduct = () => {
           </div>
           <div class="modal-body relative p-4">
             <div class="px-4 sm:px-6 lg:px-8">
-              <div class="sm:flex sm:items-center">
-                <div class="sm:flex-auto">
-                  <h1 class="text-xl font-semibold text-gray-900">Users</h1>
-                  <p class="mt-2 text-sm text-gray-700">A list of all the users in your account including their name, title, email
-                    and role.</p>
-                </div>
-                <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-                  <button type="button"
-                    class="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">Add
-                    user</button>
-                </div>
-              </div>
               <div class="mt-8 flex flex-col">
                 <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
                   <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
@@ -422,25 +430,29 @@ const addProduct = () => {
                       <table class="min-w-full divide-y divide-gray-300">
                         <thead class="bg-gray-50">
                           <tr>
-                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Name</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Title</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Email</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Role</th>
-                            <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                              <span class="sr-only">Edit</span>
-                            </th>
+                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Product</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">SKU</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Items(s)</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Sale Price</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Total Price</th>
                           </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 bg-white">
-                          <tr>
-                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">Lindsay Walton
+                          <tr v-for="item in itemsToShow">
+                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                              {{ item.selectedproductName  }}
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">Front-end Developer</td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">lindsay.walton@example.com</td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">Member</td>
-                            <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                              <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit<span class="sr-only">, Lindsay
-                                  Walton</span></a>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                              {{ getSKU(item.selectedproductID) }}
+                            </td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                              {{ item.productQuantity }}
+                            </td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 font-bold">
+                              KES <span class="text-green-700">{{ getUnitPrice(item) }}</span>
+                            </td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 font-bold">
+                              KES <span class="text-green-700">{{ item.total }}</span>
                             </td>
                           </tr>
             
@@ -510,7 +522,7 @@ const addProduct = () => {
                           id="first-name"
                           v-model="form.product_name"
                           autocomplete="given-name"
-                          class="mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                          class="mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                         />
                       </div>
 
@@ -526,7 +538,7 @@ const addProduct = () => {
                           id="last-name"
                           v-model="form.product_quantity"
                           autocomplete="family-name"
-                          class="mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                          class="mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                         />
                       </div>
 
@@ -542,7 +554,7 @@ const addProduct = () => {
                           id="last-name"
                           v-model="form.stock_quantity"
                           autocomplete="family-name"
-                          class="mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                          class="mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                         />
                       </div>
 
@@ -558,7 +570,7 @@ const addProduct = () => {
                           id="last-name"
                           v-model="form.production_price"
                           autocomplete="family-name"
-                          class="mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                          class="mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                         />
                       </div>
 
@@ -574,7 +586,7 @@ const addProduct = () => {
                           id="last-name"
                           v-model="form.sales_price"
                           autocomplete="family-name"
-                          class="mt-1 focus:ring-indigo-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                          class="mt-1 focus:ring-green-500 focus:border-light-green-900 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                         />
                       </div>
 
@@ -589,15 +601,15 @@ const addProduct = () => {
                           name="about"
                           rows="3"
                           v-model="form.product_description"
-                          class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
+                          class="shadow-sm focus:ring-green-500 focus:border-green-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
                           placeholder=""
                         ></textarea>
-                        <!-- <input type="text" name="email-address" id="email-address" autocomplete="email" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"> -->
+                        <!-- <input type="text" name="email-address" id="email-address" autocomplete="email" class="mt-1 focus:ring-green-500 focus:border-green-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"> -->
                       </div>
 
                       <!-- <div class="col-span-6 sm:col-span-3">
                         <label for="country" class="block text-sm font-medium text-gray-700">Country</label>
-                        <select id="country" name="country" autocomplete="country-name" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <select id="country" name="country" autocomplete="country-name" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm">
                           <option>United States</option>
                           <option>Canada</option>
                           <option>Mexico</option>
@@ -710,7 +722,7 @@ const addProduct = () => {
                   <!-- <option>Another Company</option>
                       <option>Bing Ink</option> -->
                 </select>
-                <!-- <input id="email" autocomplete="off" class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 dark:focus:border-indigo-700 dark:border-gray-700 dark:bg-gray-800 bg-white font-normal w-64 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow" /> -->
+                <!-- <input id="email" autocomplete="off" class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700 dark:focus:border-green-700 dark:border-gray-700 dark:bg-gray-800 bg-white font-normal w-64 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow" /> -->
               </div>
               <!-- Code block ends -->
 
@@ -727,14 +739,14 @@ const addProduct = () => {
                   type="number"
                   id="email"
                   autocomplete="off"
-                  class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-900 dark:focus:border-indigo-700 dark:border-gray-700 dark:bg-gray-800 bg-white font-normal w-40 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow"
+                  class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-900 dark:focus:border-green-700 dark:border-gray-700 dark:bg-gray-800 bg-white font-normal w-40 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow"
                 />
               </div>
               <!-- Code block ends -->
               <!-- Code block starts -->
               <!-- <div class="flex flex-col lg:mr-16 lg:py-0 py-4">
                     <label for="last_email" class="text-gray-400 text-sm font-bold leading-tight tracking-normal mb-2">Minumum Sale Price</label>
-                    <input disabled id="last_email" class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 dark:focus:border-green-900 dark:border-gray-700 dark:bg-gray-700 font-normal w-40 h-10 flex items-center pl-3 text-sm border-gray-300 bg-gray-200 rounded border shadow" placeholder="120" />
+                    <input disabled id="last_email" class="text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700 dark:focus:border-green-900 dark:border-gray-700 dark:bg-gray-700 font-normal w-40 h-10 flex items-center pl-3 text-sm border-gray-300 bg-gray-200 rounded border shadow" placeholder="120" />
                 </div> -->
               <!-- Code block ends -->
               <!-- Code block starts -->
@@ -856,7 +868,7 @@ const addProduct = () => {
                     </ul>
                   </div>
                 </div>
-                <div class="w-full h-0.5 bg-indigo-500"></div>
+                <div class="w-full h-0.5 bg-green-500"></div>
                 <div class="flex justify-between p-4">
                   <div>
                     <h6 class="font-bold">
@@ -954,10 +966,10 @@ const addProduct = () => {
                   </div>
                   <!-- <div class="p-4">
                           <h3>Signature</h3>
-                          <div class="text-4xl italic text-indigo-500">AAA</div>
+                          <div class="text-4xl italic text-green-500">AAA</div>
                       </div> -->
                 </div>
-                <div class="w-full h-0.5 bg-indigo-500"></div>
+                <div class="w-full h-0.5 bg-green-500"></div>
 
                 <div class="p-4">
                   <div class="flex items-center justify-center">
@@ -1106,7 +1118,7 @@ const addProduct = () => {
                       id="address"
                       name="address"
                       autocomplete="street-address"
-                      class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
                     />
                   </div>
                 </div>
@@ -1123,7 +1135,7 @@ const addProduct = () => {
                       id="city"
                       name="city"
                       autocomplete="address-level2"
-                      class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
                     />
                   </div>
                 </div>
@@ -1169,7 +1181,7 @@ const addProduct = () => {
               <Link
                 href="/dashboard/add_client"
                 type="button"
-                class="group mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm"
+                class="group mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:col-start-1 sm:text-sm"
               >
                 New Client
                 <i
@@ -1179,7 +1191,7 @@ const addProduct = () => {
               <button
                 @click="processButtons('existing')"
                 type="button"
-                class="group mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-2 sm:text-sm"
+                class="group mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:col-start-2 sm:text-sm"
               >
                 Existing Client
                 <i
@@ -1195,7 +1207,7 @@ const addProduct = () => {
               <button
                 @click="processButtons('previous')"
                 type="button"
-                class="group mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-1 sm:text-sm"
+                class="group mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:col-start-1 sm:text-sm"
               >
                 <i
                   class="mr-2 mt-1 fas fa-caret-left text-green-900 group-hover:text-white"
@@ -1205,7 +1217,7 @@ const addProduct = () => {
               <button
                 @click="processButtons('selectedClient')"
                 type="button"
-                class="group mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-2 sm:text-sm"
+                class="group mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:col-start-2 sm:text-sm"
               >
                 Select Client
                 <i
@@ -1221,7 +1233,7 @@ const addProduct = () => {
               <button
                 @click="processSale()"
                 type="button"
-                class="group mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:col-start-2 sm:text-sm"
+                class="group mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white hover:bg-light-green-900 text-base font-bold text-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:col-start-2 sm:text-sm"
               >
                 Process Invoice
                 <i
