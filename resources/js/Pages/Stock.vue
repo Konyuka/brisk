@@ -30,10 +30,15 @@ onMounted(() => {
     myArray.push(saleItems[i]);
   }
   agentSales.value = myArray
+
+ orderedPriceList.value = props.products.sort((a, b) => (a.product_name > b.product_name ? 1 : -1));
+  
+
 });
 
 const { activeAgents } = toRefs(props);
 
+const currentBatch = computed(() => usePage().props.value.user.trip_batch);
 const currentMessage = computed(() => usePage().props.value.flash.success);
 const currentUser = computed(() => usePage().props.value.user.id);
 const currentTime = computed(() => moment().format("LLL"));
@@ -48,6 +53,8 @@ const form = useForm({
   added_by: currentUser,
 });
 
+
+const orderedPriceList = ref([]);
 const itemsToShow = ref([]);
 const agentSales = ref([]);
 const selectedItem = ref({});
@@ -64,6 +71,7 @@ const bottomCanvas = ref(false);
 const showItemsModal = ref(false);
 const addModal = ref(false);
 const saleModal = ref(false);
+const priceListModal = ref(false);
 const showInvoice = ref(false);
 const defaultClientButtons = ref(true);
 const selectClientButtons = ref(false);
@@ -260,19 +268,28 @@ const addProduct = () => {
         </div>
 
         <div class="text-center">
-          <!-- <button
-            @click="addModal = true"
-            class="mr-2 inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md md:w-auto bg-light-green-900 hover:bg-white hover:text-light-green-900 focus:shadow-outline focus:outline-none"
-          >
-            Add Product
-          </button> -->
-
           <button
             @click="getInvoiceForm"
-            class="inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md md:w-auto bg-light-green-900 hover:bg-white hover:text-light-green-900 focus:shadow-outline focus:outline-none"
+            class="mr-2 inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md md:w-auto bg-light-green-900 hover:bg-white hover:text-light-green-900 focus:shadow-outline focus:outline-none"
           >
             Register Sale
           </button>
+
+          <button
+            @click="addModal = true"
+            class="mr-2 inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md md:w-auto bg-light-green-900 hover:bg-white hover:text-light-green-900 focus:shadow-outline focus:outline-none"
+          >
+            Trip Summary
+          </button>
+
+          <button
+            @click="priceListModal = true"
+            class="mr-2 inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md md:w-auto bg-light-green-900 hover:bg-white hover:text-light-green-900 focus:shadow-outline focus:outline-none"
+          >
+            Price List
+          </button>
+
+          
         </div>
       </div>
 
@@ -405,6 +422,83 @@ const addProduct = () => {
     
     
     
+    <div v-if="priceListModal" class="bg-gray-100  p-20 modal fade fixed top-0 left-0 w-full h-full outline-none overflow-x-hidden overflow-y-auto"
+      id="exampleModalLg" tabindex="-1" aria-labelledby="exampleModalLgLabel" aria-modal="true" role="dialog">
+      <div class="modal-dialog modal-lg relative w-auto pointer-events-none">
+        <div
+          class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+          <div
+            class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
+            <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalLgLabel">
+              Price List
+            </h5>
+            <button @click="priceListModal =false" type="button"
+              class="btn-close box-content w-4 h-4 p-1 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline"
+              data-bs-dismiss="modal" aria-label="Close">
+            <i class="fas fa-xmark"></i>
+            </button>
+          </div>
+          <div class="modal-body relative p-4">
+            <div class="px-4 sm:px-6 lg:px-8">
+              <div class="sm:flex sm:items-center">
+                <div class="mt-4 sm:mt-0 sm:flex-none">
+                  <button type="button"
+                    class="mr-2 inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto">
+                    Whatsapp <i class="ml-2 fab fa-whatsapp"></i>
+                  </button>
+                  <button type="button"
+                    class="mr-2 inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto">
+                    Mail <i class="ml-2 fas fa-envelope"></i>
+                  </button>
+                  <button type="button"
+                    class="mr-2 inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto">
+                    Download <i class="ml-2 fas fa-download"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="mt-8 flex flex-col">
+                <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                  <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                    <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                      <table class="min-w-full divide-y divide-gray-300">
+                        <thead class="bg-gray-50">
+                          <tr>
+                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Product</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">SKU</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Retail Price</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Wholesale Price</th>
+                          </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 bg-white">
+                          <tr v-for="product in orderedPriceList">
+                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                              {{ product.product_name  }}
+                            </td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                              {{ product.product_quantity }}
+                            </td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 font-bold">
+                              KES <span class="text-green-700">{{ product.wholesale_price }}</span>
+                            </td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 font-bold">
+                              KES <span class="text-green-700">{{ product.sales_price }}</span>
+                            </td>
+                          </tr>
+            
+                          <!-- More people... -->
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div v-if="showItemsModal" class="bg-gray-100  p-20 modal fade fixed top-0 left-0 w-full h-full outline-none overflow-x-hidden overflow-y-auto"
       id="exampleModalLg" tabindex="-1" aria-labelledby="exampleModalLgLabel" aria-modal="true" role="dialog">
       <div class="modal-dialog modal-lg relative w-auto pointer-events-none">
@@ -1034,32 +1128,14 @@ const addProduct = () => {
       role="dialog"
       aria-modal="true"
     >
-      <!--
-    Background backdrop, show/hide based on modal state.
-
-    Entering: "ease-out duration-300"
-      From: "opacity-0"
-      To: "opacity-100"
-    Leaving: "ease-in duration-200"
-      From: "opacity-100"
-      To: "opacity-0"
-  -->
+     
       <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
 
       <div class="fixed z-10 inset-0 overflow-y-auto">
         <div
           class="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0"
         >
-          <!--
-        Modal panel, show/hide based on modal state.
-
-        Entering: "ease-out duration-300"
-          From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-          To: "opacity-100 translate-y-0 sm:scale-100"
-        Leaving: "ease-in duration-200"
-          From: "opacity-100 translate-y-0 sm:scale-100"
-          To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-      -->
+          
           <div
             class="relative bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full sm:p-6"
           >
