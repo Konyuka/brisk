@@ -14,6 +14,7 @@ const props = defineProps({
   message: String,
   invoiceLog: String,
   activeAgents: Array,
+  users: Array,
 });
 
 onMounted(() => {
@@ -31,7 +32,9 @@ onMounted(() => {
   }
   agentSales.value = myArray
 
- orderedPriceList.value = props.products.sort((a, b) => (a.product_name > b.product_name ? 1 : -1));
+  orderedPriceList.value = props.products.sort((a, b) => (a.product_name > b.product_name ? 1 : -1));
+
+
   
 
 });
@@ -56,6 +59,7 @@ const form = useForm({
 
 const orderedPriceList = ref([]);
 const itemsToShow = ref([]);
+const loeadeditemsToShow = ref([]);
 const agentSales = ref([]);
 const selectedItem = ref({});
 watch(selectedItem, (newX) => {
@@ -72,6 +76,7 @@ const showItemsModal = ref(false);
 const addModal = ref(false);
 const saleModal = ref(false);
 const priceListModal = ref(false);
+const tripSummaryModal = ref(false);
 const showInvoice = ref(false);
 const defaultClientButtons = ref(true);
 const selectClientButtons = ref(false);
@@ -88,6 +93,63 @@ const payload = reactive({
   invoice_number: 1,
 });
 
+
+const getLoadedItems = (data) => {
+  let loadedArray = JSON.parse(data)
+  // console.log(loadedArray)
+  for (let index = 0; index < loadedArray.length; index++) {
+    const element = loadedArray[index];
+    let itemIndex = loadedArray.indexOf(element) 
+    console.log(itemIndex)
+    return loadedArray[itemIndex].numberItems
+  }
+  // return
+}
+const getTeamMembers = (data) =>{
+  let trip = props.trips.find(obj => obj.id === data);
+  let usersArray = JSON.parse(trip.user_ids)
+  let userNames = []
+  for (let index = 0; index < usersArray.length; index++) {
+    const element = usersArray[index];
+    let user = props.users.find(obj => obj.id === element);
+    userNames.push(user.name)
+  }
+  return userNames
+}
+
+const getVehicle = (data) =>{
+  let trip = props.trips.find(obj => obj.id === data);
+  return trip.vehicle_number
+}
+
+const getDriver = (data) =>{
+  let trip = props.trips.find(obj => obj.id === data);
+  return trip.driver_name
+}
+
+const getTripLocation = (data) =>{
+  let trip = props.trips.find(obj => obj.id === data);
+  return trip.trip_location
+}
+
+const getTeamLead = (data) =>{
+  let trip = props.trips.find(obj => obj.id === data);
+  return trip.lead_name
+}
+
+const getLoadedProducts = (data) =>{
+  let trip = props.trips.find(obj => obj.id === data);
+  let productIDs = JSON.parse(trip.products_ids)
+  let productsArray = []
+  for (let index = 0; index < productIDs.length; index++) {
+    const element = productIDs[index];
+    let product = props.products.find(obj => obj.id === element);
+    productsArray.push(product)
+  }
+  loeadeditemsToShow.value = productsArray
+  tripSummaryModal.value = true
+
+}
 
 const getUnitPrice = (data) => {
   return parseInt(data.total) / parseInt(data.productQuantity)
@@ -270,21 +332,21 @@ const addProduct = () => {
         <div class="text-center">
           <button
             @click="getInvoiceForm"
-            class="mr-2 inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md md:w-auto bg-light-green-900 hover:bg-white hover:text-light-green-900 focus:shadow-outline focus:outline-none"
+            class="mr-2 mb-2 inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md md:w-auto bg-light-green-900 hover:bg-white hover:text-light-green-900 focus:shadow-outline focus:outline-none"
           >
             Register Sale
           </button>
 
           <button
-            @click="addModal = true"
-            class="mr-2 inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md md:w-auto bg-light-green-900 hover:bg-white hover:text-light-green-900 focus:shadow-outline focus:outline-none"
+            @click="getLoadedProducts(currentBatch)"
+            class="mr-2 mb-2 inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md md:w-auto bg-light-green-900 hover:bg-white hover:text-light-green-900 focus:shadow-outline focus:outline-none"
           >
             Trip Summary
           </button>
 
           <button
             @click="priceListModal = true"
-            class="mr-2 inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md md:w-auto bg-light-green-900 hover:bg-white hover:text-light-green-900 focus:shadow-outline focus:outline-none"
+            class="mr-2 mb-2 inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md md:w-auto bg-light-green-900 hover:bg-white hover:text-light-green-900 focus:shadow-outline focus:outline-none"
           >
             Price List
           </button>
@@ -422,6 +484,106 @@ const addProduct = () => {
     
     
     
+    <div v-if="tripSummaryModal"
+      class="bg-gray-100  p-20 modal fade fixed top-0 left-0 w-full h-full outline-none overflow-x-hidden overflow-y-auto"
+      id="exampleModalLg" tabindex="-1" aria-labelledby="exampleModalLgLabel" aria-modal="true" role="dialog">
+      <div class="modal-dialog modal-lg relative w-auto pointer-events-none">
+        <div
+          class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+          <div
+            class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
+            <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalLgLabel">
+              Loaded Products
+            </h5>
+            <button @click="tripSummaryModal=false" type="button"
+              class="btn-close box-content w-4 h-4 p-1 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline"
+              data-bs-dismiss="modal" aria-label="Close">
+              <i class="fas fa-xmark"></i>
+            </button>
+          </div>
+          <div class="modal-body relative p-4">
+            <div class="px-4 sm:px-6 lg:px-8">
+              <div class="sm:flex  sm:items-center">
+                
+                <div class="sm:flex-auto">
+                  <h1 class="text-xl font-semibold text-gray-900"># {{ currentBatch }}</h1>
+                  <div clas="grid grid-cols-3 gap-4">
+                    <p class="font-bold mt-2 text-lg text-gray-700">
+                      Team Lead: <span class="font-medium text-sm uppercase">{{ getTeamLead(currentBatch) }}</span>
+                    </p>
+                    <p class="font-bold mt-2 text-lg text-gray-700">
+                      Team Members: <span class="font-medium text-sm uppercase">{{ getTeamMembers(currentBatch) }}</span>
+                    </p>
+                    <p class="font-bold mt-2 text-lg text-gray-700">
+                      Location: <span class="font-medium text-sm uppercase">{{ getTripLocation(currentBatch) }}</span>
+                    </p>
+                    <p class="font-bold mt-2 text-lg text-gray-700">
+                      Driver: <span class="font-medium text-sm uppercase">{{ getDriver(currentBatch) }}</span>
+                    </p>
+                    <p class="font-bold mt-2 text-lg text-gray-700">
+                      Vehicle: <span class="font-medium text-sm uppercase">{{ getVehicle(currentBatch) }}</span>
+                    </p>
+                    <p class="font-bold mt-2 text-lg text-gray-700">
+                      Value: <span class="font-medium text-sm uppercase">{{ getTeamLead(currentBatch) }}</span>
+                    </p>
+                  </div>
+                </div>
+                <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+                  <button type="button"
+                    class="inline-flex items-center justify-center rounded-md border border-transparent bg-green-800 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto">
+                    Download<i class="fas fa-download ml-2"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="mt-8 flex flex-col">
+                <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                  <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                    <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                      <table class="min-w-full divide-y divide-gray-300">
+                        <thead class="bg-gray-50">
+                          <tr>
+                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                              Product</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">SKU</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Loaded</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Retail Price
+                            </th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Wholesale
+                              Price</th>
+                          </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 bg-white">
+                          <tr v-for="product in loeadeditemsToShow">
+                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                              {{ product.product_name }}
+                            </td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                              {{ product.product_quantity }}
+                            </td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                              {{ getLoadedItems(product.trip_batch) }}
+                            </td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 font-bold">
+                              KES <span class="text-green-700">{{ product.wholesale_price }}</span>
+                            </td>
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 font-bold">
+                              KES <span class="text-green-700">{{ product.sales_price }}</span>
+                            </td>
+                          </tr>
+    
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+    
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div v-if="priceListModal" class="bg-gray-100  p-20 modal fade fixed top-0 left-0 w-full h-full outline-none overflow-x-hidden overflow-y-auto"
       id="exampleModalLg" tabindex="-1" aria-labelledby="exampleModalLgLabel" aria-modal="true" role="dialog">
       <div class="modal-dialog modal-lg relative w-auto pointer-events-none">

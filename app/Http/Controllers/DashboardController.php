@@ -292,6 +292,7 @@ class DashboardController extends Controller
         $invoice = Sale::latest()->get()->first();
         $userId = auth()->user()->id;
         $sales = Sale::where('added_by', $userId)->latest()->get();
+        $users = User::latest()->get();
 
         // return dd($sales);
 
@@ -331,6 +332,7 @@ class DashboardController extends Controller
             'invoiceLog' => $invoiceID,
             'sales' => $sales,
             'activeAgents' => $agentsArrayPush,
+            'users' => $users,
         ]);
     }
 
