@@ -93,13 +93,12 @@ const missingItemsValue = () => {
 }
 
 const exportRep = (type, fn, dl, value) => {
-    console.log(type, fn, dl, value)
-    // return
     var elt = document.getElementById(value);
     var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
     return dl ?
         XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
-        XLSX.writeFile(wb, fn || (tripTeamLead.value + '_' + tripID.value + '_' + currentModalMenu.value + '_' + 'report.' + (type || 'xlsx')));
+        XLSX.writeFile(wb, fn || ('sales_report.' + (type || 'xlsx')));
+        // XLSX.writeFile(wb, fn || (tripTeamLead.value + '_' + tripID.value + '_' + currentModalMenu.value + '_' + 'sales_report.' + (type || 'xlsx')));
 }
 
 const exportReport = (tableID, filename) => {

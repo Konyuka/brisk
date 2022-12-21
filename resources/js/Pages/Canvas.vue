@@ -661,7 +661,7 @@ const addEverything = () => {
                     <label
                       for="exampleInputPassword2"
                       class="font-medium form-label inline-block mb-2 text-gray-800 text-sm"
-                      >PIN</label
+                      >KRA PIN</label
                     >
                     <input
                       v-model="form.client_kra"
@@ -947,12 +947,6 @@ const addEverything = () => {
                       >
                         #
                       </th>
-                      <!-- <th
-                        scope="col"
-                        class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                      >
-                        Service Date
-                      </th> -->
                       <th
                         scope="col"
                         class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
@@ -965,12 +959,6 @@ const addEverything = () => {
                       >
                         Product Unit (SKU)
                       </th>
-                      <!-- <th
-                        scope="col"
-                        class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
-                      >
-                        Product Description
-                      </th> -->
                       <th
                         scope="col"
                         class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
@@ -1037,16 +1025,6 @@ const addEverything = () => {
                           placeholder=""
                         />
                       </td>
-                      <!-- <td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">
-                        <input
-                          disabled
-                          v-model="selectedProduct.productDescription"
-                          type="text"
-                          class="form-control block w-full sm:px-3 sm:py-1.5 text-xs sm:text-base font-normal text-gray-700 bg-gray-200 border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
-                          id="exampleFormControlInput1"
-                          placeholder=""
-                        />
-                      </td> -->
                       <td class="flex whitespace-nowrap py-2 text-sm text-gray-500">
                         <div class="mt-1 flex rounded-md shadow-sm">
                           <span
@@ -1056,7 +1034,7 @@ const addEverything = () => {
                           <input
                             v-model="selectedProduct.productQuantity"
                             @change="checkSaleChanges(index)"
-                            type="text"
+                            type="number"
                             name="username"
                             id="username"
                             autocomplete="username"
@@ -1086,7 +1064,7 @@ const addEverything = () => {
                             <input
                               v-model="selectedProduct.wholesaleProductPrice"
                               @change="checkSaleChanges(index)"
-                              type="text"
+                              type="number"
                               name="username"
                               id="username"
                               autocomplete="username"
@@ -1104,7 +1082,7 @@ const addEverything = () => {
                             <input
                               v-model="selectedProduct.productPrice"
                               @change="checkSaleChanges(index)"
-                              type="text"
+                              type="number"
                               name="username"
                               id="username"
                               autocomplete="username"

@@ -420,16 +420,6 @@ const addProduct = () => {
                       <td class="">
                         <div class="flex items-center pl-1 sm:pl-3">
                           <p
-                            class="text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
-                          >
-                            <!-- {{ sale[0].selectedproductName }} -->
-                            {{ geDateFormat(sale.created_at) }}
-                          </p>
-                        </div>
-                      </td>
-                      <td class="">
-                        <div class="flex items-center pl-1 sm:pl-3">
-                          <p
                             class="bold capitalize text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2"
                           >
                             <!-- {{ sale[0].selectedproductName }} -->
@@ -480,6 +470,14 @@ const addProduct = () => {
                           >
                             <!-- {{ sale[0].selectedproductName }} -->
                             KES <span class="text-green-600 font-bold"> {{ getOveralTotal(sale.products) }}</span>
+                          </p>
+                        </div>
+                      </td>
+                      <td class="">
+                        <div class="flex items-center pl-1 sm:pl-3">
+                          <p class="text-xs sm:text-sm font-medium leading-none text-gray-700 mr-2">
+                            <!-- {{ sale[0].selectedproductName }} -->
+                            {{ geDateFormat(sale.created_at) }}
                           </p>
                         </div>
                       </td>
@@ -599,9 +597,9 @@ const addProduct = () => {
       </div>
     </div>
 
-    <div v-if="priceListModal" class="bg-gray-100  p-20 modal fade fixed top-0 left-0 w-full h-full outline-none overflow-x-hidden overflow-y-auto"
+    <div v-if="priceListModal" class="bg-gray-100  p-2 modal fade fixed top-0 left-0 w-full h-full outline-none overflow-x-hidden overflow-y-auto"
       id="exampleModalLg" tabindex="-1" aria-labelledby="exampleModalLgLabel" aria-modal="true" role="dialog">
-      <div class="modal-dialog modal-lg relative w-auto pointer-events-none">
+      <div class="modal-dialog modal-lg relative w-full    pointer-events-none">
         <div
           class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
           <div
@@ -620,16 +618,16 @@ const addProduct = () => {
               <div class="sm:flex sm:items-center">
                 <div class="mt-4 sm:mt-0 sm:flex-none">
                   <button type="button"
-                    class="mr-2 inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto">
+                    class="mb-2 mr-2 inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto">
+                    Download <i class="ml-2 fas fa-download"></i>
+                  </button>
+                  <button type="button"
+                    class="mb-2 mr-2 inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto">
                     Whatsapp <i class="ml-2 fab fa-whatsapp"></i>
                   </button>
                   <button type="button"
-                    class="mr-2 inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto">
+                    class="mb-2 mr-2 inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto">
                     Mail <i class="ml-2 fas fa-envelope"></i>
-                  </button>
-                  <button type="button"
-                    class="mr-2 inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto">
-                    Download <i class="ml-2 fas fa-download"></i>
                   </button>
                 </div>
               </div>
@@ -642,22 +640,22 @@ const addProduct = () => {
                           <tr>
                             <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Product</th>
                             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">SKU</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Retail Price</th>
                             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Wholesale Price</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Retail Price</th>
                           </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 bg-white">
                           <tr v-for="product in orderedPriceList">
-                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                            <td class="whitespace-nowrap py-4 pr-3 text-xs sm:text-sm font-medium text-gray-900 sm:pl-6">
                               {{ product.product_name  }}
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            <td class="whitespace-nowrap px-3 py-4 text-xs sm:text-sm text-gray-500">
                               {{ product.product_quantity }}
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 font-bold">
+                            <td class="whitespace-nowrap px-3 py-4 text-xs sm:text-sm text-gray-500 font-bold">
                               KES <span class="text-green-700">{{ product.wholesale_price }}</span>
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 font-bold">
+                            <td class="whitespace-nowrap px-3 py-4 text-xs sm:text-sm text-gray-500 font-bold">
                               KES <span class="text-green-700">{{ product.sales_price }}</span>
                             </td>
                           </tr>
@@ -676,7 +674,7 @@ const addProduct = () => {
       </div>
     </div>
 
-    <div v-if="showItemsModal" class="bg-gray-100  p-20 modal fade fixed top-0 left-0 w-full h-full outline-none overflow-x-hidden overflow-y-auto"
+    <div v-if="showItemsModal" class="bg-gray-100  p-2 modal fade fixed top-0 left-0 w-full h-full outline-none overflow-x-hidden overflow-y-auto"
       id="exampleModalLg" tabindex="-1" aria-labelledby="exampleModalLgLabel" aria-modal="true" role="dialog">
       <div class="modal-dialog modal-lg relative w-auto pointer-events-none">
         <div
@@ -710,19 +708,19 @@ const addProduct = () => {
                         </thead>
                         <tbody class="divide-y divide-gray-200 bg-white">
                           <tr v-for="item in itemsToShow">
-                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-xs sm:text-sm font-medium text-gray-900 sm:pl-6">
                               {{ item.selectedproductName  }}
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            <td class="whitespace-nowrap px-3 py-4 text-xs sm:text-sm text-gray-500">
                               {{ getSKU(item.selectedproductID) }}
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            <td class="whitespace-nowrap px-3 py-4 text-xs sm:text-sm text-gray-500">
                               {{ item.productQuantity }}
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 font-bold">
+                            <td class="whitespace-nowrap px-3 py-4 text-xs sm:text-sm text-gray-500 font-bold">
                               KES <span class="text-green-700">{{ getUnitPrice(item) }}</span>
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 font-bold">
+                            <td class="whitespace-nowrap px-3 py-4 text-xs sm:text-smtext-gray-500 font-bold">
                               KES <span class="text-green-700">{{ item.total }}</span>
                             </td>
                           </tr>

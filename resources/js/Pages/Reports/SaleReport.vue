@@ -43,6 +43,15 @@ onMounted(()=>{
 const salesArray = ref([]);
 
 
+const exportRep = (type, fn, dl, value) => {
+    var elt = document.getElementById(value);
+    var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+    return dl ?
+        XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+        XLSX.writeFile(wb, fn || ('sales_report.' + (type || 'xlsx')));
+        // XLSX.writeFile(wb, fn || (tripTeamLead.value + '_' + tripID.value + '_' + currentModalMenu.value + '_' + 'report.' + (type || 'xlsx')));
+}
+
 const getPaymentMode = (data) => {
     if (data==0){
         return 'cash'
@@ -56,7 +65,6 @@ const formatTime = (value) => {
 };
 
 const getClientName = (data) => {
-    console.log(data)
     if(data==null){
         return 'null'
     }else{
@@ -92,7 +100,7 @@ const getAgentName = (data) => {
                 <div class="sm:flex-auto">
                     <h1 class="text-xl font-semibold text-gray-900">All Sales Report</h1>
                     <div class="mt-2 sm:flex-none">
-                        <button type="button"
+                        <button @click="exportRep('xlsx', fn, dl, 'sales')"  type="button"
                             class="inline-flex items-center justify-center rounded-md border border-transparent bg-gray-300 px-1 py-1 text-xs font-medium text-black hover:text-white shadow-sm hover:bg-black focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto">
                             Download Report<i class="ml-2 fa-solid fa-download"></i>
                         </button>
@@ -109,7 +117,7 @@ const getAgentName = (data) => {
                 <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                         <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                            <table class="min-w-full divide-y divide-gray-300">
+                            <table id="sales" class="min-w-full divide-y divide-gray-300">
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th scope="col"
@@ -169,16 +177,16 @@ const getAgentName = (data) => {
                                             {{ sale.productQuantity }}
                                         </td>
                                         <td class="whitespace-nowrap px-3 py-4 text-sm text-green-800 font-bold">
-                                            KES {{ getUnitPrice(sale) }}
+                                            {{ getUnitPrice(sale) }}
                                         </td>
                                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-900 font-bold">
-                                            <span class="font-medium">KES</span> {{ sale.productPrice }}
+                                             {{ sale.productPrice }}
                                         </td>
                                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-900 font-bold">
-                                            <span class="font-medium">KES</span> {{ sale.wholesalePrice }}
+                                            {{ sale.wholesalePrice }}
                                         </td>
                                         <td class="whitespace-nowrap px-3 py-4 text-sm text-green-800 font-bold">
-                                            KES {{ getSaleExcess(sale) }}
+                                            {{ getSaleExcess(sale) }}
                                         </td>
                                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                             {{ getClientName(sale.clientID)  }}
