@@ -12,6 +12,7 @@ const props = defineProps({
     trips: Array,
     users: Array,
     sales: Array,
+    clients: Array,
 });
 
 const currentReport = ref("trips");
@@ -108,7 +109,7 @@ const setReportMenu = (reportMenu) => {
             </div>
 
             <TripReport v-if="currentReport=='trips'" :products="props.products" :trips="props.trips"/>
-            <SaleReport v-if="currentReport=='sales'"  :sales="props.sales" :products="props.products" :trips="props.trips"/>
+            <SaleReport v-if="currentReport=='sales'" :clients="props.clients" :users="props.users" :sales="props.sales" :products="props.products" :trips="props.trips"/>
 
         </div>
 

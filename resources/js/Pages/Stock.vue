@@ -94,16 +94,30 @@ const payload = reactive({
 });
 
 
+
+const totals = (data) => {
+  let numberToSum = []
+  for (let index = 0; index < loeadeditemsToShow.value.length; index++) {
+    const element = loeadeditemsToShow.value[index];
+    let loadedArray = JSON.parse(element.trip_batch)
+    console.log(loadedArray)
+    let actualArray = loadedArray.find(obj => obj.batchNumber === data);
+    let loadNumber = actualArray.numberItems
+    let itemTotalPrice = element.wholesale_price
+    let total = loadNumber * itemTotalPrice
+    numberToSum.push(total)
+  }
+  let tots = numberToSum.reduce((a, b) => a + b, 0)
+  return formatToCurrency(tots)
+}
+
 const getLoadedItems = (data) => {
   let loadedArray = JSON.parse(data)
-  // console.log(loadedArray)
   for (let index = 0; index < loadedArray.length; index++) {
     const element = loadedArray[index];
     let itemIndex = loadedArray.indexOf(element) 
-    console.log(itemIndex)
     return loadedArray[itemIndex].numberItems
   }
-  // return
 }
 const getTeamMembers = (data) =>{
   let trip = props.trips.find(obj => obj.id === data);
@@ -148,6 +162,7 @@ const getLoadedProducts = (data) =>{
   }
   loeadeditemsToShow.value = productsArray
   tripSummaryModal.value = true
+  totals()
 
 }
 
@@ -509,10 +524,10 @@ const addProduct = () => {
                   <h1 class="text-xl font-semibold text-gray-900"># {{ currentBatch }}</h1>
                   <div clas="grid grid-cols-3 gap-4">
                     <p class="font-bold mt-2 text-lg text-gray-700">
-                      Team Lead: <span class="font-medium text-sm uppercase">{{ getTeamLead(currentBatch) }}</span>
+                      Lead: <span class="font-medium text-sm uppercase">{{ getTeamLead(currentBatch) }}</span>
                     </p>
                     <p class="font-bold mt-2 text-lg text-gray-700">
-                      Team Members: <span class="font-medium text-sm uppercase">{{ getTeamMembers(currentBatch) }}</span>
+                      Members: <span class="font-medium text-sm uppercase">{{ getTeamMembers(currentBatch) }}</span>
                     </p>
                     <p class="font-bold mt-2 text-lg text-gray-700">
                       Location: <span class="font-medium text-sm uppercase">{{ getTripLocation(currentBatch) }}</span>
@@ -524,7 +539,7 @@ const addProduct = () => {
                       Vehicle: <span class="font-medium text-sm uppercase">{{ getVehicle(currentBatch) }}</span>
                     </p>
                     <p class="font-bold mt-2 text-lg text-gray-700">
-                      Value: <span class="font-medium text-sm uppercase">{{ getTeamLead(currentBatch) }}</span>
+                      Value: <span class="font-bold text-sm uppercase">KES  <span class="text-green-700">{{ totals(currentBatch) }}</span> </span>
                     </p>
                   </div>
                 </div>
@@ -546,10 +561,10 @@ const addProduct = () => {
                               Product</th>
                             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">SKU</th>
                             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Loaded</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Retail Price
-                            </th>
                             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Wholesale
                               Price</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Retail Price
+                            </th>
                           </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 bg-white">
