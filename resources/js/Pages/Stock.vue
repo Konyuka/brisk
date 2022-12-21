@@ -498,7 +498,7 @@ const addProduct = () => {
     
     
     <div v-if="tripSummaryModal"
-      class="bg-gray-100  p-20 modal fade fixed top-0 left-0 w-full h-full outline-none overflow-x-hidden overflow-y-auto"
+      class="bg-gray-100  p-2 modal fade fixed top-0 left-0 w-full h-full outline-none overflow-x-hidden overflow-y-auto"
       id="exampleModalLg" tabindex="-1" aria-labelledby="exampleModalLgLabel" aria-modal="true" role="dialog">
       <div class="modal-dialog modal-lg relative w-auto pointer-events-none">
         <div
@@ -567,19 +567,19 @@ const addProduct = () => {
                         </thead>
                         <tbody class="divide-y divide-gray-200 bg-white">
                           <tr v-for="product in loeadeditemsToShow">
-                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-xs sm:text-sm font-medium text-gray-900 sm:pl-6">
                               {{ product.product_name }}
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            <td class="whitespace-nowrap px-3 py-4 text-xs sm:text-sm text-gray-500">
                               {{ product.product_quantity }}
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            <td class="whitespace-nowrap px-3 py-4 text-xs sm:text-sm text-gray-500">
                               {{ getLoadedItems(product.trip_batch) }}
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 font-bold">
+                            <td class="whitespace-nowrap px-3 py-4 text-xs sm:text-sm text-gray-500 font-bold">
                               KES <span class="text-green-700">{{ product.wholesale_price }}</span>
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 font-bold">
+                            <td class="whitespace-nowrap px-3 py-4 text-xs sm:text-sm text-gray-500 font-bold">
                               KES <span class="text-green-700">{{ product.sales_price }}</span>
                             </td>
                           </tr>
