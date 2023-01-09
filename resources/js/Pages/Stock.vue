@@ -93,14 +93,19 @@ const payload = reactive({
   invoice_number: 1,
 });
 
-
+const exportRep = (type, fn, dl, value) => {
+  var elt = document.getElementById(value);
+  var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+  return dl ?
+    XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+    XLSX.writeFile(wb, fn || ('agent_report.' + (type || 'xlsx')));
+}
 
 const totals = (data) => {
   let numberToSum = []
   for (let index = 0; index < loeadeditemsToShow.value.length; index++) {
     const element = loeadeditemsToShow.value[index];
     let loadedArray = JSON.parse(element.trip_batch)
-    console.log(loadedArray)
     let actualArray = loadedArray.find(obj => obj.batchNumber === data);
     let loadNumber = actualArray.numberItems
     let itemTotalPrice = element.wholesale_price
@@ -514,7 +519,7 @@ const addProduct = () => {
               <i class="fas fa-xmark"></i>
             </button>
           </div>
-          <div class="modal-body relative p-4">
+          <div id="agentReport" class="modal-body relative p-4">
             <div class="px-4 sm:px-6 lg:px-8">
               <div class="sm:flex  sm:items-center">
                 
@@ -542,7 +547,7 @@ const addProduct = () => {
                   </div>
                 </div>
                 <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-                  <button type="button"
+                  <button @click="exportRep('xlsx', fn, dl, 'agentReport')"  type="button"
                     class="inline-flex items-center justify-center rounded-md border border-transparent bg-green-800 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto">
                     Download<i class="fas fa-download ml-2"></i>
                   </button>
