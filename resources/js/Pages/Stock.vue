@@ -119,7 +119,6 @@ const totalsales = (data) => {
     const element = loeadeditemsToShow.value[index];
     let loadedArray = JSON.parse(element.trip_batch)
     let actualArray = loadedArray.find(obj => obj.batchNumber === data);
-    console.log(actualArray, element);
     let loadNumber = actualArray.itemsSold
     let itemTotalPrice = element.wholesale_price
     let total = loadNumber * itemTotalPrice
@@ -208,6 +207,24 @@ const getSKU = (data) => {
   return product.product_quantity
 }
 
+const showSaleItems = () => {
+  let totalSaleItemsArray = []
+  for (let index = 0; index < props.sales.length; index++) {
+    const element = props.sales[index];
+    if (element.trip_batch == currentBatch.value) {
+      let rawProductsData = JSON.parse(element.products)
+      for (let index = 0; index < rawProductsData.length; index++) {
+        const element2 = rawProductsData[index];
+        totalSaleItemsArray.push(element2)
+      }
+    }
+  }
+  itemsToShow.value = []
+  itemsToShow.value = totalSaleItemsArray
+  showItemsModal.value = true
+  // let parsedData = JSON.parse(items) 
+}
+
 const showItems = (items) => {
   itemsToShow.value = []
   showItemsModal.value = true
@@ -221,6 +238,7 @@ const getOveralTotal = (productIDS) => {
   // console.log(parsedData[0].overallTotal)
   return parsedData[0].overallTotal
 }
+
 
 const getItems = (productIDS) => {
   let parsedData = JSON.parse(productIDS)
@@ -393,7 +411,7 @@ const addProduct = () => {
           </button>
 
           <button
-            @click="getLoadedProducts(currentBatch)"
+            @click="showSaleItems()"
             class="mr-2 mb-2 inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md md:w-auto bg-light-green-900 hover:bg-white hover:text-light-green-900 focus:shadow-outline focus:outline-none"
           >
             Sales Summary
@@ -718,7 +736,7 @@ const addProduct = () => {
           <div
             class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
             <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalLgLabel">
-              Sale Item
+              Sale Items
             </h5>
             <button @click="showItemsModal=false" type="button"
               class="btn-close box-content w-4 h-4 p-1 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline"
@@ -732,7 +750,11 @@ const addProduct = () => {
                 <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
                   <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                     <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                      <table class="min-w-full divide-y divide-gray-300">
+                        <button @click="exportRep('xlsx', fn, dl, 'agentSalesReport')" type="button"
+                          class="m-2 inline-flex items-center rounded border border-transparent bg-green-600 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                          Download <i class="ml-2 fa-solid fa-file-excel"></i>
+                        </button>
+                      <table id="agentSalesReport" class="min-w-full divide-y divide-gray-300">
                         <thead class="bg-gray-50">
                           <tr>
                             <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Product</th>
