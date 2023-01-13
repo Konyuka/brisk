@@ -393,6 +393,13 @@ const addProduct = () => {
           </button>
 
           <button
+            @click="getLoadedProducts(currentBatch)"
+            class="mr-2 mb-2 inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md md:w-auto bg-light-green-900 hover:bg-white hover:text-light-green-900 focus:shadow-outline focus:outline-none"
+          >
+            Sales Summary
+          </button>
+
+          <button
             @click="priceListModal = true"
             class="mr-2 mb-2 inline-flex items-center justify-center w-full h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded shadow-md md:w-auto bg-light-green-900 hover:bg-white hover:text-light-green-900 focus:shadow-outline focus:outline-none"
           >
