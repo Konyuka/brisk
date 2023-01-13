@@ -805,61 +805,8 @@ const addEverything = () => {
         </div>
       </div>
 
-      <div class="mt-10 grid grid-cols-1 sm:grid-cols-4 sm:gap-6 justify-around">
-        <div class="mb-3 xl:w-96">
-          <label
-            for="exampleFormControlInput1"
-            class="form-label inline-block mb-2 text-gray-700"
-            >Invoice Number</label
-          >
-          <input
-            disabled
-            :value="invoiceLog"
-            type="text"
-            class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
-            id="exampleFormControlInput1"
-            placeholder=""
-          />
-        </div>
-        <div class="mb-3 xl:w-96">
-          <label
-            for="exampleFormControlInput1"
-            class="form-label inline-block mb-2 text-gray-700"
-            >Terms</label
-          >
-          <div class="mb-3 xl:w-96">
-            <select
-              disabled
-              class="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
-              aria-label="Default select example"
-            >
-              <!-- <option selected></option> -->
-              <option selected value="1">Due on Receipt</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="mb-3 xl:w-96">
-          <label
-            for="exampleFormControlInput1"
-            class="form-label inline-block mb-2 text-gray-700"
-            >Invoice Date</label
-          >
-          <input
-            disabled
-            type="text"
-            class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-green-600 focus:outline-none"
-            id="exampleFormControlInput1"
-            placeholder=""
-            v-model="date"
-          />
-
-          <!-- <DatePicker v-model="date" /> -->
-        </div>
-      </div>
-
       <!-- This example requires Tailwind CSS v2.0+ -->
-      <div class="mt-10 sm:mt-20 px-4 sm:px-6 lg:px-8">
+      <div class="mt-5 sm:mt-5 px-4 sm:px-6 lg:px-8">
         <div class="sm:flex sm:items-center">
           <div class="sm:flex-auto">
             <h1 class="text-xl font-semibold text-gray-900">Sale Items</h1>

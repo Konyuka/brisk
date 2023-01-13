@@ -590,9 +590,6 @@ const addProduct = () => {
                     <p class="font-bold mt-2 text-lg text-gray-700">
                       Value: <span class="font-bold text-sm uppercase">KES  <span class="text-green-700">{{ totals(currentBatch) }}</span> </span>
                     </p>
-                    <p class="font-bold mt-2 text-lg text-gray-700">
-                      Sales: <span class="font-bold text-sm uppercase">KES  <span class="text-green-700">{{ totalsales(currentBatch) }}</span> </span>
-                    </p>
                   </div>
                 </div>
                 <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
@@ -631,10 +628,10 @@ const addProduct = () => {
                               {{ getLoadedItems(product.trip_batch) }}
                             </td>
                             <td class="whitespace-nowrap px-3 py-4 text-xs sm:text-sm text-gray-500 font-bold">
-                              KES <span class="text-green-700">{{ product.wholesale_price }}</span>
+                              <span class="text-green-700">{{ product.wholesale_price }}</span>
                             </td>
                             <td class="whitespace-nowrap px-3 py-4 text-xs sm:text-sm text-gray-500 font-bold">
-                              KES <span class="text-green-700">{{ product.sales_price }}</span>
+                              <span class="text-green-700">{{ product.sales_price }}</span>
                             </td>
                           </tr>
     
@@ -750,10 +747,12 @@ const addProduct = () => {
                 <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
                   <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
                     <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                        <button @click="exportRep('xlsx', fn, dl, 'agentSalesReport')" type="button"
-                          class="m-2 inline-flex items-center rounded border border-transparent bg-green-600 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
-                          Download <i class="ml-2 fa-solid fa-file-excel"></i>
-                        </button>
+                         <div class="flex justify-between">
+                           <button @click="exportRep('xlsx', fn, dl, 'agentSalesReport')" type="button"
+                             class="m-2 inline-flex items-center rounded border border-transparent bg-green-600 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                             Download <i class="ml-2 fa-solid fa-file-excel"></i>
+                           </button>
+                         </div>
                       <table id="agentSalesReport" class="min-w-full divide-y divide-gray-300">
                         <thead class="bg-gray-50">
                           <tr>
@@ -780,6 +779,19 @@ const addProduct = () => {
                             </td>
                             <td class="whitespace-nowrap px-3 py-4 text-xs sm:text-smtext-gray-500 font-bold">
                               KES <span class="text-green-700">{{ item.total }}</span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-xs sm:text-sm font-medium text-gray-900 sm:pl-6">
+                            </td>
+                            <td class="whitespace-nowrap px-3 py-4 text-xs sm:text-sm text-gray-500">
+                            </td>
+                            <td class="whitespace-nowrap px-3 py-4 text-xs sm:text-sm text-gray-500">
+                            </td>
+                            <td class="whitespace-nowrap px-3 py-4 text-xs sm:text-sm text-gray-500 font-bold">
+                            </td>
+                            <td class="whitespace-nowrap px-3 py-4 text-xs sm:text-smtext-gray-500 font-bold">
+                              KES <span class="text-lg text-green-800 font-bold">{{ getSalesValue() }}</span>
                             </td>
                           </tr>
             
