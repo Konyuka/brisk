@@ -101,6 +101,34 @@ const exportRep = (type, fn, dl, value) => {
     XLSX.writeFile(wb, fn || ('agent_report.' + (type || 'xlsx')));
 }
 
+const getSalesValue = () =>{
+  let totalsArray = []
+  for (let index = 0; index < props.sales.length; index++) {
+    const element = props.sales[index];
+    if(element.trip_batch==currentBatch.value){
+      totalsArray.push(parseInt(element.sale_amount))
+    }
+  }
+  let tots = totalsArray.reduce((a, b) => a + b, 0)
+  return formatToCurrency(tots)
+}
+
+const totalsales = (data) => {
+  let numberToSum = []
+  for (let index = 0; index < loeadeditemsToShow.value.length; index++) {
+    const element = loeadeditemsToShow.value[index];
+    let loadedArray = JSON.parse(element.trip_batch)
+    let actualArray = loadedArray.find(obj => obj.batchNumber === data);
+    console.log(actualArray, element);
+    let loadNumber = actualArray.itemsSold
+    let itemTotalPrice = element.wholesale_price
+    let total = loadNumber * itemTotalPrice
+    numberToSum.push(total)
+  }
+  let tots = numberToSum.reduce((a, b) => a + b, 0)
+  return formatToCurrency(tots)
+}
+
 const totals = (data) => {
   let numberToSum = []
   for (let index = 0; index < loeadeditemsToShow.value.length; index++) {
@@ -389,15 +417,8 @@ const addProduct = () => {
                 <div
                   class="py-3 px-4 flex items-center text-sm font-medium leading-none text-gray-600 bg-gray-200 hover:bg-gray-300 cursor-pointer rounded"
                 >
-                  <p>Sort By:</p>
-                  <select
-                    aria-label="select"
-                    class="focus:text-light-green-900 focus:outline-none bg-transparent ml-1"
-                  >
-                    <option class="text-sm text-black font-bold">Latest</option>
-                    <option class="text-sm text-black font-bold">Oldest</option>
-                    <option class="text-sm text-black font-bold">Latest</option>
-                  </select>
+                  <p>Today's Sale: <span class="font-bold text-green-800">KES {{  getSalesValue()  }}</span></p>
+                  
                 </div>
               </div>
             </div>
@@ -543,6 +564,9 @@ const addProduct = () => {
                     </p>
                     <p class="font-bold mt-2 text-lg text-gray-700">
                       Value: <span class="font-bold text-sm uppercase">KES  <span class="text-green-700">{{ totals(currentBatch) }}</span> </span>
+                    </p>
+                    <p class="font-bold mt-2 text-lg text-gray-700">
+                      Sales: <span class="font-bold text-sm uppercase">KES  <span class="text-green-700">{{ totalsales(currentBatch) }}</span> </span>
                     </p>
                   </div>
                 </div>
