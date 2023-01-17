@@ -38,11 +38,58 @@ onMounted(()=>{
         }
     }
     salesArray.value = desiredArray
+    currentFilter.value = 'todaysSales'
+
 })
 
+
+const currentFilter = ref(null);
 const filtersModal = ref(false);
 const salesArray = ref([]);
 
+const todaysale = computed(() => {
+    const todaydate = new Date()
+    const yesterday = new Date()
+    yesterday.setDate(todaydate.getDate() - 1)
+    // const date = new Date('2022-12-21T04:25:43.000000Z')
+    return salesArray.value.filter(item => new Date(item.timestamp).toLocaleDateString() === yesterday.toLocaleDateString())
+
+    // return date.toLocaleDateString()
+    // return salesArray.value.filter(item => item.timestamp === '2022-12-21T04:25:43.000000Z')
+});
+
+
+
+
+const getDesiredName = () => {
+    if (currentFilter.value == 'todaysSales'){
+        return 'All Teams & Users'
+    }else{
+        // alert('hakuna')
+    }
+
+}
+
+const getDesiredTitle = () => {
+    if (currentFilter.value == 'todaysSales'){
+        const todaydate = new Date()
+        const yesterday = new Date()
+        yesterday.setDate(todaydate.getDate() - 1)
+        return yesterday.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+    }else{
+        // alert('hakuna')
+    }
+
+}
+
+const getDesiredArray = () => {
+    if (currentFilter.value == 'todaysSales'){
+        return todaysale.value
+    }else{
+        // alert('hakuna')
+    }
+
+}
 
 const exportRep = (type, fn, dl, value) => {
     var elt = document.getElementById(value);
@@ -99,18 +146,32 @@ const getAgentName = (data) => {
         <div class="px-4 sm:px-6 lg:px-8">
             <div class="sm:flex sm:items-center">
                 <div class="sm:flex-auto">
-                    <h1 class="text-xl font-semibold text-gray-900">All Sales Report</h1>
+                    <!-- <h1 class="text-xl font-semibold text-gray-900">All Sales Report</h1> -->
                     <div class="mt-2 sm:flex-none">
-                        <button @click="exportRep('xlsx', fn, dl, 'sales')"  type="button"
-                            class="inline-flex items-center justify-center rounded-md border border-transparent bg-gray-300 px-1 py-1 text-xs font-medium text-black hover:text-white shadow-sm hover:bg-black focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto">
-                            Download Report<i class="ml-2 fa-solid fa-download"></i>
-                        </button>
+                        <h2 class="font-bold text-xl">
+                            Sales Report
+                        </h2>
                     </div>
                 </div>
+                <div class="sm:flex-auto">
+                    <h1 class="text-xl font-semibold text-gray-900">
+                         
+                        <button class="ml-4 inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto">
+                            <i class="fas fa-caret-down mr-4"></i> 
+                            {{ getDesiredTitle() }} 
+                        </button>
+                        <button @click="filtersModal=true" class="ml-4 inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto">
+                            <i class="fas fa-caret-down mr-4"></i> 
+                            {{ getDesiredName() }}
+                        </button>
+
+                    </h1>
+                    
+                </div>
                 <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-                    <button @click="filtersModal=true" type="button"
+                    <button @click="exportRep('xlsx', fn, dl, 'sales')" type="button"
                         class="inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto">
-                        Load Filters <i class="ml-2 fa-solid fa-filter"></i>
+                        Download Report <i class="ml-2 fa-solid fa-download"></i>
                     </button>
                 </div>
             </div>
@@ -158,7 +219,7 @@ const getAgentName = (data) => {
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 bg-white">
-                                    <tr v-for="(sale, index) in salesArray" :key="index">
+                                    <tr v-for="(sale, index) in getDesiredArray()" :key="index">
                                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                             {{ sale.invoiceNumber }}    
                                         </td>

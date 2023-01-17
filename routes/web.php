@@ -72,9 +72,9 @@ Route::middleware([
 
 
 
-if (env('APP_ENV') === 'local') {
-    // URL::forceScheme('http');
-    // \URL::forceScheme('http');
-} else {
-    URL::forceScheme('https');
-}
+// if (env('APP_ENV') === 'local') {
+//     // URL::forceScheme('http');
+//     // \URL::forceScheme('http');
+// } else {
+//     URL::forceScheme('https');
+// }
