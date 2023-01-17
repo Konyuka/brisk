@@ -296,32 +296,117 @@ const getAgentName = (data) => {
                   To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
               -->
                     <div
-                        class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+                        class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-6xl sm:p-6">
                         <div>
                             <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
                                 <i class="fa-solid fa-filter-circle-xmark"></i>
                             </div>
-                            <div class="mt-3 text-center sm:mt-5">
-                                <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-                                    <div class="sm:col-span-3">
-                                        <label for="country" class="block text-sm font-medium text-gray-700">Country</label>
+                            <div class="mt-5 text-center sm:mt-10">
+                                
+                                <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-4 sm:gap-3">
+
+                                    <div class="sm:col-span-1 mt-2">
+                                        <label for="team" class="block text-sm font-medium text-gray-700">Select User</label>
                                         <div class="mt-1">
-                                            <select id="country" name="country" autocomplete="country-name"
+                                            <select id="team" name="team" autocomplete="team-name"
                                                 class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                                                <option>United States</option>
-                                                <option>Canada</option>
+                                                <option>No Selection</option>
                                                 <option>Mexico</option>
                                             </select>
                                         </div>
                                     </div>
+
+                                    <div class="sm:col-span-1 mt-2">
+                                        <label for="team" class="block text-sm font-medium text-gray-700">Select Team</label>
+                                        <div class="mt-1">
+                                            <select id="team" name="team" autocomplete="team-name"
+                                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                                <option>No Selection</option>
+                                                <option>Mexico</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="sm:col-span-1 mt-2">
+                                        <label for="team" class="block text-sm font-medium text-gray-700">Select Trip</label>
+                                        <div class="mt-1">
+                                            <select id="team" name="team" autocomplete="team-name"
+                                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                                <option>No Selection</option>
+                                                <option>Mexico</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="sm:col-span-1 mt-2">
+                                        <label for="team" class="block text-sm font-medium text-gray-700">Select Product</label>
+                                        <div class="mt-1">
+                                            <select id="team" name="team" autocomplete="team-name"
+                                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                                <option>No Selection</option>
+                                                <option>Mexico</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="sm:col-span-1 mt-2">
+                                        <label for="team" class="block text-sm font-medium text-gray-700">Select Location</label>
+                                        <div class="mt-1">
+                                            <select id="team" name="team" autocomplete="team-name"
+                                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                                <option>No Selection</option>
+                                                <option>Mexico</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="sm:col-span-1 mt-2">
+                                        <label for="team" class="block text-sm font-medium text-gray-700">Select Driver</label>
+                                        <div class="mt-1">
+                                            <select id="team" name="team" autocomplete="team-name"
+                                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                                <option>No Selection</option>
+                                                <option>Mexico</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="sm:col-span-1 mt-2">
+                                        <label for="team" class="block text-sm font-medium text-gray-700">Select Payment</label>
+                                        <div class="mt-1">
+                                            <select id="team" name="team" autocomplete="team-name"
+                                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                                <option>No Selection</option>
+                                                <option>Mexico</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="sm:col-span-1 mt-2">
+                                        <label for="team" class="block text-sm font-medium text-gray-700">Select Driver</label>
+                                        <div class="mt-1">
+                                            <select id="team" name="team" autocomplete="team-name"
+                                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                                <option>No Selection</option>
+                                                <option>Mexico</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
-                        <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+                        <div class="mt-5 sm:mt-20 sm:grid sm:grid-flow-row-dense sm:grid-cols-3 sm:gap-3">
                             <button type="button"
-                                class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm">Deactivate</button>
+                                class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-300  focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm">
+                                Clear Filters
+                            </button>
+                            <button type="button"
+                                class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm">
+                                Set Filters
+                            </button>
                             <button @click="filtersModal=false" type="button"
-                                class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm">Cancel</button>
+                                class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-red-400 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-3 sm:mt-0 sm:text-sm">
+                                Close Dialogue
+                            </button>
                         </div>
                     </div>
                 </div>
