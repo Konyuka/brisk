@@ -14,10 +14,13 @@
         },
         {
             "path": "../ngo"
+        },
+        {
+            "path": "../meco"
         }
     ],
     "settings": {
         "vue3snippets.enable-compile-vue-file-on-did-save-code": false,
-        "liveServer.settings.multiRootWorkspaceName": "BLOG"
+        "liveServer.settings.multiRootWorkspaceName": "meco"
     }
 }

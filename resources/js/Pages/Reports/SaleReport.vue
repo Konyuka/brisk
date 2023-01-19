@@ -42,32 +42,122 @@ onMounted(()=>{
 
 })
 
+const hideUser = ref(false)
+const filteredUserName = ref(null)
+const filtertedTripID = ref(null)
+const filterData = ref({
+    saleAgent:null,
+    team:null,
+    trip:null,
+    product:null,
+    location:null,
+    driver:null,
+    payment:null,
+    client:null,
+});
+
 
 const currentFilter = ref(null);
 const filtersModal = ref(false);
+const filteredSalesArray = ref([]);
 const salesArray = ref([]);
 
 const todaysale = computed(() => {
     const todaydate = new Date()
     const yesterday = new Date()
     yesterday.setDate(todaydate.getDate() - 1)
-    // const date = new Date('2022-12-21T04:25:43.000000Z')
     return salesArray.value.filter(item => new Date(item.timestamp).toLocaleDateString() === yesterday.toLocaleDateString())
-
-    // return date.toLocaleDateString()
-    // return salesArray.value.filter(item => item.timestamp === '2022-12-21T04:25:43.000000Z')
 });
 
 
+const hide = (data) => {
+    console.log(data)
 
+    // if (filterData.value.saleAgent != undefined || filterData.value.saleAgent != null) {
+    //     hideUser.value = true;
+    // }else{
+    //     hideUser.value = false;
+    // }
+}
+
+watch(
+    filterData,
+    (value) => {
+        // if (value.saleAgent.length != 0 || value.saleAgent.length != null || value.saleAgent.length != '') {
+        //     productsCollapseValue.value = true;
+        // }
+        hide(value)
+
+    },
+    {
+        deep: true,
+        immediate: true,
+    }
+);
+
+const loadFilters = () => {
+    const finalArray = []
+    for (const key in filterData.value) {
+        if (!filterData.value[key] && filterData.value[key] !== 0) {
+            delete filterData.value[key];
+        }
+    }
+    const propertyNames = []
+    for (const key in filterData.value) {
+        propertyNames.push(key)
+    }
+    if (propertyNames.includes('saleAgent')){
+        for (let index = 0; index < salesArray.value.length; index++) {
+            const element = salesArray.value[index];
+            if (element.agentID == filterData.value.saleAgent.id){
+                finalArray.push(element)
+            }
+        }
+    }
+    for (let index = 0; index < finalArray.length; index++) {
+        const element = finalArray[index];
+        filteredSalesArray.value.push(element)
+    }
+    currentFilter.value = 'filteredUserOnly'
+    filteredUserName.value = filterData.value.saleAgent.name
+    filtersModal.value = false
+    
+}
+
+const clearFilters = () => {
+    filterData.value = {}
+    hideUser.value = false
+}
+
+const saleTeam = () => {
+  let desiredAgents = []  
+  for (let index = 0; index < props.users.length; index++) {
+      const element = props.users[index];
+      if (element.admin == 3){
+          desiredAgents.push(element)
+      }  
+  }
+  return desiredAgents
+}
+
+const saleAgents = () => {
+  let desiredAgents = []  
+  for (let index = 0; index < props.users.length; index++) {
+      const element = props.users[index];
+      if (element.admin == 4 || element.admin == 3){
+          desiredAgents.push(element)
+      }  
+  }
+  return desiredAgents
+}
 
 const getDesiredName = () => {
     if (currentFilter.value == 'todaysSales'){
         return 'All Teams & Users'
-    }else{
-        // alert('hakuna')
     }
-
+    if (currentFilter.value == 'filteredUserOnly') {
+        return filteredUserName.value
+    }
 }
 
 const getDesiredTitle = () => {
@@ -76,8 +166,10 @@ const getDesiredTitle = () => {
         const yesterday = new Date()
         yesterday.setDate(todaydate.getDate() - 1)
         return yesterday.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
-    }else{
-        // alert('hakuna')
+    }
+
+    if (currentFilter.value == 'filteredUserOnly') {
+        return 'All time User Data'
     }
 
 }
@@ -85,8 +177,10 @@ const getDesiredTitle = () => {
 const getDesiredArray = () => {
     if (currentFilter.value == 'todaysSales'){
         return todaysale.value
-    }else{
-        // alert('hakuna')
+    }
+    
+    if (currentFilter.value == 'filteredUserOnly'){
+        return filteredSalesArray.value
     }
 
 }
@@ -160,7 +254,7 @@ const getAgentName = (data) => {
                             <i class="fas fa-caret-down mr-4"></i> 
                             {{ getDesiredTitle() }} 
                         </button>
-                        <button @click="filtersModal=true" class="ml-4 inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto">
+                        <button @click="filtersModal=true" class="capitalize ml-4 inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto">
                             <i class="fas fa-caret-down mr-4"></i> 
                             {{ getDesiredName() }}
                         </button>
@@ -306,65 +400,58 @@ const getAgentName = (data) => {
                                 <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-4 sm:gap-3">
 
                                     <div class="sm:col-span-1 mt-2">
-                                        <label for="team" class="block text-sm font-medium text-gray-700">Select User</label>
+                                        <label for="team" class="block text-sm font-medium text-gray-700">Select Team</label>
                                         <div class="mt-1">
-                                            <select id="team" name="team" autocomplete="team-name"
-                                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                                                <option>No Selection</option>
-                                                <option>Mexico</option>
+                                            <select v-model="filterData.team" id="team" name="team" autocomplete="team-name"
+                                                class="font-bold block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
+                                                <option v-for="agent in saleTeam()" :value="agent" class="font-bold">{{ agent.name }}'s team </option>
                                             </select>
                                         </div>
                                     </div>
 
                                     <div class="sm:col-span-1 mt-2">
-                                        <label for="team" class="block text-sm font-medium text-gray-700">Select Team</label>
+                                        <label for="team" class="block text-sm font-medium text-gray-700">Select User</label>
                                         <div class="mt-1">
-                                            <select id="team" name="team" autocomplete="team-name"
-                                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                                                <option>No Selection</option>
-                                                <option>Mexico</option>
+                                            <select :disabled="hideUser" v-model="filterData.saleAgent" id="team" name="team" autocomplete="team-name"
+                                                class="font-bold block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
+                                                <option v-for="agent in saleAgents()" :value="agent" class="font-bold">{{  agent.name  }}</option>
                                             </select>
                                         </div>
                                     </div>
+
 
                                     <div class="sm:col-span-1 mt-2">
                                         <label for="team" class="block text-sm font-medium text-gray-700">Select Trip</label>
-                                        <div class="mt-1">
-                                            <select id="team" name="team" autocomplete="team-name"
-                                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                                                <option>No Selection</option>
-                                                <option>Mexico</option>
-                                            </select>
+                                        <div class="mt-1 sm:col-span-2 sm:mt-0">
+                                            <input v-model="filterData.trip" type="number" name="first-name" id="first-name" autocomplete="given-name"
+                                                class="font-bold block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:max-w-xs sm:text-sm">
                                         </div>
                                     </div>
 
                                     <div class="sm:col-span-1 mt-2">
                                         <label for="team" class="block text-sm font-medium text-gray-700">Select Product</label>
                                         <div class="mt-1">
-                                            <select id="team" name="team" autocomplete="team-name"
-                                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                                                <option>No Selection</option>
-                                                <option>Mexico</option>
+                                            <select v-model="filterData.product" id="team" name="team" autocomplete="team-name"
+                                                class="font-bold block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
+                                                <option v-for="product in products" :value="product" class="font-bold">{{ product.product_name  }} - {{ product.product_quantity }}</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="sm:col-span-1 mt-2">
                                         <label for="team" class="block text-sm font-medium text-gray-700">Select Location</label>
                                         <div class="mt-1">
-                                            <select id="team" name="team" autocomplete="team-name"
-                                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                                                <option>No Selection</option>
-                                                <option>Mexico</option>
+                                            <select disabled v-model="filterData.location" id="team" name="team" autocomplete="team-name"
+                                                class="font-bold block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
+                                                <option v-for="agent in saleAgents()" :value="agent" class="font-bold">Mexico</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="sm:col-span-1 mt-2">
                                         <label for="team" class="block text-sm font-medium text-gray-700">Select Driver</label>
                                         <div class="mt-1">
-                                            <select id="team" name="team" autocomplete="team-name"
-                                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                                                <option>No Selection</option>
-                                                <option>Mexico</option>
+                                            <select disabled v-model="filterData.driver" id="team" name="team" autocomplete="team-name"
+                                                class="font-bold block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
+                                                <option v-for="agent in saleAgents()" :value="agent" class="font-bold">Mexico</option>
                                             </select>
                                         </div>
                                     </div>
@@ -372,21 +459,19 @@ const getAgentName = (data) => {
                                     <div class="sm:col-span-1 mt-2">
                                         <label for="team" class="block text-sm font-medium text-gray-700">Select Payment</label>
                                         <div class="mt-1">
-                                            <select id="team" name="team" autocomplete="team-name"
-                                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                                                <option>No Selection</option>
-                                                <option>Mexico</option>
+                                            <select disabled v-model="filterData.payment" id="team" name="team" autocomplete="team-name"
+                                                class="font-bold block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
+                                                <option v-for="agent in saleAgents()" :value="agent" class="font-bold">Mexico</option>
                                             </select>
                                         </div>
                                     </div>
 
                                     <div class="sm:col-span-1 mt-2">
-                                        <label for="team" class="block text-sm font-medium text-gray-700">Select Driver</label>
+                                        <label for="team" class="block text-sm font-medium text-gray-700">Select Client</label>
                                         <div class="mt-1">
-                                            <select id="team" name="team" autocomplete="team-name"
-                                                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                                                <option>No Selection</option>
-                                                <option>Mexico</option>
+                                            <select v-model="filterData.client" id="team" name="team" autocomplete="team-name"
+                                                class="font-bold block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
+                                                <option v-for="client in clients" :value="client" class="font-bold">{{ client.client_name }}</option>
                                             </select>
                                         </div>
                                     </div>
@@ -395,11 +480,11 @@ const getAgentName = (data) => {
                             </div>
                         </div>
                         <div class="mt-5 sm:mt-20 sm:grid sm:grid-flow-row-dense sm:grid-cols-3 sm:gap-3">
-                            <button type="button"
+                            <button @click="clearFilters()" type="button"
                                 class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-300  focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm">
                                 Clear Filters
                             </button>
-                            <button type="button"
+                            <button @click="loadFilters" type="button"
                                 class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm">
                                 Set Filters
                             </button>
