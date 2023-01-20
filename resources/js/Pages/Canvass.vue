@@ -268,10 +268,10 @@ const reloadData = () => {
 };
 
 const checkTeamLead = () => {
-  // if (activeTeamLeads.value.includes(tripDetails.lead)) {
-  //   tripDetails.lead = null;
-  //   alert("Team Lead Assigned Team Already");
-  // }
+  if (activeTeamLeads.value.includes(tripDetails.lead)) {
+    tripDetails.lead = null;
+    alert("Team Lead Assigned Team Already");
+  }
 };
 const clearForm = () => {
   Inertia.get("/dashboard/product_delivery");

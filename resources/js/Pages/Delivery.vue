@@ -140,7 +140,6 @@ const setExpected = (value) => {
   parseInt(currentProduct.value[objIndex].spoiledProducts);
   let losItems =
   parseInt(currentProduct.value[objIndex].expectedProducts) - itemsToDeduct;
-  console.log(currentProduct.value[objIndex])
   if (isNaN(losItems)) {
     currentProduct.value[objIndex].missingProducts = 0;
     currentProduct.value[objIndex].itemsMissing = false;
