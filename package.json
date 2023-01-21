@@ -17,6 +17,7 @@
         "@tailwindcss/typography": "^0.5.2",
         "@vitejs/plugin-vue": "^3.0.0",
         "@vue/server-renderer": "^3.2.31",
+        "@vuepic/vue-datepicker": "^3.6.5",
         "autoprefixer": "^10.4.7",
         "axios": "^0.27",
         "flowbite-datepicker": "^1.2.2",

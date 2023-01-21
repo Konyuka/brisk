@@ -56,6 +56,7 @@ const filterData = ref({
 });
 
 
+const datePicker = ref(false);
 const currentFilter = ref(null);
 const filtersModal = ref(false);
 const filteredSalesArray = ref([]);
@@ -84,6 +85,10 @@ watch(
     }
 );
 
+const setDate = () => {
+    
+}
+
 const loadFilters = () => {
     const finalArray = []
     for (const key in filterData.value) {
@@ -110,7 +115,7 @@ const loadFilters = () => {
         }
         currentFilter.value = 'filteredUserOnly'
         filteredUserName.value = filterData.value.saleAgent.name
-        filtersModal.value = false
+        // filtersModal.value = false
     }
     if (propertyNames.includes('trip')) {
         for (let index = 0; index < salesArray.value.length; index++) {
@@ -129,7 +134,7 @@ const loadFilters = () => {
         currentFilter.value = 'filteredTripOnly'
         const trip = props.trips.find(object => object.id === filterData.value.trip);
         filteredUserName.value = trip.lead_name
-        filtersModal.value = false
+        // filtersModal.value = false
     }
 
 
@@ -276,6 +281,7 @@ const getAgentName = (data) => {
                     <h1 class="text-xl font-semibold text-gray-900">
 
                         <button
+                            @click="datePicker=true"
                             class="ml-4 inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:w-auto">
                             <i class="fas fa-caret-down mr-4"></i>
                             {{ getDesiredTitle() }}
@@ -427,11 +433,11 @@ const getAgentName = (data) => {
                                         </div>
                                     </div> -->
 
-                                    <div class="sm:col-span-1 mt-2">
+                                    <div class="sm:col-span-2 mt-2">
                                         <label for="team" class="block text-sm font-medium text-gray-700">Select
                                             User</label>
                                         <div class="mt-1">
-                                            <select :disabled="hideUser" v-model="filterData.saleAgent" id="team"
+                                            <select @change="loadFilters" :disabled="hideUser" v-model="filterData.saleAgent" id="team"
                                                 name="team" autocomplete="team-name"
                                                 class="font-bold block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
                                                 <option v-for="agent in saleAgents()" :value="agent" class="font-bold">
@@ -445,13 +451,13 @@ const getAgentName = (data) => {
                                         <label for="team" class="block text-sm font-medium text-gray-700">Select
                                             Trip</label>
                                         <div class="mt-1 sm:col-span-2 sm:mt-0">
-                                            <input v-model="filterData.trip" type="number" name="first-name"
+                                            <input disabled @change="loadFilters" v-model="filterData.trip" type="number" name="first-name"
                                                 id="first-name" autocomplete="given-name"
                                                 class="font-bold block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:max-w-xs sm:text-sm">
                                         </div>
                                     </div>
 
-                                    <div class="sm:col-span-1 mt-2">
+                                    <!-- <div class="sm:col-span-1 mt-2">
                                         <label for="team" class="block text-sm font-medium text-gray-700">Select
                                             Product</label>
                                         <div class="mt-1">
@@ -462,8 +468,9 @@ const getAgentName = (data) => {
                                                     {{ product.product_name }} - {{ product.product_quantity }}</option>
                                             </select>
                                         </div>
-                                    </div>
-                                    <div class="sm:col-span-1 mt-2">
+                                    </div> -->
+
+                                    <!-- <div class="sm:col-span-1 mt-2">
                                         <label for="team" class="block text-sm font-medium text-gray-700">Select
                                             Location</label>
                                         <div class="mt-1">
@@ -474,8 +481,9 @@ const getAgentName = (data) => {
                                                     Mexico</option>
                                             </select>
                                         </div>
-                                    </div>
-                                    <div class="sm:col-span-1 mt-2">
+                                    </div> -->
+
+                                    <!-- <div class="sm:col-span-1 mt-2">
                                         <label for="team" class="block text-sm font-medium text-gray-700">Select
                                             Driver</label>
                                         <div class="mt-1">
@@ -486,9 +494,9 @@ const getAgentName = (data) => {
                                                     Mexico</option>
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> -->
 
-                                    <div class="sm:col-span-1 mt-2">
+                                    <!-- <div class="sm:col-span-1 mt-2">
                                         <label for="team" class="block text-sm font-medium text-gray-700">Select
                                             Payment</label>
                                         <div class="mt-1">
@@ -499,9 +507,9 @@ const getAgentName = (data) => {
                                                     Mexico</option>
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> -->
 
-                                    <div class="sm:col-span-1 mt-2">
+                                    <!-- <div class="sm:col-span-1 mt-2">
                                         <label for="team" class="block text-sm font-medium text-gray-700">Select
                                             Client</label>
                                         <div class="mt-1">
@@ -512,7 +520,7 @@ const getAgentName = (data) => {
                                                 client.client_name }}</option>
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> -->
 
                                 </div>
                             </div>
@@ -522,10 +530,10 @@ const getAgentName = (data) => {
                                 class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-300  focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm">
                                 Clear Filters
                             </button>
-                            <button @click="loadFilters" type="button"
+                            <!-- <button @click="loadFilters" type="button"
                                 class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm">
                                 Set Filters
-                            </button>
+                            </button> -->
                             <button @click="filtersModal=false" type="button"
                                 class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-red-400 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-3 sm:mt-0 sm:text-sm">
                                 Close Dialogue
@@ -535,6 +543,45 @@ const getAgentName = (data) => {
                 </div>
             </div>
         </div>
+
+        <div v-if="datePicker" class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+        
+            <div class="fixed inset-0 z-10 overflow-y-auto">
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                   
+                    <div
+                        class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                        <div>
+                            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <div class="mt-3 text-center sm:mt-5">
+                                <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">Date Picker</h3>
+                                <div class="mt-2">
+                                    <div>
+                                        <!-- <v-calendar /> -->
+                                        <v-date-picker v-model="date" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+                            <button 
+                                @click="setDate"
+                                type="button"
+                                class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm">Set Date</button>
+                            <button 
+                                @click="datePicker=false"
+                                type="button"
+                                class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
     </div>
 </template>
