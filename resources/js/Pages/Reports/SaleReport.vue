@@ -40,6 +40,11 @@ onMounted(() => {
     salesArray.value = desiredArray
     currentFilter.value = 'todaysSales'
 
+    const todaydate = new Date()
+    const yesterday = new Date()
+    yesterday.setDate(todaydate.getDate() - 1)
+    currentDate.value = yesterday
+
 })
 
 const filteredUserName = ref(null)
@@ -56,6 +61,7 @@ const filterData = ref({
 });
 
 
+const currentDate = ref(null);
 const datePicker = ref(false);
 const currentFilter = ref(null);
 const filtersModal = ref(false);
@@ -86,7 +92,7 @@ watch(
 );
 
 const setDate = () => {
-    
+
 }
 
 const loadFilters = () => {
@@ -100,6 +106,7 @@ const loadFilters = () => {
     for (const key in filterData.value) {
         propertyNames.push(key)
     }
+
     if (propertyNames.includes('saleAgent')) {
         for (let index = 0; index < salesArray.value.length; index++) {
             const element = salesArray.value[index];
@@ -107,16 +114,19 @@ const loadFilters = () => {
                 finalArray.push(element)
             }
         }
+        filteredSalesArray.value = []
         for (let index = 0; index < finalArray.length; index++) {
             const element = finalArray[index];
-            if (!filteredSalesArray.value.includes(element)) {
-                filteredSalesArray.value.push(element)
-            }
+
+            filteredSalesArray.value.push(element)
+            // if (!filteredSalesArray.value.includes(element)) {
+            // }
         }
         currentFilter.value = 'filteredUserOnly'
         filteredUserName.value = filterData.value.saleAgent.name
-        // filtersModal.value = false
+        filtersModal.value = false
     }
+
     if (propertyNames.includes('trip')) {
         for (let index = 0; index < salesArray.value.length; index++) {
             const element = salesArray.value[index];
@@ -134,7 +144,7 @@ const loadFilters = () => {
         currentFilter.value = 'filteredTripOnly'
         const trip = props.trips.find(object => object.id === filterData.value.trip);
         filteredUserName.value = trip.lead_name
-        // filtersModal.value = false
+        filtersModal.value = false
     }
 
 
@@ -530,10 +540,10 @@ const getAgentName = (data) => {
                                 class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-300  focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm">
                                 Clear Filters
                             </button>
-                            <!-- <button @click="loadFilters" type="button"
+                            <button @click="loadFilters" type="button"
                                 class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm">
                                 Set Filters
-                            </button> -->
+                            </button>
                             <button @click="filtersModal=false" type="button"
                                 class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-red-400 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:col-start-3 sm:mt-0 sm:text-sm">
                                 Close Dialogue
@@ -562,7 +572,7 @@ const getAgentName = (data) => {
                                 <div class="mt-2">
                                     <div>
                                         <!-- <v-calendar /> -->
-                                        <v-date-picker v-model="date" />
+                                        <v-date-picker v-model="currentDate" />
                                     </div>
                                 </div>
                             </div>
