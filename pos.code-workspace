@@ -17,6 +17,9 @@
         },
         {
             "path": "../meco"
+        },
+        {
+            "path": "../rochman"
         }
     ],
     "settings": {

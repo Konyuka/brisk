@@ -34,9 +34,6 @@ onMounted(() => {
 
   orderedPriceList.value = props.products.sort((a, b) => (a.product_name > b.product_name ? 1 : -1));
 
-
-  
-
 });
 
 const { activeAgents } = toRefs(props);
