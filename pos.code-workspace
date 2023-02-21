@@ -23,6 +23,12 @@
         },
         {
             "path": "../prerender"
+        },
+        {
+            "path": "../tour"
+        },
+        {
+            "path": "../laravel-invoice"
         }
     ],
     "settings": {
