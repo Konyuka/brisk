@@ -10,9 +10,6 @@
             "path": "../kwcwc"
         },
         {
-            "path": "../akaunting"
-        },
-        {
             "path": "../ngo"
         },
         {
@@ -22,13 +19,13 @@
             "path": "../rochman"
         },
         {
-            "path": "../prerender"
-        },
-        {
             "path": "../tour"
         },
         {
             "path": "../laravel-invoice"
+        },
+        {
+            "path": "../billflow"
         }
     ],
     "settings": {
