@@ -10,9 +10,6 @@
             "path": "../kwcwc"
         },
         {
-            "path": "../ngo"
-        },
-        {
             "path": "../meco"
         },
         {
@@ -22,10 +19,13 @@
             "path": "../tour"
         },
         {
-            "path": "../laravel-invoice"
+            "path": "../billflow"
         },
         {
-            "path": "../billflow"
+            "path": "../cms"
+        },
+        {
+            "path": "../ads"
         }
     ],
     "settings": {
