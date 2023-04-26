@@ -13,6 +13,7 @@ const props = defineProps({
   invoiceLog: String,
 });
 
+
 const clientsCollapse = computed(() => {
   if (purchasingClient.value != "") {
     return true;
