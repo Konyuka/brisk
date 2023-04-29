@@ -26,6 +26,27 @@
         },
         {
             "path": "../ads"
+        },
+        {
+            "path": "../beyond_ck"
+        },
+        {
+            "path": "../kitchens"
+        },
+        {
+            "path": "../techsurv"
+        },
+        {
+            "path": "../talkdukaportal"
+        },
+        {
+            "path": "../td"
+        },
+        {
+            "path": "../cytech"
+        },
+        {
+            "path": "../authors"
         }
     ],
     "settings": {
